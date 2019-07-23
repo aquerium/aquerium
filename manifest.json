@@ -1,6 +1,6 @@
 {
   "name": "Aquerium",
-  "description" : "GitHub query management tool",
+  "description" : "Get things done with Aquerium, a GitHub query management tool.",
   "version": "1.0",
   "options_page": "options.html",
   "browser_action": {
