@@ -5,10 +5,10 @@
   "options_page": "options.html",
   "browser_action": {
     "default_popup": "index.html",
-    "default_icon": "temp_logo.png"
+    "default_icon": "GlitterboxLogo2.png"
   },
   "icons": {
-    "131": "temp_logo.png"
+    "131": "GlitterboxLogo2.png"
   },
   "manifest_version": 2,
   "commands": {
@@ -19,5 +19,6 @@
       },
       "description": "Opens index.html"
     }
-  }
+  },
+  "content_security_policy": "script-src 'self' 'sha256-5As4+3YpY62+l38PsxCEkjB1R4YtyktBtRScTJ3fyLU='; object-src 'self'"
 }
