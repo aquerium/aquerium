@@ -27,7 +27,7 @@ class LoginUI extends React.Component {
                     <IconButton 
                         iconProps={{iconName: "IncreaseIndentArrow"}} 
                         styles={{icon:{color:"green"}}}
-                        ariaLabel="Access"
+                        title="Access"
                     />
                 </Stack>
                 

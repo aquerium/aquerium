@@ -13,7 +13,7 @@ class TopBarIcons extends React.Component<{}> {
     };
 
     return (
-      <Stack horizontal horizontalAlign="space-around" verticalAlign="center" styles={{root:{background: '#faf9f8'}}}>
+      <Stack horizontal horizontalAlign="space-evenly" verticalAlign="center" styles={{root:{background: '#faf9f8', width: 430}}}>
         <div></div>
         <Link href="https://github.com" target='_blank' >
           <Image {...imageProps as any} src="GlitterboxLogo2.png" title="My GitHub Home"/>
