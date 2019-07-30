@@ -11,7 +11,7 @@ mergeStyles({
       margin: 0,
       padding: 0,
       height: 400,
-      width: 400
+      width: 400,
     }
   }
 });

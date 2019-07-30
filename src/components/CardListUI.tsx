@@ -1,16 +1,6 @@
 import React from 'react';
 import { List, ITheme, mergeStyleSets, getTheme, IRectangle, Stack, Link, Text } from 'office-ui-fabric-react';
 
-// export const App: React.FunctionComponent = () => {
-//   return (
-//     <List></List>
-//   );
-// };
-
-// const hello = (text: string): string => {
-//   return text;
-// }
-
 interface IListGridExampleClassObject {
   listGridExample: string;
   listGridExampleTile: string;
@@ -35,7 +25,8 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
     fontSize: 0,
     position: 'relative',
     height: 383, maxHeight: 400, width: 400, maxWidth: 400,
-    overflowY: 'scroll'
+    overflowY: 'scroll',
+    boxSizing: 'border-box' 
   },
   listGridExampleTile: {
     textAlign: 'center',
@@ -46,7 +37,6 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
       'focus:after': {
         content: '',
         position: 'absolute',
-        boxSizing: 'border-box',
         border: borderColour
       }
     }
@@ -64,7 +54,7 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
   },
   listGridQueryName: {
     background: 'rgba(255, 255, 255, 0.3)',
-    color: '#000000',
+    color: '#323130',
     position: 'absolute',
     padding: '20px 5px 0 0',
     bottom: 0,
@@ -85,6 +75,7 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
   listGridElmCount: {
     fontSize: 92,
     fontFamily: 'Segoe UI Light',
+    color: "#605e5c",
     padding: 0
   },
   listGridExampleImage: {
@@ -110,8 +101,7 @@ class CardListUI extends React.Component <IListGridExampleProps> {
 
   public render(): JSX.Element {
     return (
-      <Stack horizontal horizontalAlign="space-evenly" styles={{root:{background: '#faf9f8'}}}
-     >
+      <Stack horizontal horizontalAlign="space-evenly" styles={{root:{background: '#faf9f8'}}}>
         <List
           className={classNames.listGridExample}
           items={this.props.items}
@@ -130,7 +120,6 @@ class CardListUI extends React.Component <IListGridExampleProps> {
       this._columnWidth = surfaceRect ? Math.floor(surfaceRect.width / this._columnCount) : 0;
       this._rowHeight = this._columnWidth;
     }
-    // return 1;
     return this._columnCount * ROWS_PER_PAGE;
   };
 
@@ -151,7 +140,7 @@ class CardListUI extends React.Component <IListGridExampleProps> {
         <div className={classNames.listGridExampleSizer}>
           <div className={classNames.listGridExamplePadder}>
             <Link href="https://github.com" target='_blank'>
-              <Stack verticalAlign="start" className={classNames.listGridQueryName} >
+              <Stack verticalAlign="start" className={classNames.listGridQueryName}>
                 <Text nowrap>{item}</Text>
                 <span className={classNames.listGridElmCount}>{index}</span>
               </Stack>
