@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ITheme, mergeStyleSets, getTheme, IRectangle, Stack, Link } from 'office-ui-fabric-react';
+import { List, ITheme, mergeStyleSets, getTheme, IRectangle, Stack, Link, Text } from 'office-ui-fabric-react';
 
 // export const App: React.FunctionComponent = () => {
 //   return (
@@ -31,9 +31,10 @@ const borderColour: string = '1px solid ' + theme.palette.white;
 const classNames: IListGridExampleClassObject = mergeStyleSets({
   listGridExample: {
     overflow: 'hidden',
+    background: '#faf9f8',
     fontSize: 0,
     position: 'relative',
-    height: 400, maxHeight: 400, width: 400, maxWidth: 400,
+    height: 383, maxHeight: 400, width: 400, maxWidth: 400,
     overflowY: 'scroll'
   },
   listGridExampleTile: {
@@ -41,15 +42,10 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
     outline: 'none',
     position: 'relative',
     float: 'left',
-    background: theme.palette.whiteTranslucent40,
     selectors: {
       'focus:after': {
         content: '',
         position: 'absolute',
-        left: 2,
-        right: 2,
-        top: 2,
-        bottom: 2,
         boxSizing: 'border-box',
         border: borderColour
       }
@@ -60,14 +56,15 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
   },
   listGridExamplePadder: {
     position: 'absolute',
-    left: 2,
-    top: 2,
-    right: 2,
-    bottom: 2
+    left: 8,
+    top: 8,
+    right: 8,
+    bottom: 8,
+    
   },
   listGridQueryName: {
-    background: 'rgba(212, 100, 100, 0.3)',
-    color: '#FFFFFF',
+    background: 'rgba(255, 255, 255, 0.3)',
+    color: '#000000',
     position: 'absolute',
     padding: '20px 5px 0 0',
     bottom: 0,
@@ -77,8 +74,12 @@ const classNames: IListGridExampleClassObject = mergeStyleSets({
     fontSize: 24,
     fontFamily: 'Segoe UI Light',
     boxSizing: 'border-box',
+    boxShadow: ' 0 1.6px 3.6px 0 rgba(0,0,0,.2)',
+    borderRadius: '3px',
+    transitionDelay: '0.15s',
+    transition: 'box-shadow .15s linear, transform .15s linear',
     selectors: {
-        '&:hover': { background: theme.palette.neutralLight }
+        '&:hover': { boxShadow: '0 4px 8px 1.5px rgba(0,0,0,.2)' }
       }
   },
   listGridElmCount: {
@@ -109,7 +110,8 @@ class CardListUI extends React.Component <IListGridExampleProps> {
 
   public render(): JSX.Element {
     return (
-      <Stack horizontal horizontalAlign="space-evenly">
+      <Stack horizontal horizontalAlign="space-evenly" styles={{root:{background: '#faf9f8'}}}
+     >
         <List
           className={classNames.listGridExample}
           items={this.props.items}
@@ -150,7 +152,7 @@ class CardListUI extends React.Component <IListGridExampleProps> {
           <div className={classNames.listGridExamplePadder}>
             <Link href="https://github.com" target='_blank'>
               <Stack verticalAlign="start" className={classNames.listGridQueryName} >
-                <span>{item}</span>
+                <Text nowrap>{item}</Text>
                 <span className={classNames.listGridElmCount}>{index}</span>
               </Stack>
             </Link>
