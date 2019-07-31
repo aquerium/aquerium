@@ -1,12 +1,13 @@
 import React from "react";
 import { HomeUIContext } from "./HomeUIContext";
-import { RenderTile, classNames } from "./RenderTileGrid";
+import { RenderTile } from "./RenderTile";
+import { classNames } from "./GridStyles";
 
-const CardListUI = () => {
+const TileListUI = () => {
   const { items } = React.useContext(HomeUIContext);
   return (
     <div
-      className={classNames.listGridExample}
+      className={classNames.GridStyle}
       //data-is-editing={isEditing}
     >
       {items.map(item => RenderTile(item))}
@@ -14,4 +15,4 @@ const CardListUI = () => {
   );
 };
 
-export default CardListUI;
+export default TileListUI;
