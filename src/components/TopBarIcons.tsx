@@ -7,7 +7,6 @@ import {
   Link,
   CommandBarButton
 } from "office-ui-fabric-react";
-import { HomeUIContext } from "./HomeUIContext";
 
 const TopBarIcons = () => {
   const imageProps: IImageProps = {
@@ -17,8 +16,6 @@ const TopBarIcons = () => {
     width: 80,
     height: 80
   };
-
-  const { isEditing, setEditing } = React.useContext(HomeUIContext);
 
   const getMenuItems = () => {
     return [
@@ -35,9 +32,7 @@ const TopBarIcons = () => {
         iconProps: {
           iconName: "Edit"
         },
-        onclick: () => {
-          setEditing(!isEditing);
-        }
+        onClick: () => {}
       }
     ];
   };
@@ -49,7 +44,6 @@ const TopBarIcons = () => {
       styles={{
         root: {
           background: "#faf9f8",
-          width: "290px",
           height: "80",
           position: "relative"
         }
@@ -73,14 +67,14 @@ const TopBarIcons = () => {
         title="Options"
         styles={{
           root: {
-            width: 24,
-            height: 24,
+            width: 20,
+            height: 20,
             background: "#faf9f8",
             margin: "auto",
             position: "absolute",
-            right: "20px"
+            right: 20
           },
-          menuIcon: { fontSize: 24, color: "#1b374" }
+          menuIcon: { fontSize: 20, color: "#1b374" }
         }}
         persistMenu={false}
         menuProps={{

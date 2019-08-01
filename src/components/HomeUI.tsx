@@ -1,9 +1,8 @@
 import TileListUI from "./TileListUI";
 import React from "react";
 import TopBarIcons from "./TopBarIcons";
-import { HomeUIContext } from "./HomeUIContext";
 
-const items = [
+export const items = [
   { name: "query a", numTasks: 5 },
   { name: "query b", numTasks: 16 },
   { name: "query c", numTasks: 7 },
@@ -11,7 +10,7 @@ const items = [
   { name: "query e", numTasks: 9 },
   { name: "query f", numTasks: 10 },
   {
-    name: "query GasdjkasjksadjkfbkjasfdasjkfkhjsbfkjsfbkjsABDFKJ",
+    name: "query Gasdjkasjksadjkfbkjasfdasjkfk",
     numTasks: 19
   },
   { name: "query h", numTasks: 10 },
@@ -19,20 +18,11 @@ const items = [
 ];
 
 const HomeUI = () => {
-  const [isEditing, setEditing] = React.useState(false);
-  const context = {
-    isEditing,
-    setEditing,
-    items
-  };
-
   return (
-    <HomeUIContext.Provider value={context}>
-      <div>
-        <TopBarIcons />
-        <TileListUI />
-      </div>
-    </HomeUIContext.Provider>
+    <div>
+      <TopBarIcons />
+      <TileListUI />
+    </div>
   );
 };
 

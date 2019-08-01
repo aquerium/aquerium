@@ -1,4 +1,4 @@
-import { mergeStyleSets } from "@uifabric/styling";
+import { mergeStyleSets, keyframes } from "@uifabric/styling";
 
 interface GridTileObject {
   GridStyle: string;
@@ -34,10 +34,6 @@ export const classNames: GridTileObject = mergeStyleSets({
     float: "center",
     border: "none",
     selectors: {
-      "[data-is-editing] &": {
-        background: "green"
-        // animation: 'isEditing .1s linear infinite alternate'
-      },
       "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
     },
     boxShadow: " 0 1.6px 3.6px 0 rgba(0,0,0,.2)",

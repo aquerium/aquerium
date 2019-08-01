@@ -27,9 +27,7 @@ export const RenderTile = (item: any): JSX.Element => {
           content={item.name}
           calloutProps={{ gapSpace: 0 }}
           overflowMode={TooltipOverflowMode.Parent}
-          onTooltipToggle={(isTooltipVisible: boolean) =>
-            toggleTooltip(!isTooltipVisible)
-          }
+          onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
             className={classNames.listGridQueryName}
