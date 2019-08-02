@@ -25,10 +25,8 @@ export const LoginUI = () => {
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
   const checkPasswordValidity = () => {
-    console.log("Before: " + isValidPAT);
     if (currPAT !== "correct") setIsValidPAT(false);
     else setIsValidPAT(true);
-    console.log("After: " + isValidPAT);
   };
 
   const updateCurrPAT = (
