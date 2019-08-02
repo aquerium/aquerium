@@ -10,25 +10,21 @@ interface GridStyles {
 
 export const classNames: GridStyles = mergeStyleSets({
   root: {
+    height: "100%",
+    width: "100%",
     overflow: "auto",
-    background: "#faf9f8",
-    fontSize: 0,
-    position: "relative",
-    height: 273,
-    width: 290,
-    overflowY: "scroll",
+    overflowY: "scroll"
+  },
+  listContainer: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gridAutoRows: "1fr",
     gridGap: "8px",
     gridAutoColumns: "8px",
-    boxSizing: "border-box"
-  },
-  listContainer: {
+    boxSizing: "border-box",
     padding: 8
   },
   listGridExampleTile: {
-    background: "rgba(255, 255, 255, 0.3)",
     textAlign: "center",
     minHeight: "125px",
     width: "125px",

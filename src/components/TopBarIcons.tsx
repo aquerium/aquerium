@@ -43,7 +43,6 @@ const TopBarIcons = () => {
       verticalAlign="center"
       styles={{
         root: {
-          background: "#faf9f8",
           height: "80",
           position: "relative"
         }
@@ -69,7 +68,7 @@ const TopBarIcons = () => {
           root: {
             width: 20,
             height: 20,
-            background: "#faf9f8",
+            background: "#rgba(240,240,240,0)",
             margin: "auto",
             position: "absolute",
             right: 20

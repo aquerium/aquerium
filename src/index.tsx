@@ -7,7 +7,8 @@ import { mergeStyles } from "office-ui-fabric-react";
 mergeStyles({
   selectors: {
     ":global(body), :global(html), :global(#app)": {
-      width: 290,
+      width: 300,
+      maxWidth: 344,
       height: 344,
       maxHeight: 344,
       margin: 0,

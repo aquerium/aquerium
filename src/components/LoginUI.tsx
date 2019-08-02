@@ -50,7 +50,6 @@ export const LoginUI = () => {
     return {
       root: {
         width: 175,
-        fontFamily: "Segoe UI",
         fontSize: 10,
         color: "#1b3e74"
       },
@@ -106,7 +105,6 @@ export const LoginUI = () => {
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"
         target="_blank"
         style={{
-          fontFamily: "Segoe UI",
           fontSize: "11px"
         }}
       >
