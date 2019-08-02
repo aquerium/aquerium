@@ -19,10 +19,10 @@ export const items = [
 
 const HomeUI = () => {
   return (
-    <div>
+    <>
       <TopBarIcons />
       <TileListUI />
-    </div>
+    </>
   );
 };
 
