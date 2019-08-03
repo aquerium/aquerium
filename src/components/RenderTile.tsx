@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+
 import {
   Stack,
   Text,
@@ -8,8 +10,9 @@ import {
   DefaultButton
 } from "office-ui-fabric-react";
 import { classNames } from "./GridStyles";
+import { IQuery } from "../state";
 
-export const RenderTile = (item: any): JSX.Element => {
+export const RenderTile = (item: IQuery): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   return (
@@ -31,7 +34,7 @@ export const RenderTile = (item: any): JSX.Element => {
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
-            className={classNames.listGridQueryName}
+            className={classNames.listGridQueryName} //this doesn't matter
             nowrap
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}

@@ -1,23 +1,27 @@
-import TileListUI from "./TileListUI";
+import { TileListUI } from "./TileListUI";
 import React from "react";
 import TopBarIcons from "./TopBarIcons";
+import { connect } from "react-redux";
+import { IState, IQuery } from "../state/state.types";
+import { statement } from "@babel/template";
 
-export const items = [
-  { name: "query a", numTasks: 5 },
-  { name: "query b", numTasks: 16 },
-  { name: "query c", numTasks: 7 },
-  { name: "query d", numTasks: 8 },
-  { name: "query e", numTasks: 9 },
-  { name: "query f", numTasks: 10 },
-  {
-    name: "query Gasdjkasjksadjkfbkjasfdasjkfk",
-    numTasks: 19
-  },
-  { name: "query h", numTasks: 10 },
-  { name: "query j", numTasks: 11 }
-];
+// export const items1 = [
+//   //we should replace this with the other thing
+//   { name: "query a", numTasks: 5 }
+//   /* { name: "query b", numTasks: 16 },
+//   { name: "query c", numTasks: 7 },
+//   { name: "query d", numTasks: 8 },
+//   { name: "query e", numTasks: 9 },
+//   { name: "query f", numTasks: 10 },
+//   {
+//     name: "query Gasdjkasjksadjkfbkjasfdasjkfk",
+//     numTasks: 19
+//   },
+//   { name: "query h", numTasks: 10 },
+//   { name: "query j", numTasks: 11 }*/
+// ];
 
-const HomeUI = () => {
+const Home_UI = () => {
   return (
     <>
       <TopBarIcons />
@@ -26,4 +30,4 @@ const HomeUI = () => {
   );
 };
 
-export default HomeUI;
+export const HomeUI = connect(undefined)(Home_UI); //mapstatetoprops is undefined atm
