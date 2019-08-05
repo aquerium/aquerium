@@ -73,28 +73,49 @@ export const LoginUI = () => {
         styles={{
           root: {
             textAlign: "center",
-            padding: 20,
-            fontSize: 12,
+            padding: 10,
+            fontSize: 20,
             color: "#1b3e74"
           }
         }}
       >
-        Welcome to Aquerium! <br />
-        Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.
+        Welcome to Aquerium!
+      </Text>
+      <Text
+        styles={{
+          root: {
+            textAlign: "center",
+            fontSize: 12,
+            color: "#1b3e74",
+            transform: "translateY(-60%)"
+          }
+        }}
+      >
+        Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
       <Stack horizontal>
         <TextField
+          style={{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }}
           placeholder="Enter your GitHub PAT"
           required
+          borderless={isValidPAT ? true : false}
           styles={getTextFieldStyles}
           onChange={updateCurrPAT}
           onKeyDown={ensureEnter}
           errorMessage={isValidPAT ? "" : "InvalidPAT"}
         />
         <PrimaryButton
+          style={{
+            boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
+          }}
           text="Submit"
           allowDisabledFocus={true}
-          styles={{ root: { color: "#ffffff", width: "10px" } }}
+          styles={{
+            root: {
+              color: "#ffffff",
+              width: "10px"
+            }
+          }}
           onClick={checkPasswordValidity}
         />
       </Stack>
@@ -106,7 +127,7 @@ export const LoginUI = () => {
           fontSize: "11px"
         }}
       >
-        Don't have a Personal Access Token (PAT)? Get one here.
+        Need a Personal Access Token (PAT)? Get one here.
       </Link>
     </Stack>
   );
