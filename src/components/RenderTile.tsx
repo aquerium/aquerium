@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-
 import {
   Stack,
   Text,
@@ -12,7 +10,11 @@ import {
 import { classNames } from "./GridStyles";
 import { IQuery } from "../state";
 
-export const RenderTile = (item: IQuery): JSX.Element => {
+interface IRenderTileProps {
+  item: IQuery;
+}
+
+export const RenderTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   return (
@@ -28,7 +30,7 @@ export const RenderTile = (item: IQuery): JSX.Element => {
         styles={{ root: { maxWidth: "100%" } }}
       >
         <TooltipHost
-          content={item.name}
+          content={props.item.name}
           calloutProps={{ gapSpace: 0 }}
           overflowMode={TooltipOverflowMode.Parent}
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
@@ -39,10 +41,10 @@ export const RenderTile = (item: IQuery): JSX.Element => {
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
           >
-            {item.name}
+            {props.item.name}
           </Text>
         </TooltipHost>
-        <Text className={classNames.listGridElmCount}>{item.numTasks}</Text>
+        <Text className={classNames.listGridElmCount}>{props.item.numTasks}</Text>
       </Stack>
     </DefaultButton>
   );
