@@ -76,8 +76,6 @@ const TopBarIcons = () => {
           menuIcon: {
             fontSize: 25,
             color: "#1b374"
-            //width: 20,
-            //height: 20
           }
         }}
         persistMenu={false}
