@@ -9,7 +9,8 @@ import {
   DatePicker,
   DayOfWeek,
   MessageBar,
-  MessageBarType
+  MessageBarType,
+  MessageBarButton
 } from "office-ui-fabric-react";
 import { _description, DayPickerStrings } from "./EditQueryInfo";
 
@@ -18,6 +19,7 @@ export interface CheckQueryCalloutState {
   isCalloutVisible: boolean;
   messageType: MessageBarType;
   message: string;
+  button: string;
 }
 
 export class EditQueryUI extends React.Component<{}> {
@@ -26,17 +28,24 @@ export class EditQueryUI extends React.Component<{}> {
     selections: {},
     isCalloutVisible: false,
     messageType: MessageBarType.success,
-    message: ""
+    message: "",
+    button: ""
   };
 
   //Must be updated with a function that checks every field and makes appropriate
   //error messages.
   private _validate = (): void => {
-    if (true) {
+    if (this.state.button === "save") {
       this.setState({ isCalloutVisible: true });
       this.setState({ messageType: MessageBarType.severeWarning });
       this.setState({
         message: "Review query settings. Please ensure to have valid fields."
+      });
+    } else if (this.state.button === "remove") {
+      this.setState({ isCalloutVisible: true });
+      this.setState({ messageType: MessageBarType.warning });
+      this.setState({
+        message: "Are you sure you wish to delete this query?"
       });
     }
   };
@@ -62,8 +71,18 @@ export class EditQueryUI extends React.Component<{}> {
           {this.state.isCalloutVisible && (
             <MessageBar
               messageBarType={this.state.messageType}
-              styles={{ root: { width: 265 } }}
+              styles={{ root: { width: 250, borderRadius: "4px", padding: 3 } }}
               onDismiss={this._onDismiss}
+              actions={
+                this.state.button === "remove" ? (
+                  <div>
+                    <MessageBarButton>Yes</MessageBarButton>
+                    <MessageBarButton>No</MessageBarButton>
+                  </div>
+                ) : (
+                  <div />
+                )
+              }
             >
               {this.state.message}
             </MessageBar>
@@ -76,6 +95,10 @@ export class EditQueryUI extends React.Component<{}> {
                 root: { fontSize: 15 }
               }}
               text="Cancel"
+              onClick={() => {
+                this.state.button = "cancel";
+                this._validate();
+              }}
             />
             <ActionButton
               iconProps={{ iconName: "CheckMark" }}
@@ -84,7 +107,10 @@ export class EditQueryUI extends React.Component<{}> {
                 root: { color: "green", fontSize: 15 }
               }}
               text="Save"
-              onClick={this._validate}
+              onClick={() => {
+                this.state.button = "save";
+                this._validate();
+              }}
             />
 
             <ActionButton
@@ -94,6 +120,10 @@ export class EditQueryUI extends React.Component<{}> {
                 root: { color: "red", fontSize: 15 }
               }}
               text="Remove"
+              onClick={() => {
+                this.state.button = "remove";
+                this._validate();
+              }}
             />
           </Stack>
           <TextField
