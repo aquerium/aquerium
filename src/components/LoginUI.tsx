@@ -10,6 +10,9 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { IState } from "../state";
+import { connect } from "react-redux";
+import { submit } from "../state";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -20,13 +23,35 @@ const imageProps: IImageProps = {
   onLoad: ev => console.log("image loaded", ev)
 };
 
-export const LoginUI = () => {
+interface ISubmitProps {
+  //doesn't need UI because we know the UI is changing
+  submit: (newToken: string) => void;
+}
+
+const mapStateToProps = (state: IState) => ({
+  //sync these to the store
+  UI: state.changeUI.cur_UI,
+  token: state.changeUI.token
+});
+
+function Login_UI(props: ISubmitProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
+  /**
+   * IMPORTANT
+   * This function assumes that the token was validated!
+   */
+  function onSubmit(newToken?: string): void {
+    props.submit(newToken || "");
+  }
+
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setIsValidPAT(false);
-    else setIsValidPAT(true);
+    else {
+      setIsValidPAT(true);
+      onSubmit(currPAT);
+    }
   };
 
   const updateCurrPAT = (
@@ -110,6 +135,13 @@ export const LoginUI = () => {
       </Link>
     </Stack>
   );
+}
+
+const action = {
+  submit
 };
 
-export default LoginUI;
+export const LoginUI = connect(
+  mapStateToProps,
+  action
+)(Login_UI);
