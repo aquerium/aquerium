@@ -24,9 +24,5 @@ export interface IQuery {
 }
 
 export interface IState {
-  token: string;
   queryList: { [key: string]: IQuery };
-  isSignedIn: boolean;
-
-  cur_UI: "Login" | "Home";
 }
