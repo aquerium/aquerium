@@ -19,17 +19,7 @@ export const addQuery = (query: IQuery) => ({
  * Action to specified query from queryList
  * @param query
  */
-export const removeQuery = (query: IQuery) => ({
+export const removeQuery = (queryName: string) => ({
   type: "REMOVE_QUERY",
-  query
-});
-
-/**
- * Action to edit specified query in queryList
- * @param query
- * TODO: implement
- */
-export const editQuery = (query: IQuery) => ({
-  type: "EDIT_QUERY",
-  query
+  queryName
 });
