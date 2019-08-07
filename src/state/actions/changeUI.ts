@@ -7,9 +7,14 @@
 
 /**
  * Upon correct validation, this action stores the user token and changes to loginUI
- * @param token
  */
-export const submit = (token: string) => ({
-  type: "SUBMIT",
-  token
+export const login = () => ({
+  type: "LOGIN"
+});
+
+/**
+ * Upon correct validation, this action stores the user token and changes to loginUI
+ */
+export const logout = () => ({
+  type: "LOGOUT"
 });

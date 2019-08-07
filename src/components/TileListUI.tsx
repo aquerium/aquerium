@@ -1,14 +1,27 @@
 import React from "react";
 import { RenderTile } from "./RenderTile";
 import { classNames } from "./GridStyles";
-import { items } from "./HomeUI";
+import { connect } from "react-redux";
+import { IState, IQuery } from "../state/state.types";
 
-const TileListUI = () => {
+interface ITileListUIProps {
+  queryList: { [key: string]: IQuery };
+}
+
+function TileList_UI(props: ITileListUIProps) {
   return (
     <div className={classNames.root}>
-      <div className={classNames.listContainer}>{items.map(item => RenderTile(item))}</div>
+      <div className={classNames.listContainer}>
+        {Object.keys(props.queryList).map(key => (
+          <RenderTile item={props.queryList[key]} key={key} />
+        ))}
+      </div>
     </div>
   );
-};
+}
 
-export default TileListUI;
+const mapStateToProps = (state: IState) => ({
+  queryList: state.queryList
+});
+
+export const TileListUI = connect(mapStateToProps)(TileList_UI);

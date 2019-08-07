@@ -2,6 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./components/App";
 import { mergeStyles } from "office-ui-fabric-react";
+import { createStore } from "redux";
+import { rootReducer } from "./state";
+import { Provider } from "react-redux";
 
 // Inject some global styles
 mergeStyles({
@@ -17,4 +20,11 @@ mergeStyles({
   }
 });
 
-ReactDOM.render(<App />, document.getElementById("app"));
+const store = createStore(rootReducer);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("app")
+);
