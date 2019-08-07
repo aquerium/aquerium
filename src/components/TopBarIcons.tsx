@@ -21,10 +21,10 @@ const TopBarIcons = () => {
   const getMenuItems = () => {
     return [
       {
-        key: "sign out",
-        name: "Sign Out",
+        key: "add query",
+        name: "Add Query",
         iconProps: {
-          iconName: "SignOut"
+          iconName: "Add"
         },
         onClick: () => {}
       },
@@ -33,6 +33,14 @@ const TopBarIcons = () => {
         name: "Edit Queries",
         iconProps: {
           iconName: "Edit"
+        },
+        onClick: () => {}
+      },
+      {
+        key: "sign out",
+        name: "Sign Out",
+        iconProps: {
+          iconName: "SignOut"
         },
         onClick: () => {}
       }
