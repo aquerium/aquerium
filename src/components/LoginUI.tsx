@@ -21,7 +21,7 @@ const imageProps: IImageProps = {
 };
 
 export const LoginUI = () => {
-  let currPAT: any = "";
+  let currPAT: string = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
   const checkPasswordValidity = () => {
@@ -33,7 +33,7 @@ export const LoginUI = () => {
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
-    currPAT = newValue;
+    currPAT = newValue ? newValue : "";
   };
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -98,22 +98,20 @@ export const LoginUI = () => {
           style={{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }}
           placeholder="Enter your GitHub PAT"
           required
-          borderless={isValidPAT ? true : false}
+          borderless={isValidPAT}
           styles={getTextFieldStyles}
           onChange={updateCurrPAT}
           onKeyDown={ensureEnter}
           errorMessage={isValidPAT ? "" : "InvalidPAT"}
         />
         <PrimaryButton
-          style={{
-            boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
-          }}
           text="Submit"
           allowDisabledFocus={true}
           styles={{
             root: {
               color: "#ffffff",
-              width: "10px"
+              width: "10px",
+              boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
             }
           }}
           onClick={checkPasswordValidity}

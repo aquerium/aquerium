@@ -6,53 +6,99 @@ import {
   ComboBox,
   ActionButton,
   Slider,
-  DatePicker,
-  DayOfWeek,
   MessageBar,
   MessageBarType,
   MessageBarButton
 } from "office-ui-fabric-react";
-import { _description, DayPickerStrings } from "./EditQueryInfo";
+import { description } from "./InfoButton";
 
-export interface CheckQueryCalloutState {
-  selections: {};
-  isCalloutVisible: boolean;
-  messageType: MessageBarType;
-  message: string;
-  button: string;
+enum inputStatuses {
+  successfulSave = 0,
+  invalidSave,
+  toRemove,
+  cancel
 }
 
-export class EditQueryUI extends React.Component<{}> {
-  selections = {};
-  public state: CheckQueryCalloutState = {
-    selections: {},
-    isCalloutVisible: false,
+export interface IEditQueryUIState {
+  inputStatus: inputStatuses;
+  messageType: MessageBarType;
+  message: string;
+  render: boolean;
+}
+
+export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
+  public state: IEditQueryUIState = {
+    inputStatus: inputStatuses.cancel,
     messageType: MessageBarType.success,
     message: "",
-    button: ""
+    render: false
   };
 
   //Must be updated with a function that checks every field and makes appropriate
   //error messages.
-  private _validate = (): void => {
-    if (this.state.button === "save") {
-      this.setState({ isCalloutVisible: true });
-      this.setState({ messageType: MessageBarType.severeWarning });
-      this.setState({
-        message: "Review query settings. Please ensure to have valid fields."
-      });
-    } else if (this.state.button === "remove") {
-      this.setState({ isCalloutVisible: true });
-      this.setState({ messageType: MessageBarType.warning });
-      this.setState({
-        message: "Are you sure you wish to delete this query?"
-      });
+  private setMessageBar = (saveStatus: inputStatuses): void => {
+    let currMessage = "";
+    let currMessageType = MessageBarType.success;
+    let toRender = true;
+    switch (saveStatus) {
+      case inputStatuses.successfulSave:
+        currMessage = "Successfully saved query edits!";
+        currMessageType = MessageBarType.success;
+        break;
+      case inputStatuses.invalidSave:
+        currMessage = "Review query settings. Please ensure to have valid fields";
+        currMessageType = MessageBarType.severeWarning;
+        break;
+      case inputStatuses.toRemove:
+        currMessage = "Are you sure you wish to delete this query?";
+        currMessageType = MessageBarType.error;
+        break;
+      case inputStatuses.cancel:
+        currMessage = "Are you sure you wish to discard changes?";
+        currMessageType = MessageBarType.warning;
+        break;
     }
+    this.setState({
+      inputStatus: saveStatus,
+      messageType: currMessageType,
+      message: currMessage,
+      render: toRender
+    });
   };
 
-  private _onDismiss = (): void => {
-    if (true) this.setState({ isCalloutVisible: false });
+  private onDismiss = (): void => {
+    this.setState({ render: false });
   };
+
+  private messageBar() {
+    return (
+      <MessageBar
+        messageBarType={this.state.messageType}
+        styles={{
+          root: {
+            width: 250,
+            borderRadius: "4px",
+            padding: 3,
+            boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
+          }
+        }}
+        onDismiss={this.onDismiss}
+        actions={
+          this.state.inputStatus === inputStatuses.toRemove ||
+          this.state.inputStatus === inputStatuses.cancel ? (
+            <div>
+              <MessageBarButton>Yes</MessageBarButton>
+              <MessageBarButton>No</MessageBarButton>
+            </div>
+          ) : (
+            <div />
+          )
+        }
+      >
+        {this.state.message}
+      </MessageBar>
+    );
+  }
 
   public render(): JSX.Element {
     return (
@@ -68,25 +114,7 @@ export class EditQueryUI extends React.Component<{}> {
           }}
           tokens={{ childrenGap: 5 }}
         >
-          {this.state.isCalloutVisible && (
-            <MessageBar
-              messageBarType={this.state.messageType}
-              styles={{ root: { width: 250, borderRadius: "4px", padding: 3 } }}
-              onDismiss={this._onDismiss}
-              actions={
-                this.state.button === "remove" ? (
-                  <div>
-                    <MessageBarButton>Yes</MessageBarButton>
-                    <MessageBarButton>No</MessageBarButton>
-                  </div>
-                ) : (
-                  <div />
-                )
-              }
-            >
-              {this.state.message}
-            </MessageBar>
-          )}
+          {this.state.render && this.messageBar()}
           <Stack horizontal horizontalAlign="start">
             <ActionButton
               iconProps={{ iconName: "Back" }}
@@ -96,8 +124,7 @@ export class EditQueryUI extends React.Component<{}> {
               }}
               text="Cancel"
               onClick={() => {
-                this.state.button = "cancel";
-                this._validate();
+                this.setMessageBar(inputStatuses.cancel);
               }}
             />
             <ActionButton
@@ -108,8 +135,9 @@ export class EditQueryUI extends React.Component<{}> {
               }}
               text="Save"
               onClick={() => {
-                this.state.button = "save";
-                this._validate();
+                // Here is the ideal framework with a query settings validation function
+                /* if (validSave) */ this.setMessageBar(inputStatuses.successfulSave);
+                /* else this._setMessageBar(inputStatuses.invalidSave);*/
               }}
             />
 
@@ -121,8 +149,7 @@ export class EditQueryUI extends React.Component<{}> {
               }}
               text="Remove"
               onClick={() => {
-                this.state.button = "remove";
-                this._validate();
+                this.setMessageBar(inputStatuses.toRemove);
               }}
             />
           </Stack>
@@ -157,7 +184,7 @@ export class EditQueryUI extends React.Component<{}> {
               defaultSelectedKey={["open", "closed"]}
               options={[{ key: "open", text: "Open" }, { key: "closed", text: "Closed" }]}
             />
-            {_description(
+            {description(
               "Choose whether you want to track Issues or Pull Requests that are open, closed or both."
             )()}
           </Stack>
@@ -166,18 +193,14 @@ export class EditQueryUI extends React.Component<{}> {
               label="Repo"
               styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
             />
-            {_description(
-              "List repositories from which wish to track Issues and/or Pull Requests.  Please enter titles as comma-separated values."
-            )()}
+            {description("List a repository from which to track Issues and/or Pull Requests.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Assignee"
               styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
             />
-            {_description(
-              "Track Issues and/or Pull Requests assigned to specific users.  Please enter names as comma-separated values."
-            )()}
+            {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
@@ -186,16 +209,14 @@ export class EditQueryUI extends React.Component<{}> {
                 fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }]
               }}
             />
-            {_description(
-              "Track Issues and/or Pull Requests opened by specific users.  Please enter names as comma-separated values."
-            )()}
+            {description("Track Issues and/or Pull Requests opened by a specific user.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Mention"
               styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
             />
-            {_description(
+            {description(
               "Track Issues and/or Pull Requests that mention specific users.  Please enter names as comma-separated values."
             )()}
           </Stack>
@@ -216,29 +237,27 @@ export class EditQueryUI extends React.Component<{}> {
                 { key: "awaitingYourReview", text: "Awaiting Your Review" }
               ]}
             />
-            {_description("The number of days after which an Issue will be considered stale. ")()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <DatePicker
-              textField={{
-                styles: { fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }
-              }}
-              label="Last reviewed"
-              firstDayOfWeek={DayOfWeek.Sunday}
-              strings={DayPickerStrings}
-              placeholder="Select a date"
-            />
-            {_description(
-              "Track Issues and/or Pull Requests that have not been reviewed since a given day."
-            )()}
+            {description("The number of days after which an Issue will be considered stale. ")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
               label="Labels"
             />
-            {_description(
+            {description(
               "The GitHub labels assigned to particular tasks. Please enter labels as comma-separated values."
+            )()}
+          </Stack>
+          <Stack horizontal horizontalAlign="center">
+            <Slider
+              label="Last Updated"
+              styles={{ container: { width: 200 } }}
+              min={1}
+              defaultValue={7}
+              max={31}
+            />
+            {description(
+              "Track Issues and/or Pull Requests that have not been updated a specififc number of days."
             )()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
@@ -248,11 +267,9 @@ export class EditQueryUI extends React.Component<{}> {
               min={1}
               defaultValue={4}
               max={7}
-              onChange={(value: number) => console.log({ value })}
             />
-            {_description("The number of days after which an Issue will be considered stale.")()}
+            {description("The number of days after which an Issue will be considered stale.")()}
           </Stack>
-
           <Stack horizontal horizontalAlign="center">
             <Slider
               label="Staleness for Pull Requests"
@@ -260,9 +277,8 @@ export class EditQueryUI extends React.Component<{}> {
               min={1}
               defaultValue={4}
               max={7}
-              onChange={(value: number) => console.log({ value })}
             />
-            {_description(
+            {description(
               "The number of days after which a Pull Request will be considered stale."
             )()}
           </Stack>

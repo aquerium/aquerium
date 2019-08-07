@@ -17,7 +17,7 @@ export const RenderTile = (item: any): JSX.Element => {
       href="https://github.com"
       target="_blank"
       className={classNames.listGridExampleTile}
-      style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+      styles={{ root: { background: "rgba(255, 255, 255, 0.5)" } }}
     >
       <Stack
         horizontalAlign="center"
