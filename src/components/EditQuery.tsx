@@ -1,5 +1,5 @@
 import React from "react";
-import { classNames } from "./GridStyles";
+import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import {
   Stack,
   TextField,
@@ -102,7 +102,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
 
   public render(): JSX.Element {
     return (
-      <div className={classNames.root}>
+      <div className={TaskTileClassNames.root}>
         <Stack
           horizontalAlign="start"
           verticalAlign="space-evenly"

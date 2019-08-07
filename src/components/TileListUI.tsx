@@ -1,12 +1,12 @@
 import React from "react";
-import { RenderTile } from "./RenderTile";
-import { classNames } from "./GridStyles";
+import { TaskTile } from "./TaskTile";
+import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import { items } from "./HomeUI";
 
 const TileListUI = () => {
   return (
-    <div className={classNames.root}>
-      <div className={classNames.listContainer}>{items.map(item => RenderTile(item))}</div>
+    <div className={TaskTileClassNames.root}>
+      <div className={TaskTileClassNames.listContainer}>{items.map(item => TaskTile(item))}</div>
     </div>
   );
 };

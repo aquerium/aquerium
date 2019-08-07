@@ -8,7 +8,7 @@ interface GridStyles {
   listContainer: string;
 }
 
-export const classNames: GridStyles = mergeStyleSets({
+export const TaskTileClassNames: GridStyles = mergeStyleSets({
   root: {
     height: "100%",
     width: "100%",

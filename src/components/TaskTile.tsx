@@ -7,16 +7,16 @@ import {
   getId,
   DefaultButton
 } from "office-ui-fabric-react";
-import { classNames } from "./GridStyles";
+import { TaskTileClassNames } from "./TaskTile.ClassNames";
 
-export const RenderTile = (item: any): JSX.Element => {
+export const TaskTile = (item: any): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   return (
     <DefaultButton
       href="https://github.com"
       target="_blank"
-      className={classNames.listGridExampleTile}
+      className={TaskTileClassNames.listGridExampleTile}
       styles={{ root: { background: "rgba(255, 255, 255, 0.5)" } }}
     >
       <Stack
@@ -31,7 +31,7 @@ export const RenderTile = (item: any): JSX.Element => {
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
-            className={classNames.listGridQueryName}
+            className={TaskTileClassNames.listGridQueryName}
             nowrap
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
@@ -39,7 +39,7 @@ export const RenderTile = (item: any): JSX.Element => {
             {item.name}
           </Text>
         </TooltipHost>
-        <Text className={classNames.listGridElmCount}>{item.numTasks}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>{item.numTasks}</Text>
       </Stack>
     </DefaultButton>
   );
