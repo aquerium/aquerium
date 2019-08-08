@@ -5,18 +5,6 @@
 export type queryListType = { [key: string]: IQuery };
 
 /**
- * @type { type: string; query: IQuery } addQueryAction
- * This type defines an action that adds a query to the queryList
- */
-export type addQueryAction = { type: string; query: IQuery };
-
-/**
- * @type { type: string; queryName: string } addQueryAction
- * This type defines an action that removes a query from the queryList
- */
-export type removeQueryAction = { type: string; queryName: string };
-
-/**
  * This interface represents a single task, whether it's an issue or a PR
  *
  * @interface
@@ -73,6 +61,8 @@ export interface IQuery {
    * Number of days before a pr goes stale
    * @property { ITask[] } tasks
    * An array of tasks containing the results of the query
+   * @property { number } daysSinceUpdate
+   * The number of days since the last update on a task
    */
   name: string;
   type?: "issue" | "pr";
@@ -91,6 +81,7 @@ export interface IQuery {
   stalenessIssue: number;
   stalenessPull: number;
   tasks: ITask[];
+  daysSinceUpdate: number;
 }
 
 /**
