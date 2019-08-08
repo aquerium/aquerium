@@ -6,6 +6,18 @@ import { IQuery } from "../state.types";
  */
 
 /**
+ * @type { type: string; query: IQuery } addQueryAction
+ * This type defines an action that adds a query to the queryList
+ */
+export type addQueryAction = { type: string; query: IQuery };
+
+/**
+ * @type { type: string; queryName: string } addQueryAction
+ * This type defines an action that removes a query from the queryList
+ */
+export type removeQueryAction = { type: string; queryName: string };
+
+/**
  * Action creator to add a query to the queryList
  * @param { IQuery } query
  * The particular query to be added
