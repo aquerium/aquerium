@@ -7,21 +7,30 @@ import {
   getId,
   DefaultButton
 } from "office-ui-fabric-react";
-import { classNames } from "./GridStyles";
+import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import { IQuery } from "../state";
 
+/**
+ * interface for the props read in to the TaskTile function
+ *
+ * @interface
+ */
 interface IRenderTileProps {
+  /**
+   * @property { IQuery } item
+   * represents a single IQuery to be rendered
+   */
   item: IQuery;
 }
 
-export const RenderTile = (props: IRenderTileProps): JSX.Element => {
+export const TaskTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   return (
     <DefaultButton
       href="https://github.com"
       target="_blank"
-      className={classNames.listGridExampleTile}
+      className={TaskTileClassNames.listGridExampleTile}
       styles={{ root: { background: "rgba(255, 255, 255, 0.5)" } }}
     >
       <Stack
@@ -36,7 +45,7 @@ export const RenderTile = (props: IRenderTileProps): JSX.Element => {
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
-            className={classNames.listGridQueryName} //this doesn't matter
+            className={TaskTileClassNames.listGridQueryName} //this doesn't matter
             nowrap
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
@@ -44,7 +53,7 @@ export const RenderTile = (props: IRenderTileProps): JSX.Element => {
             {props.item.name}
           </Text>
         </TooltipHost>
-        <Text className={classNames.listGridElmCount}>{props.item.numTasks}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>{props.item.tasks.length}</Text>
       </Stack>
     </DefaultButton>
   );

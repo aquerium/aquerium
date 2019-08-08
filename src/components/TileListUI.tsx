@@ -1,6 +1,6 @@
 import React from "react";
-import { RenderTile } from "./RenderTile";
-import { classNames } from "./GridStyles";
+import { RenderTile } from "./TaskTile";
+import { classNames } from "./TaskTile.ClassNames";
 import { connect } from "react-redux";
 import { IState, IQuery } from "../state/state.types";
 
