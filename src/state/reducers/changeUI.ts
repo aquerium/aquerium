@@ -1,5 +1,3 @@
-import { IUserInfo } from "../state.types";
-
 /**
  * This file is responsible for the reducers that deal with the UI
  */

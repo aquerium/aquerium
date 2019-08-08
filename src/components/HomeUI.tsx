@@ -1,4 +1,4 @@
-import { TileListUI } from "./TileListUI";
+import { TileListUI } from "../containers/TileListUI";
 import React from "react";
 import { TopBarIcons } from "./TopBarIcons";
 
