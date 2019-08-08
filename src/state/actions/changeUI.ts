@@ -1,19 +1,27 @@
-//import { cur_UI } from "../state.types";
-
-/**This file is responsible for actions that are realated the state's cur_UI
- * Includes an action for submitting the PAT and changing to loginUI
- *
+/*This file is responsible for actions that are realated the state's current UI
  */
 
 /**
- * Upon correct validation, this action stores the user token and changes to loginUI
+ * @type { type: string} changeUILoginAction
+ * The action type for a login action
+ */
+export type changeUILoginAction = { type: string };
+
+/**
+ * @type { type: string} changeUILogoutAction
+ * The action type for a logout action
+ */
+export type changeUILogoutAction = { type: string };
+
+/*
+ * Upon correct validation, creates an action to send the user from login UI to home UI
  */
 export const login = () => ({
   type: "LOGIN"
 });
 
-/**
- * Upon correct validation, this action stores the user token and changes to loginUI
+/*
+ * Upon correct validation, creates an action to send the user from home UI to login UI
  */
 export const logout = () => ({
   type: "LOGOUT"
