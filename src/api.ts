@@ -45,7 +45,7 @@ export interface IGist {
 
 export async function createGist(
   token: string,
-  data: any
+  data: IGist
 ): Promise<{ user?: IUserInfo; errorCode?: number }> {
   try {
     const response = await fetch("https://api.github.com/gists?access_token=" + token, {
