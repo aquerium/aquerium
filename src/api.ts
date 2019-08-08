@@ -1,7 +1,7 @@
 export interface IUserInfo {
   token: string;
   username: string;
-  id: string;
+  gistID: string;
 }
 
 export interface ITask {
@@ -13,25 +13,25 @@ export interface ITask {
   updatedAt: string;
 }
 
-export interface IQuery {
-  name: string;
-  type?: "issue" | "pr";
-  repo?: string;
-  assignee?: string;
-  author?: string;
-  mentions?: string;
-  reviewStatus?:
-    | "No reviews"
-    | "Review required"
-    | "Approved review"
-    | "Changes requested"
-    | "Reviewed by you"
-    | "Awaiting review from you";
-  labels?: string[];
-  stalenessIssue: number;
-  stalenessPull: number;
-  tasks: ITask[];
-}
+// export interface IQuery {
+//   name: string;
+//   type?: "issue" | "pr";
+//   repo?: string;
+//   assignee?: string;
+//   author?: string;
+//   mentions?: string;
+//   reviewStatus?:
+//     | "No reviews"
+//     | "Review required"
+//     | "Approved review"
+//     | "Changes requested"
+//     | "Reviewed by you"
+//     | "Awaiting review from you";
+//   labels?: string[];
+//   stalenessIssue: number;
+//   stalenessPull: number;
+//   tasks: ITask[];
+// }
 
 export interface IGist {
   description: string;
@@ -58,7 +58,7 @@ export async function createGist(
       user: {
         token: token,
         username: responseJSON.owner.login,
-        id: responseJSON.id
+        gistID: responseJSON.id
       }
     };
   } catch (error) {
@@ -70,7 +70,7 @@ export async function createGist(
 export async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
   try {
     const response = await fetch(
-      "https://api.github.com/gists/" + user.id + "?access_token=" + user.token
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
     );
     if (!response.ok) return { errorCode: response.status };
     const responseJSON = await response.json();
@@ -84,7 +84,7 @@ export async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; err
 async function updateGist(user: IUserInfo, data: any): Promise<{ errorCode?: number }> {
   try {
     const response = await fetch(
-      "https://api.github.com/gists/" + user.id + "?access_token=" + user.token,
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
       {
         method: "PATCH",
         body: JSON.stringify(data)
