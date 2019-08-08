@@ -1,11 +1,7 @@
-/**
+/*
  * This file is responsible for the reducers that deal with the UI
  */
 
-/**
- * We need to have a default state for when we first start the application
- * Type: IState
- */
 const DEFAULT_STATE: { currUI: string } = { currUI: "Login" };
 
 /**
