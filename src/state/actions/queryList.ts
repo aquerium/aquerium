@@ -3,7 +3,6 @@ import { IQuery } from "../state.types";
 /**This file is responsible for actions that modify the state's queryList, like
  * addQuery
  * removeQuery
- * editQuery
  */
 
 /**
@@ -22,14 +21,4 @@ export const addQuery = (query: IQuery) => ({
 export const removeQuery = (queryName: string) => ({
   type: "REMOVE_QUERY",
   queryName
-});
-
-/**
- * Action to edit specified query in queryList
- * @param query
- * TODO: implement
- */
-export const editQuery = (query: IQuery) => ({
-  type: "EDIT_QUERY",
-  query
 });
