@@ -1,3 +1,5 @@
+import * as fetch from "isomorphic-fetch";
+
 export interface IUserInfo {
   token: string;
   username: string;
