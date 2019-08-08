@@ -3,7 +3,6 @@ import { ITask } from "./ITask";
 export interface IQuery {
   name: string;
   type?: string;
-  state?: string;
   repo?: string;
   assignee?: string;
   author?: string;

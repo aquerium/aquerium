@@ -19,11 +19,12 @@ enum inputStatuses {
   cancel
 }
 
-export interface IEditQueryUIState {
+interface IEditQueryUIState {
   inputStatus: inputStatuses;
   messageType: MessageBarType;
   message: string;
-  render: boolean;
+  renderMessageBar: boolean;
+  enableReviewStatusField: boolean;
 }
 
 export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
@@ -31,43 +32,55 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
     inputStatus: inputStatuses.cancel,
     messageType: MessageBarType.success,
     message: "",
-    render: false
+    renderMessageBar: false,
+    enableReviewStatusField: true
   };
+
+  // private selections: IQuery = { name: "Before", stalenessIssue: 4, stalenessPull: 4, tasks: [] };
 
   //Must be updated with a function that checks every field and makes appropriate
   //error messages.
-  private setMessageBar = (saveStatus: inputStatuses): void => {
-    let currMessage = "";
-    let currMessageType = MessageBarType.success;
-    let toRender = true;
-    switch (saveStatus) {
-      case inputStatuses.successfulSave:
-        currMessage = "Successfully saved query edits!";
-        currMessageType = MessageBarType.success;
-        break;
-      case inputStatuses.invalidSave:
-        currMessage = "Review query settings. Please ensure to have valid fields";
-        currMessageType = MessageBarType.severeWarning;
-        break;
-      case inputStatuses.toRemove:
-        currMessage = "Are you sure you wish to delete this query?";
-        currMessageType = MessageBarType.error;
-        break;
-      case inputStatuses.cancel:
-        currMessage = "Are you sure you wish to discard changes?";
-        currMessageType = MessageBarType.warning;
-        break;
-    }
+  private setMessageBarCancel = (): void => {
     this.setState({
-      inputStatus: saveStatus,
-      messageType: currMessageType,
-      message: currMessage,
-      render: toRender
+      inputStatus: inputStatuses.cancel,
+      messageType: MessageBarType.warning,
+      message: "Are you sure you wish to discard changes?",
+      renderMessageBar: true
     });
   };
 
+  // Here is the ideal framework with a query settings validation function
+  private setMessageBarSave = (): void => {
+    /* if (validSave) */
+    this.setState({
+      inputStatus: inputStatuses.successfulSave,
+      messageType: MessageBarType.success,
+      message: "Successfully saved query settings!",
+      renderMessageBar: true
+    });
+    /* else 
+    this.setState({
+      inputStatus: inputStatuses.invalidSave,
+      messageType: MessageBarType.severeWarning,
+      message: "Review query settings. Please ensure to have valid fields",
+      renderMessageBar: true
+    });
+    */
+  };
+
+  private setMessageBarRemove = (): void => {
+    console.log(this.state);
+    this.setState({
+      inputStatus: inputStatuses.toRemove,
+      messageType: MessageBarType.error,
+      message: "Are you sure you wish to delete this query?",
+      renderMessageBar: true
+    });
+    console.log(this.state);
+  };
+
   private onDismiss = (): void => {
-    this.setState({ render: false });
+    this.setState({ renderMessageBar: false });
   };
 
   private messageBar() {
@@ -114,7 +127,8 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
           }}
           tokens={{ childrenGap: 5 }}
         >
-          {this.state.render && this.messageBar()}
+          {/* {console.log(this.selections)} */}
+          {this.state.renderMessageBar && this.messageBar()}
           <Stack horizontal horizontalAlign="start">
             <ActionButton
               iconProps={{ iconName: "Back" }}
@@ -123,9 +137,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
                 root: { fontSize: 15 }
               }}
               text="Cancel"
-              onClick={() => {
-                this.setMessageBar(inputStatuses.cancel);
-              }}
+              onClick={this.setMessageBarCancel}
             />
             <ActionButton
               iconProps={{ iconName: "CheckMark" }}
@@ -134,11 +146,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
                 root: { color: "green", fontSize: 15 }
               }}
               text="Save"
-              onClick={() => {
-                // Here is the ideal framework with a query settings validation function
-                /* if (validSave) */ this.setMessageBar(inputStatuses.successfulSave);
-                /* else this._setMessageBar(inputStatuses.invalidSave);*/
-              }}
+              onClick={this.setMessageBarSave}
             />
 
             <ActionButton
@@ -148,9 +156,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
                 root: { color: "red", fontSize: 15 }
               }}
               text="Remove"
-              onClick={() => {
-                this.setMessageBar(inputStatuses.toRemove);
-              }}
+              onClick={this.setMessageBarRemove}
             />
           </Stack>
           <TextField
@@ -158,6 +164,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
             required
             styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
           />
+
           <Stack horizontal horizontalAlign="center">
             <ComboBox
               required
@@ -172,21 +179,6 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
                 { key: "pull requests", text: "Pull Requests" }
               ]}
             />
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <ComboBox
-              required
-              multiSelect
-              styles={{ root: { boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" } }}
-              label="State of tasks"
-              allowFreeform
-              autoComplete="on"
-              defaultSelectedKey={["open", "closed"]}
-              options={[{ key: "open", text: "Open" }, { key: "closed", text: "Closed" }]}
-            />
-            {description(
-              "Choose whether you want to track Issues or Pull Requests that are open, closed or both."
-            )()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
@@ -237,7 +229,7 @@ export class EditQueryUI extends React.Component<{}, IEditQueryUIState> {
                 { key: "awaitingYourReview", text: "Awaiting Your Review" }
               ]}
             />
-            {description("The number of days after which an Issue will be considered stale. ")()}
+            {description("The number of days after which an Issue will be considered stale.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
