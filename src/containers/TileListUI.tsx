@@ -2,13 +2,22 @@ import React from "react";
 import { TaskTile } from "../components/TaskTile";
 import { TaskTileClassNames } from "../components/TaskTile.ClassNames";
 import { connect } from "react-redux";
-import { IState, IQuery } from "../state/state.types";
+import { IState, queryListType } from "../state/state.types";
 
+/**
+ * This interface defines the props object passed into TileListComponent
+ *
+ * @interface
+ */
 interface ITileListUIProps {
-  queryList: { [key: string]: IQuery };
+  /**
+   * @property { queryListType } queryList
+   * The queryList map that is passed in, element at a time, to be rendered by TaskTile
+   */
+  queryList: queryListType;
 }
 
-function TileListUIComponent(props: ITileListUIProps) {
+function TileListComponent(props: ITileListUIProps) {
   return (
     <div className={TaskTileClassNames.root}>
       <div className={TaskTileClassNames.listContainer}>
@@ -24,4 +33,4 @@ const mapStateToProps = (state: IState) => ({
   queryList: state.queryList
 });
 
-export const TileListUI = connect(mapStateToProps)(TileListUIComponent);
+export const TileListUI = connect(mapStateToProps)(TileListComponent);
