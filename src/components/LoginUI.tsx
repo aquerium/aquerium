@@ -35,10 +35,6 @@ function Login_UI(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  /**
-   * IMPORTANT
-   * This function assumes that the token was validated!
-   */
   function onLogin(): void {
     props.login();
   }
