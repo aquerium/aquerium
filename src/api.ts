@@ -41,6 +41,7 @@ export interface IQuery {
   labels?: string[];
   stalenessIssue: number;
   stalenessPull: number;
+  lastUpdated?: number;
   tasks: ITask[];
 }
 

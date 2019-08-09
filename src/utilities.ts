@@ -33,6 +33,9 @@ export function getQueryResult(user: IUserInfo, query: IQuery): string {
       qualifiers += "%20label:%22" + label + "%22";
     });
   }
+  qualifiers += query.lastUpdated
+    ? "%20updated:<=" + getRefDate(new Date(), query.lastUpdated)
+    : "";
 
   return "https://api.github.com/search/issues?q=" + qualifiers;
 }
@@ -59,4 +62,17 @@ function getReviewString(reviewStatus: string, username: string): string {
     default:
       return "";
   }
+}
+
+function getRefDate(nowDate: Date, daysRef: number): string {
+  const time = nowDate.getTime() - daysRef * 86400000;
+
+  const dateRef = new Date(time);
+  const dd = dateRef.getDate();
+  const mm = dateRef.getMonth() + 1;
+
+  const ddStr = dd < 10 ? "0" + dd : dd;
+  const mmStr = mm < 10 ? "0" + mm : mm;
+
+  return dateRef.getFullYear() + "-" + mmStr + "-" + ddStr;
 }
