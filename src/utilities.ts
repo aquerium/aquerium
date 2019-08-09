@@ -1,5 +1,6 @@
 import { IQuery } from "./api";
 import { IUserInfo } from "./api";
+import * as fetch from "isomorphic-fetch";
 
 /**
  * Returns the list of tasks representing the result of a specific query
@@ -33,9 +34,7 @@ export function getQueryResult(user: IUserInfo, query: IQuery): string {
       qualifiers += "%20label:%22" + label + "%22";
     });
   }
-  qualifiers += query.lastUpdated
-    ? "%20updated:<=" + getRefDate(new Date(), query.lastUpdated)
-    : "";
+  qualifiers += query.lastUpdated ? "%20updated:<=" + getRefDate(query.lastUpdated) : "";
 
   return "https://api.github.com/search/issues?q=" + qualifiers;
 }
@@ -64,7 +63,8 @@ function getReviewString(reviewStatus: string, username: string): string {
   }
 }
 
-function getRefDate(nowDate: Date, daysRef: number): string {
+function getRefDate(daysRef: number): string {
+  const nowDate = new Date();
   const time = nowDate.getTime() - daysRef * 86400000;
 
   const dateRef = new Date(time);
