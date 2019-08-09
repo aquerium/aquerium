@@ -1,12 +1,18 @@
 import * as fetch from "isomorphic-fetch";
-import { getQueryResult, getQueryTasks } from "./utilities";
 
+/**
+ * Contains relevant information for the authenticated user
+ */
 export interface IUserInfo {
+  /* User's GitHub personal access token */
   token: string;
+  /* User's GitHub username */
   username: string;
+  /* ID of user's gist (for Aquerium) */
   gistID: string;
 }
 
+// TODO: Remove after Trip's pull request is merged
 export interface ITask {
   number: number;
   title: string;
@@ -16,7 +22,9 @@ export interface ITask {
   updatedAt: string;
 }
 
+// TODO: Remove after Trip's pull request is merged
 export interface IQuery {
+  id: string;
   name: string;
   type?: "issue" | "pr";
   repo?: string;
@@ -36,26 +44,46 @@ export interface IQuery {
   tasks: ITask[];
 }
 
+/**
+ * Represents the object structure for using GitHub Gists API
+ */
 export interface IGist {
+  /* Description of the gist */
   description: string;
+  /* Whether the gist is public or private */
   public: boolean;
+  /* Files contained in the gist */
   files: {
+    /* Name of the file */
     [key: string]: {
+      /* File contents */
       content: string;
     };
   };
 }
 
-export async function createGist(
-  token: string,
-  data: IGist
-): Promise<{ user?: IUserInfo; errorCode?: number }> {
+/**
+ * Creates a GitHub gist upon initial submission of the user's personal access token and returns the user's relevant information
+ * @param token User's GitHub personal access token
+ */
+export async function createGist(token: string): Promise<{ user?: IUserInfo; errorCode?: number }> {
   try {
+    const dataGist: IGist = {
+      description: "helper gist for Aquerium",
+      public: false,
+      files: {
+        "aquerium_helper.json": {
+          content: "{}"
+        }
+      }
+    };
     const response = await fetch("https://api.github.com/gists?access_token=" + token, {
       method: "POST",
-      body: JSON.stringify(data)
+      body: JSON.stringify(dataGist)
     });
-    if (!response.ok) return { errorCode: response.status };
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
     const responseJSON = await response.json();
     return {
       user: {
@@ -70,12 +98,18 @@ export async function createGist(
   }
 }
 
+/**
+ * Reads from the user's gist and returns the gist contents in IGist format
+ * @param user IUserInfo object with the user's relevant information
+ */
 async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
   try {
     const response = await fetch(
       "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
     );
-    if (!response.ok) return { errorCode: response.status };
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
     const responseJSON = await response.json();
     return { gist: responseJSON };
   } catch (error) {
@@ -84,96 +118,56 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
   }
 }
 
+/**
+ * Returns the queryMap object in the user's gist file
+ * @param user IUserInfo object with the user's relevant information
+ */
 export async function getQueryMapObj(
   user: IUserInfo
 ): Promise<{ queryMap?: { [key: string]: IQuery }; errorCode?: number }> {
   const responseJSON = await loadFromGist(user);
-  if (!responseJSON.gist) return { errorCode: responseJSON.errorCode }; // if gist doesn't exist
+  if (!responseJSON.gist) {
+    return { errorCode: responseJSON.errorCode };
+  }
   const helperFile = responseJSON.gist.files["aquerium_helper.json"];
-  if (!helperFile) return { errorCode: 500 }; // if file doesn't exist // should I do 404 right here?
+  if (!helperFile) {
+    return { errorCode: 500 };
+  }
   return { queryMap: JSON.parse(helperFile.content) };
 }
 
-async function updateGist(user: IUserInfo, data: any): Promise<{ errorCode?: number }> {
+/**
+ * Updates the user's gist contents with an updated queryMap object
+ * @param user IUserInfo object with the user's relevant information
+ * @param queryMap Contains the user's queries in a dictionary
+ */
+async function updateGist(
+  user: IUserInfo,
+  queryMap: { [key: string]: IQuery }
+): Promise<{ errorCode?: number }> {
   try {
+    const dataGist: IGist = {
+      description: "helper gist for Aquerium",
+      public: false,
+      files: {
+        "aquerium_helper.json": {
+          content: JSON.stringify(queryMap)
+        }
+      }
+    };
     const response = await fetch(
       "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
       {
         method: "PATCH",
-        body: JSON.stringify(data)
+        body: JSON.stringify(dataGist)
       }
     );
-    if (!response.ok) return { errorCode: response.status };
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
     return {};
   } catch (error) {
     console.error(error);
     return { errorCode: 500 };
   }
-}
-
-async function updateGistFileContent(
-  user: IUserInfo,
-  queryMap: { [key: string]: IQuery }
-): Promise<{ errorCode?: number }> {
-  const dataUpdated: IGist = {
-    description: "helper gist for Aquerium",
-    public: false,
-    files: {
-      "aquerium_helper.json": {
-        content: JSON.stringify(queryMap)
-      }
-    }
-  };
-  return await updateGist(user, dataUpdated);
-}
-
-export async function addQuery(
-  user: IUserInfo,
-  queryMap: { [key: string]: IQuery },
-  newQuery: IQuery
-): Promise<{ errorCode?: number }> {
-  let queryMapCopy = queryMap;
-  const key = generateKey();
-  queryMapCopy[key] = newQuery;
-  return await updateGistFileContent(user, queryMapCopy);
-}
-
-function generateKey(): string {
-  return Math.random()
-    .toString(36)
-    .substr(2, 16);
-}
-
-export async function deleteQuery(
-  user: IUserInfo,
-  queryMap: { [key: string]: IQuery },
-  queryToDeleteKey: string
-): Promise<{ errorCode?: number }> {
-  let queryMapCopy = queryMap;
-  delete queryMap[queryToDeleteKey];
-  return await updateGistFileContent(user, queryMapCopy);
-}
-
-export async function editQuery(
-  user: IUserInfo,
-  queryMap: { [key: string]: IQuery },
-  oldQueryKey: string,
-  editedQuery: IQuery
-): Promise<{ errorCode?: number }> {
-  let queryMapCopy = queryMap;
-  queryMapCopy[oldQueryKey] = editedQuery;
-  return await updateGistFileContent(user, queryMapCopy);
-}
-
-export async function updateQueryTasks(
-  user: IUserInfo,
-  queryMap: { [key: string]: IQuery },
-  queryKey: string
-): Promise<{ errorCode?: number }> {
-  let query = queryMap[queryKey];
-  const url = getQueryResult(user, query);
-  const items = await getQueryTasks(url);
-  if (!items.items) return { errorCode: items.errorCode };
-  query.tasks = items.items;
-  return await editQuery(user, queryMap, queryKey, query);
 }

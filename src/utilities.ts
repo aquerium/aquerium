@@ -1,14 +1,25 @@
 import { IQuery } from "./api";
 import { IUserInfo } from "./api";
 
+/**
+ * Returns the list of tasks representing the result of a specific query
+ * @param url API endpoint for a specific query
+ */
 export async function getQueryTasks(url: string): Promise<{ items?: []; errorCode?: number }> {
   const response = await fetch(url);
-  if (!response.ok) return { errorCode: response.status };
+  if (!response.ok) {
+    return { errorCode: response.status };
+  }
   const responseText = await response.text();
   const { items = [] } = JSON.parse(responseText);
   return { items: items };
 }
 
+/**
+ * Constructs the API endpoint given a specific query
+ * @param user IUserInfo object with the user's relevant information
+ * @param query IQuery object
+ */
 export function getQueryResult(user: IUserInfo, query: IQuery): string {
   let qualifiers = "";
   qualifiers += query.type ? "%20is:" + query.type : "";
@@ -26,6 +37,11 @@ export function getQueryResult(user: IUserInfo, query: IQuery): string {
   return "https://api.github.com/search/issues?q=" + qualifiers;
 }
 
+/**
+ * Constructs the qualifier string for reviewStatus
+ * @param reviewStatus User's input for review status
+ * @param username User's GitHub username
+ */
 function getReviewString(reviewStatus: string, username: string): string {
   switch (reviewStatus) {
     case "No reviews":
