@@ -14,6 +14,7 @@ import {
 } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { IQuery } from "./IQuery";
+import { MultiSelect } from "./MultiSelect";
 
 enum InputStatuses {
   /* Whether the settings are validated and successfully updated to the new (or existing) query */
@@ -212,11 +213,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     this.setState({ selections: updatedSelections });
   };
 
-  private setLabelsSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: any | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { labels: input } });
+  private setLabelsSelection = (items: string[]): void => {
+    const updatedSelections = update(this.state.selections, { $merge: { labels: items } });
     this.setState({ selections: updatedSelections });
   };
 
@@ -355,14 +353,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             )()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
-            <TextField
-              styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
-              // onChange={this.setLabelsSelection}
-              label="Labels"
-            />
-            {description(
-              "The GitHub labels assigned to particular tasks. Please enter labels as comma-separated values."
-            )()}
+            <MultiSelect label="Repo Labels" onChange={this.setLabelsSelection} />
+            {description("The GitHub labels assigned to particular tasks.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <Slider
