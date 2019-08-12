@@ -11,9 +11,9 @@ import {
 } from "office-ui-fabric-react";
 
 const [isCalloutVisible, toggleCallout] = React.useState(false);
-string _descriptionId = "";
- = getId('description');
-_iconButtonId: string = getId("iconButton");
+// string _descriptionId = "";
+//  = getId('description');
+//_iconButtonId: string = getId("iconButton");
 
 const _onIconClick = (): void => {
   toggleCallout(!isCalloutVisible);
