@@ -76,7 +76,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
       description: GIST_DESCRIP,
       public: false,
       files: {
-        GIST_NAME: {
+        [GIST_NAME]: {
           content: "{}"
         }
       }
@@ -134,7 +134,7 @@ export async function updateGist(
       description: GIST_DESCRIP,
       public: false,
       files: {
-        GIST_NAME: {
+        [GIST_NAME]: {
           content: JSON.stringify(queryMap)
         }
       }
