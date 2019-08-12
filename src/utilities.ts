@@ -65,9 +65,9 @@ function getReviewString(reviewStatus: string, username: string): string {
 
 function getRefDate(daysRef: number): string {
   const nowDate = new Date();
-  const time = nowDate.getTime() - daysRef * 86400000;
+  const milliseconds = nowDate.getTime() - daysRef * 24 * 60 * 60 * 1000;
 
-  const dateRef = new Date(time);
+  const dateRef = new Date(milliseconds);
   const dd = dateRef.getDate();
   const mm = dateRef.getMonth() + 1;
 
