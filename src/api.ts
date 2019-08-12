@@ -1,6 +1,7 @@
 import * as fetch from "isomorphic-fetch";
 
 const GIST_NAME = "aquerium_helper.json";
+const GIST_DESCRIP = "helper gist for Aquerium";
 
 /**
  * Contains relevant information for the authenticated user
@@ -72,7 +73,7 @@ export interface IGist {
 export async function createGist(token: string): Promise<{ user?: IUserInfo; errorCode?: number }> {
   try {
     const dataGist: IGist = {
-      description: "helper gist for Aquerium",
+      description: GIST_DESCRIP,
       public: false,
       files: {
         GIST_NAME: {
@@ -130,7 +131,7 @@ export async function updateGist(
 ): Promise<{ errorCode?: number }> {
   try {
     const dataGist: IGist = {
-      description: "helper gist for Aquerium",
+      description: GIST_DESCRIP,
       public: false,
       files: {
         GIST_NAME: {
