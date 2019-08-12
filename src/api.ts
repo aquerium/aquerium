@@ -1,4 +1,5 @@
 import * as fetch from "isomorphic-fetch";
+import { IQuery, ITask } from "./state/state.types";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
@@ -13,39 +14,6 @@ export interface IUserInfo {
   username: string;
   /* ID of user's gist (for Aquerium) */
   gistID: string;
-}
-
-// TODO: Remove after Trip's pull request is merged
-export interface ITask {
-  number: number;
-  title: string;
-  type: string;
-  state: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// TODO: Remove after Trip's pull request is merged
-export interface IQuery {
-  id: string;
-  name: string;
-  type?: "issue" | "pr";
-  repo?: string;
-  assignee?: string;
-  author?: string;
-  mentions?: string;
-  reviewStatus?:
-    | "No reviews"
-    | "Review required"
-    | "Approved review"
-    | "Changes requested"
-    | "Reviewed by you"
-    | "Awaiting review from you";
-  labels?: string[];
-  stalenessIssue: number;
-  stalenessPull: number;
-  lastUpdated?: number;
-  tasks: ITask[];
 }
 
 /**
