@@ -5,16 +5,16 @@ import { mergeStyleSets } from "@uifabric/styling";
  *
  * @interface
  */
-interface ITaskTile {
-  /**
-   * Defines styles for the various aspects of the TaskTile grid
-   * @property {string} root
-   * @property { string } listContainer
-   * @property { string } listGridExampleTile
-   * @property { string } listGridQueryName
-   * @property { string } listGridElmCount
-   */
 
+/**
+ * Defines styles for the various aspects of the TaskTile grid
+ * @property {string} root
+ * @property { string } listContainer
+ * @property { string } listGridExampleTile
+ * @property { string } listGridQueryName
+ * @property { string } listGridElmCount
+ */
+interface ITaskTile {
   root: string;
   listContainer: string;
   listGridExampleTile: string;
