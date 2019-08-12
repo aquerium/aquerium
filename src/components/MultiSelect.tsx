@@ -1,41 +1,63 @@
 import * as React from "react";
-import update from "immutability-helper";
-import { Stack, TextField, Text, DefaultButton } from "office-ui-fabric-react";
+import {
+  Stack,
+  TextField,
+  Text,
+  DefaultButton,
+  ITextFieldStyleProps,
+  IStyle
+} from "office-ui-fabric-react";
 
 interface IMultiSelectProps {
   label: string;
+  items: string[];
   onChange: (items: string[]) => void;
+  inputFieldProps: IStyle;
 }
 
 interface IMultiSelectState {
   pendingItem: string;
-  items: string[];
+  errorMessage: string;
 }
 
 export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelectState> {
   constructor(props: IMultiSelectProps) {
     super(props);
     this.state = {
-      items: [],
-      pendingItem: ""
+      pendingItem: "",
+      errorMessage: ""
     };
   }
 
+  private getTextFieldStyles = (props: ITextFieldStyleProps) => {
+    const { required } = props;
+    return {
+      fieldGroup: [
+        this.props.inputFieldProps,
+        required && {
+          borderColor: this.state.errorMessage
+            ? props.theme.semanticColors.actionLink
+            : props.theme.semanticColors.errorText
+        }
+      ]
+    };
+  };
+
   public render(): JSX.Element {
-    const { label } = this.props;
-    const { pendingItem, items } = this.state;
+    const { label, items } = this.props;
+    const { pendingItem, errorMessage } = this.state;
 
     return (
       <Stack tokens={{ childrenGap: 10 }}>
         <TextField
           label={label}
+          validateOnFocusIn
+          validateOnFocusOut
           value={pendingItem}
           onChange={this._changePendingItem}
           onKeyDown={this._addItem}
-          styles={{
-            root: { width: 166 },
-            fieldGroup: { boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }
-          }}
+          errorMessage={errorMessage}
+          styles={this.getTextFieldStyles}
         />
         <Stack horizontal wrap tokens={{ childrenGap: 10, maxWidth: 166 }} horizontalAlign="start">
           {items.map(item => {
@@ -48,14 +70,26 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
                 styles={{
                   root: {
                     paddingLeft: 5,
-                    background: "#c8c8c8",
+                    background: "#2b579a",
+                    selectors: {
+                      "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
+                    },
                     boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)",
-                    borderRadius: 3
+                    borderRadius: "3px",
+                    transitionDelay: "0.15s",
+                    transition: "box-shadow .15s linear, transform .15s linear"
                   }
                 }}
               >
                 <Text
-                  styles={{ root: { fontSize: 14, textOverflow: "ellipsis", overflow: "hidden" } }}
+                  styles={{
+                    root: {
+                      fontSize: 14,
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      color: "white"
+                    }
+                  }}
                   nowrap
                   block
                 >
@@ -73,12 +107,12 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
                       paddingRight: 5
                     },
                     rootHovered: {
-                      background: `#a6a6a6 !important`
+                      background: `#0078d4 !important`
                     }
                   }}
                   iconProps={{
                     iconName: "ChromeClose",
-                    styles: { root: { fontSize: 8 } }
+                    styles: { root: { fontSize: 8, color: "white" } }
                   }}
                 />
               </Stack>
@@ -93,27 +127,39 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string | undefined
   ): void => {
-    if (!newValue) return;
+    if (!newValue) {
+      newValue = "";
+      this.setState({ errorMessage: "" });
+    }
     this.setState({ pendingItem: newValue });
   };
 
   private _addItem = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    if (ev.which !== 13 || this.state.pendingItem === "") {
+    if (ev.which !== 13) return;
+    const { onChange, items } = this.props;
+    this.setState({ pendingItem: this.state.pendingItem.trim() });
+    const { pendingItem } = this.state;
+    let labelRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
+    if (items && items.includes(pendingItem)) {
+      this.setState({ errorMessage: "Label already included." });
       return;
     }
-    const { onChange } = this.props;
-    const { pendingItem, items } = this.state;
-    if (items.includes(pendingItem)) return;
-    const updatedSelections = update(this.state.items, { $push: [pendingItem] });
-    this.setState({ items: updatedSelections });
-    onChange(items);
-    this.setState({ pendingItem: "" });
+    if (!labelRegex.test(pendingItem)) {
+      this.setState({ errorMessage: "Invalid label entry." });
+      return;
+    }
+    if (items) {
+      onChange(items);
+      items.push(pendingItem);
+    }
+    this.setState({ pendingItem: "", errorMessage: "" });
   };
 
   private _removeItem = (item: string): void => {
-    const { onChange } = this.props;
-    const { items } = this.state;
-    items.splice(items.indexOf(item), 1);
-    onChange(items);
+    const { onChange, items } = this.props;
+    if (items) {
+      items.splice(items.indexOf(item), 1);
+      onChange(items);
+    }
   };
 }

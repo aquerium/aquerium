@@ -31,7 +31,17 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
           iconProps={{ iconName: "Info" }}
           ariaLabel="Info"
           onClick={this._onIconClick}
-          styles={{ root: { bottom: -10 } }}
+          styles={{
+            root: {
+              bottom: -15,
+              left: 10,
+              selectors: {
+                "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
+              },
+              borderRadius: 3,
+              transitionDelay: "0.05s"
+            }
+          }}
         />
         {this.state.isCalloutVisible && (
           <Callout

@@ -10,7 +10,8 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption
+  IDropdownOption,
+  IStyle
 } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { IQuery } from "./IQuery";
@@ -18,13 +19,11 @@ import { MultiSelect } from "./MultiSelect";
 
 enum InputStatuses {
   /* Whether the settings are validated and successfully updated to the new (or existing) query */
-  successfulSave = 0,
+  successfulEdit = 0,
   /* Whether the current user input is valid or not */
-  invalidSave,
-  /* Whether the user wishes to delete a query */
-  toRemove,
-  /* Whether the user wished to cancel the creation of a new query and/or discard current changes */
-  cancel
+  invalidEdit,
+  /* Whether the user has saved the current query edits */
+  saved
 }
 
 interface IEditQueryUIState {
@@ -36,6 +35,8 @@ interface IEditQueryUIState {
   messageType: MessageBarType;
   /* Tracks the message that should be rendered by the message bar, if needed. */
   message: string;
+  /* MessageBarButton items, if any, that are the options a user can take given a message */
+  actions?: JSX.Element;
   /* Whether or not a message bar should be rendered, given the action the user wants to take */
   renderMessageBar: boolean;
   /* Whether the review status field is enabked or not, depending on if PR's are in the query */
@@ -50,48 +51,90 @@ interface IEditQueryUIProps {
   currQuery: IQuery;
 }
 
+const inputFieldStyles: IStyle = {
+  selectors: {
+    "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
+  },
+  boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)",
+  borderRadius: "3px",
+  transitionDelay: "0.15s",
+  transition: "box-shadow .15s linear, transform .15s linear",
+  width: 190
+};
+
 export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
-    inputStatus: InputStatuses.cancel,
+    inputStatus: InputStatuses.successfulEdit,
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
     enableReviewStatusField: true,
-    selections: {
-      name: "",
-      lastUpdated: 7,
-      stalenessIssue: 4,
-      stalenessPull: 4,
-      tasks: []
-    }
+    selections: this.props.currQuery
   };
 
-  //Must be updated with a function that checks every field and makes appropriate
-  //error messages.
+  private nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
+
   private setMessageBarCancel = (): void => {
-    this.setState({
-      inputStatus: InputStatuses.cancel,
-      messageType: MessageBarType.warning,
-      message: "Are you sure you wish to discard changes?",
-      renderMessageBar: true
-    });
+    if (this.state.inputStatus !== InputStatuses.saved) {
+      this.setState({
+        messageType: MessageBarType.warning,
+        message: "Do you wish to save your changes?",
+        actions: (
+          <div>
+            <MessageBarButton
+              text="Save"
+              styles={{ root: { width: 90 } }}
+              onClick={this.setMessageBarSave}
+            />
+            {/* Else discard changes and go back to home screen. */}
+            <MessageBarButton text="Discard" styles={{ root: { width: 90 } }} />
+          </div>
+        ),
+        renderMessageBar: true
+      });
+    }
+    //Else go back to home screen.
   };
 
-  // Here is the ideal framework with a query settings validation function
   private setMessageBarSave = (): void => {
-    this.setState({
-      inputStatus: InputStatuses.successfulSave,
-      messageType: MessageBarType.success,
-      message: "Successfully saved query settings!",
-      renderMessageBar: true
-    });
+    if (
+      (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) ||
+      this.state.inputStatus === InputStatuses.saved
+    ) {
+      this.setState({
+        inputStatus: InputStatuses.saved,
+        messageType: MessageBarType.success,
+        message: "Successfully saved query settings!",
+        actions: undefined,
+        renderMessageBar: true
+      });
+      //Use Redux to save query selections
+    } else {
+      this.setState({
+        messageType: MessageBarType.severeWarning,
+        message: "Ensure query edits are valid!",
+        actions: undefined,
+        renderMessageBar: true
+      });
+    }
   };
 
   private setMessageBarRemove = (): void => {
     this.setState({
-      inputStatus: InputStatuses.toRemove,
       messageType: MessageBarType.error,
       message: "Are you sure you wish to delete this query?",
+      actions: (
+        <div>
+          {/* Insert query delete Redux and go back to home screen */}
+          <MessageBarButton text="Remove" styles={{ root: { width: 95 } }} />
+          {/* Cancel and continue editing */}
+          <MessageBarButton
+            text="Cancel"
+            styles={{ root: { width: 90 } }}
+            onClick={this.onDismiss}
+          />
+        </div>
+      ),
       renderMessageBar: true
     });
   };
@@ -105,37 +148,29 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       <MessageBar
         messageBarType={this.state.messageType}
         styles={{
-          root: {
-            width: 250,
-            borderRadius: "4px",
-            padding: 3,
-            boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
-          }
+          root: [inputFieldStyles, { width: 250 }]
         }}
         onDismiss={this.onDismiss}
-        actions={
-          this.state.inputStatus === InputStatuses.toRemove ||
-          this.state.inputStatus === InputStatuses.cancel ? (
-            <div>
-              <MessageBarButton>Yes</MessageBarButton>
-              <MessageBarButton>No</MessageBarButton>
-            </div>
-          ) : (
-            <div />
-          )
-        }
+        actions={this.state.actions}
       >
         {this.state.message}
       </MessageBar>
     );
   };
 
-  private setNameSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: string | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { name: input } });
-    this.setState({ selections: updatedSelections });
+  private checkNameSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this.nameRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid query name.";
+    } else {
+      let newStatus = InputStatuses.successfulEdit;
+      if (!value) newStatus = InputStatuses.invalidEdit;
+      value = value.trim();
+      const updatedSelections = update(this.state.selections, { $merge: { name: value } });
+      this.setState({ selections: updatedSelections, inputStatus: newStatus });
+    }
   };
 
   private setTypeSelection = (
@@ -145,44 +180,66 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   ): void => {
     if (!item) return;
     const newKey = item.key === "issues and pr" ? undefined : item.key;
-    if (newKey === "issues") this.setState({ enableReviewStatusField: false });
-    else this.setState({ enableReviewStatusField: true });
-    const updatedSelections = update(this.state.selections, {
+    let enableReviewField = true;
+    let updatedSelections = update(this.state.selections, {
       $merge: { type: newKey as IQuery["type"] }
     });
-    this.setState({ selections: updatedSelections });
+    if (newKey === "issues") {
+      enableReviewField = false;
+      updatedSelections = update(this.state.selections, {
+        $merge: {
+          reviewStatus: undefined as IQuery["reviewStatus"]
+        }
+      });
+    }
+    this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
   };
 
-  private setRepoSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: string | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { repo: input } });
-    this.setState({ selections: updatedSelections });
+  private checkRepoSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this.nameRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid repo name.";
+    }
+    const updatedSelections = update(this.state.selections, { $merge: { repo: value } });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private setAssigneeSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: string | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { assignee: input } });
-    this.setState({ selections: updatedSelections });
+  private checkAssigneeSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this.nameRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid assignee name.";
+    }
+    value = value.trim();
+    const updatedSelections = update(this.state.selections, { $merge: { assignee: value } });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private setAuthorSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: string | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { author: input } });
-    this.setState({ selections: updatedSelections });
+  private checkAuthorSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this.nameRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid author name.";
+    }
+    value = value.trim();
+    const updatedSelections = update(this.state.selections, { $merge: { author: value } });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private setMentionSelection = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    input?: string | undefined
-  ): void => {
-    const updatedSelections = update(this.state.selections, { $merge: { mentions: input } });
-    this.setState({ selections: updatedSelections });
+  private checkMentionSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this.nameRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid mention name.";
+    }
+    value = value.trim();
+    const updatedSelections = update(this.state.selections, { $merge: { mentions: value } });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private setReviewStatusSelection = (
@@ -195,27 +252,27 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     const updatedSelections = update(this.state.selections, {
       $merge: { reviewStatus: newKey as IQuery["reviewStatus"] }
     });
-    this.setState({ selections: updatedSelections });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private setstalenessIssueSelection = (input?: number | undefined): void => {
     const updatedSelections = update(this.state.selections, { $merge: { stalenessIssue: input } });
-    this.setState({ selections: updatedSelections });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private setLastUpdatedSelection = (input?: number | undefined): void => {
     const updatedSelections = update(this.state.selections, { $merge: { lastUpdated: input } });
-    this.setState({ selections: updatedSelections });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private setStalenessPullSelection = (input?: number | undefined): void => {
     const updatedSelections = update(this.state.selections, { $merge: { stalenessPull: input } });
-    this.setState({ selections: updatedSelections });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private setLabelsSelection = (items: string[]): void => {
     const updatedSelections = update(this.state.selections, { $merge: { labels: items } });
-    this.setState({ selections: updatedSelections });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   public render = (): JSX.Element => {
@@ -230,7 +287,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               color: "#1b3e74"
             }
           }}
-          tokens={{ childrenGap: 5 }}
+          tokens={{
+            childrenGap: 5
+          }}
         >
           {this.state.renderMessageBar && this.messageBar()}
           <Stack horizontal horizontalAlign="start">
@@ -240,7 +299,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
                 icon: { fontSize: 20, color: "black" },
                 root: { fontSize: 15 }
               }}
-              text="Cancel"
+              text="Back"
               onClick={this.setMessageBarCancel}
             />
             <ActionButton
@@ -265,17 +324,18 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           </Stack>
           <TextField
             label="Your query title"
-            onChange={this.setNameSelection}
+            placeholder="Please enter a title"
+            defaultValue={this.state.selections.name}
+            validateOnFocusIn
+            validateOnFocusOut
+            onGetErrorMessage={this.checkNameSelection}
+            styles={{ fieldGroup: inputFieldStyles }}
             required
-            styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
           />
           <Stack horizontal horizontalAlign="center">
             <Dropdown
               required
-              styles={{
-                dropdown: { boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" },
-                root: { width: 190 }
-              }}
+              styles={{ dropdown: inputFieldStyles }}
               onChange={this.setTypeSelection}
               label="Type of tasks"
               selectedKey={
@@ -291,34 +351,44 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Repo"
-              onChange={this.setRepoSelection}
-              styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
+              defaultValue={this.state.selections.repo}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this.checkRepoSelection}
+              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("List a repository from which to track Issues and/or Pull Requests.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Assignee"
-              onChange={this.setAssigneeSelection}
-              styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
+              defaultValue={this.state.selections.assignee}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this.checkAssigneeSelection}
+              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Author"
-              onChange={this.setAuthorSelection}
-              styles={{
-                fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }]
-              }}
+              defaultValue={this.state.selections.author}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this.checkAuthorSelection}
+              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("Track Issues and/or Pull Requests opened by a specific user.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <TextField
               label="Mention"
-              onChange={this.setMentionSelection}
-              styles={{ fieldGroup: [{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }] }}
+              defaultValue={this.state.selections.mentions}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this.checkMentionSelection}
+              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description(
               "Track Issues and/or Pull Requests that mention specific users.  Please enter names as comma-separated values."
@@ -326,17 +396,14 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <Dropdown
-              styles={{
-                dropdown: { boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" },
-                root: { width: 185 }
-              }}
+              styles={{ dropdown: inputFieldStyles }}
               disabled={this.state.enableReviewStatusField ? false : true}
               onChange={this.setReviewStatusSelection}
               label="Review Status"
               selectedKey={
                 this.state.selections.reviewStatus && this.state.enableReviewStatusField
                   ? this.state.selections.reviewStatus
-                  : "N/A"
+                  : ""
               }
               options={[
                 { key: "No reviews", text: "No reviews" },
@@ -345,7 +412,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
                 { key: "Changes requested", text: "Changes requested" },
                 { key: "Reviewed by you", text: "Reviewed by you" },
                 { key: "Awaiting review from you", text: "Awaiting review from you" },
-                { key: "N/A", text: "N/A" }
+                { key: "", text: "N/A" }
               ]}
             />
             {description(
@@ -353,7 +420,12 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             )()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
-            <MultiSelect label="Repo Labels" onChange={this.setLabelsSelection} />
+            <MultiSelect
+              label="Repo Labels"
+              onChange={this.setLabelsSelection}
+              inputFieldProps={inputFieldStyles}
+              items={this.state.selections.labels ? this.state.selections.labels : []}
+            />
             {description("The GitHub labels assigned to particular tasks.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">

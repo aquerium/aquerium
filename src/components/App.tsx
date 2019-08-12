@@ -6,6 +6,16 @@ initializeIcons();
 
 export class App extends React.Component<{}> {
   public render(): JSX.Element {
-    return <EditQueryUI currQuery={{ name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [] }} />;
+    return (
+      <EditQueryUI
+        currQuery={{
+          name: "",
+          lastUpdated: 7,
+          stalenessIssue: 4,
+          stalenessPull: 4,
+          tasks: []
+        }}
+      />
+    );
   }
 }
