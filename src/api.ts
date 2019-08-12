@@ -1,5 +1,5 @@
 import * as fetch from "isomorphic-fetch";
-import { IQuery, ITask } from "./state/state.types";
+import { IQuery, ITask } from "./state";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
