@@ -1,7 +1,7 @@
 /**
- * @type { [key: string]: IQuery } this type defines the queryList, a map from query names to queries
+ * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
  */
-export type queryListType = { [key: string]: IQuery };
+export type queryListType = { [id: string]: IQuery };
 
 /**
  * This interface represents a single task, whether it's an issue or a PR
@@ -76,7 +76,7 @@ export interface IQuery {
  */
 
 /**
- * @property { queryListType } queryList a map of strings(query names) to IQueries
+ * @property { queryListType } queryList a map of strings(query ID's) to IQueries
  */
 export interface IState {
   queryList: queryListType;

@@ -6,7 +6,7 @@ import { IQuery } from "../state.types";
 export type addQueryAction = { type: string; query: IQuery };
 
 /**
- * @type { type: string; queryName: string } this type defines an action that removes a query from the queryList
+ * @type { type: string; queryID: string } this type defines an action that removes a query from the queryList
  */
 export type removeQueryAction = { type: string; queryID: string };
 
