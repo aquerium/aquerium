@@ -1,8 +1,3 @@
-/*This file is responsible for actions that are realated the state's current UI
- * login
- * logout
- */
-
 /**
  * @type { type: string } the action type for a login action
  */

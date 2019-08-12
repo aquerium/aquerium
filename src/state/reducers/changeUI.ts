@@ -1,8 +1,5 @@
 import update from "immutability-helper";
 import { changeUILoginAction, changeUILogoutAction } from "../actions/changeUI";
-/*
- * This file is responsible for the reducers that deal with the UI
- */
 
 const DEFAULT_STATE: { currUI: string } = { currUI: "Login" };
 

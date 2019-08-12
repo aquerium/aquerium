@@ -22,16 +22,24 @@ const imageProps: IImageProps = {
   onLoad: ev => console.log("image loaded", ev)
 };
 
+/**
+ * This interface stores the props for LoginUIComponent
+ *
+ * @interface
+ */
+
+/**
+ * @property { function } login a function that calls the login action
+ */
 interface ILoginProps {
   login: () => void;
 }
 
 const mapStateToProps = (state: IState) => ({
-  //sync these to the store
   UI: state.changeUI.currUI
 });
 
-function Login_UI(props: ILoginProps) {
+function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
@@ -137,4 +145,4 @@ const action = {
 export const LoginUI = connect(
   mapStateToProps,
   action
-)(Login_UI);
+)(LoginUIComponent);

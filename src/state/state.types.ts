@@ -71,7 +71,7 @@ export interface IQuery {
 }
 
 /**
- * This interface defines the state object, which currently only stores the queryList
+ * This interface defines the state object, which stores the queryList and the changeUI object
  *
  * @interface
  */

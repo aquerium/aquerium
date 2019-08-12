@@ -22,7 +22,7 @@ function TileListComponent(props: ITileListUIProps) {
     <div className={TaskTileClassNames.root}>
       <div className={TaskTileClassNames.listContainer}>
         {Object.keys(props.queryList).map(key => (
-          <TaskTile item={props.queryList[key]} key={key} />
+          <TaskTile query={props.queryList[key]} key={key} />
         ))}
       </div>
     </div>

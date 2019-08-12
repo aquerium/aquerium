@@ -17,11 +17,11 @@ import { IQuery } from "../state";
  */
 
 /**
- * @property { IQuery } item
+ * @property { IQuery } query
  * represents a single IQuery to be rendered
  */
 interface IRenderTileProps {
-  item: IQuery;
+  query: IQuery;
 }
 
 export const TaskTile = (props: IRenderTileProps): JSX.Element => {
@@ -40,7 +40,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
         styles={{ root: { maxWidth: "100%" } }}
       >
         <TooltipHost
-          content={props.item.name}
+          content={props.query.name}
           calloutProps={{ gapSpace: 0 }}
           overflowMode={TooltipOverflowMode.Parent}
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
@@ -51,10 +51,10 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
           >
-            {props.item.name}
+            {props.query.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>{props.item.tasks.length}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>{props.query.tasks.length}</Text>
       </Stack>
     </DefaultButton>
   );

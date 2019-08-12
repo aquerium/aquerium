@@ -17,7 +17,7 @@ const mapStateToProps = (state: IState) => ({
   UI: state.changeUI.currUI
 });
 
-function Top_Bar_Icons(props: ITopBarIconsProps) {
+function TopBarIconsView(props: ITopBarIconsProps) {
   const imageProps: IImageProps = {
     src: "GlitterboxLogo2.png",
     imageFit: ImageFit.centerContain,
@@ -105,4 +105,4 @@ const action = {
 export const TopBarIcons = connect(
   mapStateToProps,
   action
-)(Top_Bar_Icons);
+)(TopBarIconsView);
