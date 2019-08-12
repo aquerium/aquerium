@@ -9,11 +9,11 @@ import { IState, queryListType } from "../state/state.types";
  *
  * @interface
  */
+
+/**
+ * @property { queryListType } queryList the queryList map that is passed in, element at a time, to be rendered by TaskTile
+ */
 interface ITileListUIProps {
-  /**
-   * @property { queryListType } queryList
-   * The queryList map that is passed in, element at a time, to be rendered by TaskTile
-   */
   queryList: queryListType;
 }
 

@@ -7,17 +7,16 @@ import update from "immutability-helper";
 
 const DEFAULT_STATE: queryListType = {};
 
+/**
+ * Our reducer responds to the various actions regarding queryList
+ * @param state the portion of the total state we are replacing
+ * @param action the object of type addQueryAction or removeQueryAction
+ */
 export const queryList = (
   state: queryListType = DEFAULT_STATE,
   action: addQueryAction | removeQueryAction
 ) => {
-  /**
-   * Our reducer responds to the various actions regarding queryList
-   * @param state
-   * the portion of the total state we are replacing
-   * @param action
-   * The object of type addQueryAction or removeQueryAction
-   */
+
   switch (action.type) {
     case "ADD_QUERY": {
       const actionQuery: IQuery = (action as addQueryAction).query;
