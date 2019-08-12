@@ -46,7 +46,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
           onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
-            className={TaskTileClassNames.listGridQueryName} //this doesn't matter
+            className={TaskTileClassNames.listGridQueryName}
             nowrap
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}

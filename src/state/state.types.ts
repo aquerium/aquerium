@@ -1,7 +1,7 @@
 /**
- * @type { [key: string]: IQuery } this type defines the queryList, a map from query names to queries
+ * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
  */
-export type queryListType = { [key: string]: IQuery };
+export type queryListType = { [id: string]: IQuery };
 
 /**
  * This interface represents a single task, whether it's an issue or a PR
@@ -14,7 +14,7 @@ export type queryListType = { [key: string]: IQuery };
  * @property { string } title the title of the given task
  * @property { "issue" | "pr" } type type can only be of "issue" or pull request, "pr"
  * @property { "open" | "closed" } state state of a task only be "open" or "closed"
- * @property { string } createdAt time stamp for cretion
+ * @property { string } createdAt time stamp for creation
  * @property { string } updatedAt time stamp for last update
  */
 export interface ITask {
@@ -33,8 +33,9 @@ export interface ITask {
  */
 
 /**
+ * @property { string } id the unique id of a query
  * @property { string } name the name of the query
- * @property { "issue" | "pr" } type state of a task only be "open" or "closed"
+ * @property { "issue" | "pr" } type the type of tasks in the query, being issue, PR or both
  * @property { string } repo OPTIONAL the name of a repository the tasks exist in
  * @property { string } assignee  OPTIONAL the assignee of the tasks in the query
  * @property { string } author OPTIONAL the author of the tasks in the query
@@ -43,10 +44,11 @@ export interface ITask {
  * @property { string[] } labels OPTIONAL array of labels further classifying the tasks in the query
  * @property { number } stalenessIssue Number of days before an issue goes stale
  * @property { number } stalenessPull number of days before a pr goes stale
+ * @property { number } lastUpdated OPTIONAL the number of days since the last update on a task
  * @property { ITask[] } tasks an array of tasks containing the results of the query
- * @property { number } daysSinceUpdate The number of days since the last update on a task
  */
 export interface IQuery {
+  id: string;
   name: string;
   type?: "issue" | "pr";
   repo?: string;
@@ -63,6 +65,7 @@ export interface IQuery {
   labels?: string[];
   stalenessIssue: number;
   stalenessPull: number;
+  lastUpdated?: number;
   tasks: ITask[];
   daysSinceUpdate: number;
 }

@@ -1,9 +1,6 @@
 import { addQueryAction, removeQueryAction } from "../actions/queryList";
 import { queryListType, IQuery } from "../state.types";
 import update from "immutability-helper";
-/*
- * This file is responsible for the reducers that deal with the queryList
- */
 
 const DEFAULT_STATE: queryListType = {};
 
@@ -22,13 +19,13 @@ export const queryList = (
       return update(state, {
         $set: {
           ...state,
-          [actionQuery.name]: actionQuery
+          [actionQuery.id]: actionQuery
         }
       });
     }
     case "REMOVE_QUERY": {
-      const actionQuery = (action as removeQueryAction).queryName;
-      return update(state, { $unset: [actionQuery] });
+      const actionQueryID = (action as removeQueryAction).queryID;
+      return update(state, { $unset: [actionQueryID] });
     }
     default:
       return state;
