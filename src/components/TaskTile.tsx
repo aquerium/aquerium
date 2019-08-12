@@ -15,11 +15,12 @@ import { IQuery } from "../state";
  *
  * @interface
  */
+
+/**
+ * @property { IQuery } item
+ * represents a single IQuery to be rendered
+ */
 interface IRenderTileProps {
-  /**
-   * @property { IQuery } item
-   * represents a single IQuery to be rendered
-   */
   item: IQuery;
 }
 

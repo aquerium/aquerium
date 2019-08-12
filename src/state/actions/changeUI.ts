@@ -2,14 +2,12 @@
  */
 
 /**
- * @type { type: string} changeUILoginAction
- * The action type for a login action
+ * @type { type: string} the action type for a login action
  */
 export type changeUILoginAction = { type: string };
 
 /**
- * @type { type: string} changeUILogoutAction
- * The action type for a logout action
+ * @type { type: string} the action type for a logout action
  */
 export type changeUILogoutAction = { type: string };
 
