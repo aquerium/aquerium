@@ -202,6 +202,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       this.setState({ inputStatus: InputStatuses.invalidEdit });
       return "Invalid repo name.";
     }
+    value = value.trim();
     const updatedSelections = update(this.state.selections, { $merge: { repo: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
