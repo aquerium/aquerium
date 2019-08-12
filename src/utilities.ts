@@ -1,4 +1,4 @@
-import { IQuery } from "./api";
+import { IQuery, ITask } from "./api";
 import { IUserInfo } from "./api";
 import * as fetch from "isomorphic-fetch";
 
@@ -6,7 +6,7 @@ import * as fetch from "isomorphic-fetch";
  * Returns the list of tasks representing the result of a specific query
  * @param url API endpoint for a specific query
  */
-export async function getQueryTasks(url: string): Promise<{ items?: []; errorCode?: number }> {
+export async function getQueryTasks(url: string): Promise<{ items?: ITask[]; errorCode?: number }> {
   const response = await fetch(url);
   if (!response.ok) {
     return { errorCode: response.status };
@@ -21,7 +21,7 @@ export async function getQueryTasks(url: string): Promise<{ items?: []; errorCod
  * @param user IUserInfo object with the user's relevant information
  * @param query IQuery object
  */
-export function getQueryResult(user: IUserInfo, query: IQuery): string {
+export function getQueryURL(user: IUserInfo, query: IQuery): string {
   let qualifiers = "";
   qualifiers += query.type ? "%20is:" + query.type : "";
   qualifiers += query.repo ? "%20repo:" + query.repo : "";

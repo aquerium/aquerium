@@ -1,5 +1,7 @@
 import * as fetch from "isomorphic-fetch";
 
+const GIST_NAME = "aquerium_helper.json";
+
 /**
  * Contains relevant information for the authenticated user
  */
@@ -73,7 +75,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
       description: "helper gist for Aquerium",
       public: false,
       files: {
-        "aquerium_helper.json": {
+        GIST_NAME: {
           content: "{}"
         }
       }
@@ -100,26 +102,6 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
 }
 
 /**
- * Reads from the user's gist and returns the gist contents in IGist format
- * @param user IUserInfo object with the user's relevant information
- */
-async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
-  try {
-    const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
-    );
-    if (!response.ok) {
-      return { errorCode: response.status };
-    }
-    const responseJSON = await response.json();
-    return { gist: responseJSON };
-  } catch (error) {
-    console.error(error);
-    return { errorCode: 500 };
-  }
-}
-
-/**
  * Returns the queryMap object in the user's gist file
  * @param user IUserInfo object with the user's relevant information
  */
@@ -130,7 +112,7 @@ export async function getQueryMapObj(
   if (!responseJSON.gist) {
     return { errorCode: responseJSON.errorCode };
   }
-  const helperFile = responseJSON.gist.files["aquerium_helper.json"];
+  const helperFile = responseJSON.gist.files[GIST_NAME];
   if (!helperFile) {
     return { errorCode: 500 };
   }
@@ -142,7 +124,7 @@ export async function getQueryMapObj(
  * @param user IUserInfo object with the user's relevant information
  * @param queryMap Contains the user's queries in a dictionary
  */
-async function updateGist(
+export async function updateGist(
   user: IUserInfo,
   queryMap: { [key: string]: IQuery }
 ): Promise<{ errorCode?: number }> {
@@ -151,7 +133,7 @@ async function updateGist(
       description: "helper gist for Aquerium",
       public: false,
       files: {
-        "aquerium_helper.json": {
+        GIST_NAME: {
           content: JSON.stringify(queryMap)
         }
       }
@@ -167,6 +149,26 @@ async function updateGist(
       return { errorCode: response.status };
     }
     return {};
+  } catch (error) {
+    console.error(error);
+    return { errorCode: 500 };
+  }
+}
+
+/**
+ * Reads from the user's gist and returns the gist contents in IGist format
+ * @param user IUserInfo object with the user's relevant information
+ */
+async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
+  try {
+    const response = await fetch(
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
+    );
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
+    const responseJSON = await response.json();
+    return { gist: responseJSON };
   } catch (error) {
     console.error(error);
     return { errorCode: 500 };
