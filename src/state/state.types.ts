@@ -75,7 +75,11 @@ export interface IQuery {
 
 /**
  * @property { queryListType } queryList a map of strings(query names) to IQueries
+ * @property { object } changeUI stores a string containing the current UI
  */
 export interface IState {
   queryList: queryListType;
+  changeUI: {
+    currUI: string;
+  };
 }
