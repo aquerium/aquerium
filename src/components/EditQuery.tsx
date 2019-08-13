@@ -39,7 +39,7 @@ interface IEditQueryUIState {
   actions?: JSX.Element;
   /* Whether or not a message bar should be rendered, given the action the user wants to take */
   renderMessageBar: boolean;
-  /* Whether the review status field is enabked or not, depending on if PR's are in the query */
+  /* Whether the review status field is enabled or not, depending on if PR's are in the query */
   enableReviewStatusField: boolean;
   /** The current selections the user is making to a query, which will be used to either construct
       a new query or edit an existing one.
@@ -181,17 +181,15 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     if (!item) return;
     const newKey = item.key === "issues and pr" ? undefined : item.key;
     let enableReviewField = true;
-    let updatedSelections = update(this.state.selections, {
-      $merge: { type: newKey as IQuery["type"] }
+    if (newKey === "issues") enableReviewField = false;
+    const updatedSelections = update(this.state.selections, {
+      $merge: {
+        type: newKey as IQuery["type"],
+        reviewStatus: enableReviewField
+          ? this.state.selections.reviewStatus
+          : (undefined as IQuery["reviewStatus"])
+      }
     });
-    if (newKey === "issues") {
-      enableReviewField = false;
-      updatedSelections = update(this.state.selections, {
-        $merge: {
-          reviewStatus: undefined as IQuery["reviewStatus"]
-        }
-      });
-    }
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
   };
 
@@ -416,9 +414,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
                 { key: "", text: "N/A" }
               ]}
             />
-            {description(
-              "Track Issues and/or Pull Requests with the single selected review requirement."
-            )()}
+            {description("Track Pull Requests with the single selected review requirement.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <MultiSelect
