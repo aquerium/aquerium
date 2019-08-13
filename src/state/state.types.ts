@@ -92,9 +92,8 @@ export interface IState {
  * Contains relevant information for the authenticated user
  */
 export interface IUserInfo {
-  /* User's GitHub personal access token */
-  token: string;
-  /* User's GitHub username */
+  /*user's GitHub personal access token */
+  token: string /* User's GitHub username */;
   username: string;
   /* ID of user's gist (for Aquerium) */
   gistID: string;
