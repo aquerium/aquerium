@@ -11,14 +11,7 @@ import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import { IQuery } from "../state";
 
 /**
- * interface for the props read in to the TaskTile function
- *
- * @interface
- */
-
-/**
- * @property { IQuery } query
- * represents a single IQuery to be rendered
+ * @property { IQuery } query represents a single IQuery to be rendered
  */
 interface IRenderTileProps {
   query: IQuery;

@@ -1,32 +1,30 @@
 import update from "immutability-helper";
 import { changeUILoginAction, changeUILogoutAction } from "../actions/changeUI";
 
-const DEFAULT_STATE: { currUI: string } = { currUI: "Login" };
+const DEFAULT_STATE: { currUI: "Home" | "Login" | "EditQuery" | "QueryList" } = { currUI: "Login" };
 
 /**
- * This reducer deals with changing the UI
- * @param currUI the current UI being shown. This needs to be updated to change the UI
+ * This reducer deals with changing the UI. When receiving an action, currUI is updated to reflect the UI that
+ * should be shown.
  */
 export const changeUI = (
-  state: { currUI: string } = DEFAULT_STATE,
+  state: { currUI: "Home" | "Login" | "EditQuery" | "QueryList" } = DEFAULT_STATE,
   action: changeUILoginAction | changeUILogoutAction
 ) => {
   switch (action.type) {
     case "LOGIN": {
-      const nextUI: string = (action as changeUILoginAction).change;
       return update(state, {
         $set: {
           ...state,
-          currUI: nextUI
+          currUI: "Home"
         }
       });
     }
     case "LOGOUT": {
-      const nextUI: string = (action as changeUILogoutAction).change;
       return update(state, {
         $set: {
           ...state,
-          currUI: nextUI
+          currUI: "Login"
         }
       });
     }
