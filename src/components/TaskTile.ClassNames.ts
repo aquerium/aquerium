@@ -1,14 +1,28 @@
 import { mergeStyleSets } from "@uifabric/styling";
 
-interface GridStyles {
+/**
+ * interface for grid styling
+ *
+ * @interface
+ */
+
+/**
+ * Defines styles for the various aspects of the TaskTile grid
+ * @property {string} root
+ * @property { string } listContainer
+ * @property { string } listGridExampleTile
+ * @property { string } listGridQueryName
+ * @property { string } listGridElmCount
+ */
+interface ITaskTile {
   root: string;
+  listContainer: string;
   listGridExampleTile: string;
   listGridQueryName: string;
   listGridElmCount: string;
-  listContainer: string;
 }
 
-export const TaskTileClassNames: GridStyles = mergeStyleSets({
+export const TaskTileClassNames: ITaskTile = mergeStyleSets({
   root: {
     height: "100%",
     width: "100%",
