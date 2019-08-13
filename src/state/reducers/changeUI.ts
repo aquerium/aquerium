@@ -34,3 +34,4 @@ export const changeUI = (
       return state;
   }
 };
+//only need 1 reducer for update, that's a set
