@@ -1,5 +1,6 @@
 import update from "immutability-helper";
 import { changeUILoginAction, changeUILogoutAction } from "../actions/changeUI";
+import { IUser } from "../state.types";
 
 const DEFAULT_STATE: { currUI: "Home" | "Login" | "EditQuery" | "QueryList" } = { currUI: "Login" };
 

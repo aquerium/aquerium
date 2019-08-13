@@ -85,4 +85,17 @@ export interface IState {
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
   };
+  user: IUserInfo;
+}
+
+/**
+ * Contains relevant information for the authenticated user
+ */
+export interface IUserInfo {
+  /* User's GitHub personal access token */
+  token: string;
+  /* User's GitHub username */
+  username: string;
+  /* ID of user's gist (for Aquerium) */
+  gistID: string;
 }
