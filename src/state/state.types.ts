@@ -83,6 +83,6 @@ export interface IQuery {
 export interface IState {
   queryList: queryListType;
   changeUI: {
-    currUI: string;
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
   };
 }

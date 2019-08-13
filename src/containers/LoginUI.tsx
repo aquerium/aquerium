@@ -23,12 +23,6 @@ const imageProps: IImageProps = {
 };
 
 /**
- * This interface stores the props for LoginUIComponent
- *
- * @interface
- */
-
-/**
  * @property { function } login a function that calls the login action
  */
 interface ILoginProps {
