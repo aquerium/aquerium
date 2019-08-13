@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "es6-promise": "^4.2.8",
+    "isomorphic-fetch": "^2.2.1",
     "@types/react-redux": "^7.1.1",
     "immutability-helper": "^3.0.1",
     "office-ui-fabric-react": "^7.14.1",
@@ -16,6 +18,7 @@
   },
   "devDependencies": {
     "@types/chrome": "0.0.86",
+    "@types/isomorphic-fetch": "0.0.35",
     "@types/node": "^12.6.8",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.5"
