@@ -4,12 +4,10 @@
 export type queryListType = { [id: string]: IQuery };
 
 /**
+ * @interface ITask
+ *
  * This interface represents a single task, whether it's an issue or a PR
  *
- * @interface
- */
-
-/**
  * @property { number } num the task number
  * @property { string } title the title of the given task
  * @property { "issue" | "pr" } type type can only be of "issue" or pull request, "pr"
@@ -27,12 +25,9 @@ export interface ITask {
 }
 
 /**
+ * @interface IQuery
  * This interface represents a single query
  *
- * @interface
- */
-
-/**
  * @property { string } id the unique id of a query
  * @property { string } name the name of the query
  * @property { "issue" | "pr" } type the type of tasks in the query, being issue, PR or both
@@ -71,12 +66,9 @@ export interface IQuery {
 }
 
 /**
+ * @interface IState
  * This interface defines the state object, which stores the queryList and the changeUI object
  *
- * @interface
- */
-
-/**
  * @property { queryListType } queryList a map of strings(query names) to IQueries
  * @property { object } changeUI stores a string containing the current UI
  */
@@ -85,4 +77,19 @@ export interface IState {
   changeUI: {
     currUI: string;
   };
+  userInfo: IUserInfo;
+}
+
+/**
+ * @interface IUserInfo
+ * Contains relevant information for the authenticated user
+ *
+ * @property { string } token the user's personal authentication token
+ * @property { string } username the user's username
+ * @property { string } gistID the ID of the user's gist
+ */
+export interface IUserInfo {
+  token: string;
+  username: string;
+  gistID: string;
 }
