@@ -14,7 +14,7 @@ import {
   IStyle
 } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
-import { IQuery } from "./IQuery";
+import { IQuery } from "../state";
 import { MultiSelect } from "./MultiSelect";
 
 enum InputStatuses {
@@ -48,7 +48,7 @@ interface IEditQueryUIState {
 }
 
 interface IEditQueryUIProps {
-  currQuery: IQuery;
+  currQuery?: IQuery;
 }
 
 const inputFieldStyles: IStyle = {
@@ -70,6 +70,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     renderMessageBar: false,
     enableReviewStatusField: true,
     selections: this.props.currQuery
+      ? this.props.currQuery
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [] }
   };
 
   private nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
