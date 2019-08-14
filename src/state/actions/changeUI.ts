@@ -21,3 +21,24 @@ export const login = () => ({
 export const logout = () => ({
   type: "LOGOUT"
 });
+
+/**
+ * Action creator to send the user to the Edit Query UI.
+ */
+export const toEditQuery = () => ({
+  type: "EDIT"
+});
+
+/**
+ * Action creator to send the user to the QueryList UI.
+ */
+export const toQueryList = () => ({
+  type: "QUERY"
+});
+
+/**
+ * Action creator to send the user to the home UI
+ */
+export const toHome = () => ({
+  type: "HOME"
+});
