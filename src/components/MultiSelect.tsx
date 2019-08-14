@@ -135,7 +135,9 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
   };
 
   private _addItem = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    if (ev.which !== 13) return;
+    if (ev.which !== 13) {
+      return;
+    }
     const { onChange, items } = this.props;
     this.setState({ pendingItem: this.state.pendingItem.trim() });
     const { pendingItem } = this.state;
@@ -149,8 +151,8 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
       return;
     }
     if (items) {
-      onChange(items);
       items.push(pendingItem);
+      onChange(items);
     }
     this.setState({ pendingItem: "", errorMessage: "" });
   };

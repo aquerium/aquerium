@@ -33,7 +33,7 @@ export const LoginUI = () => {
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
-    currPAT = newValue ? newValue : "";
+    currPAT = newValue || "";
   };
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {

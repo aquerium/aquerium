@@ -18,34 +18,29 @@ const TopBarIcons = () => {
     height: 50
   };
 
-  const getMenuItems = () => {
-    return [
-      {
-        key: "add query",
-        name: "Add Query",
-        iconProps: {
-          iconName: "Add"
-        },
-        onClick: () => {}
-      },
-      {
-        key: "edit queries",
-        name: "Edit Queries",
-        iconProps: {
-          iconName: "Edit"
-        },
-        onClick: () => {}
-      },
-      {
-        key: "sign out",
-        name: "Sign Out",
-        iconProps: {
-          iconName: "SignOut"
-        },
-        onClick: () => {}
+  const getMenuItems = [
+    {
+      key: "add query",
+      name: "Add Query",
+      iconProps: {
+        iconName: "Add"
       }
-    ];
-  };
+    },
+    {
+      key: "edit queries",
+      name: "Edit Queries",
+      iconProps: {
+        iconName: "Edit"
+      }
+    },
+    {
+      key: "sign out",
+      name: "Sign Out",
+      iconProps: {
+        iconName: "SignOut"
+      }
+    }
+  ];
 
   return (
     <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={{ childrenGap: 20 }}>
@@ -88,7 +83,7 @@ const TopBarIcons = () => {
         }}
         persistMenu={false}
         menuProps={{
-          items: getMenuItems(),
+          items: getMenuItems,
           shouldFocusOnMount: true,
           shouldFocusOnContainer: true
         }}
