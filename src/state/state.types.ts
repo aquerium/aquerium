@@ -1,11 +1,21 @@
 /**
- * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
+ * @interface
+ * This interface defines the state object
+ *
+ * @property { queryListType } queryList a map of strings (query ID's) to IQueries
+ * @property { object } changeUI stores a string containing the current UI
+ * @property { object } user stores a user's personal data
  */
-export type queryListType = { [id: string]: IQuery };
+export interface IState {
+  queryList: queryListType;
+  changeUI: {
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+  };
+  user: IUserInfo;
+}
 
 /**
- * @interface ITask
- *
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR
  *
  * @property { number } num the task number
@@ -25,7 +35,7 @@ export interface ITask {
 }
 
 /**
- * @interface IQuery
+ * @interface
  * This interface represents a single query
  *
  * @property { string } id the unique id of a query
@@ -66,30 +76,15 @@ export interface IQuery {
 }
 
 /**
- * @interface IState
- * This interface defines the state object, which stores the queryList and the changeUI object
- *
- * @property { queryListType } queryList a map of strings(query names) to IQueries
- * @property { object } changeUI stores a string containing the current UI
+ * Contains relevant information for the authenticated user
  */
-export interface IState {
-  queryList: queryListType;
-  changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
-  };
-  userInfo: IUserInfo;
+export interface IUserInfo {
+  token: string /*user's GitHub personal access token */;
+  username: string /* User's GitHub username */;
+  gistID: string /* ID of user's gist (for Aquerium) */;
 }
 
 /**
- * @interface IUserInfo
- * Contains relevant information for the authenticated user
- *
- * @property { string } token the user's personal authentication token
- * @property { string } username the user's username
- * @property { string } gistID the ID of the user's gist
+ * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
  */
-export interface IUserInfo {
-  token: string;
-  username: string;
-  gistID: string;
-}
+export type queryListType = { [id: string]: IQuery };

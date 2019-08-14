@@ -2,6 +2,7 @@ import { IQuery, IUserInfo, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { updateGist } from "../../api";
 import { Dispatch } from "redux";
+import { getQueryURL, getQueryTasks } from "../../utilities";
 
 /**
  * @type { type: string } this type defines an action that updates the queryList
@@ -9,22 +10,43 @@ import { Dispatch } from "redux";
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
 /**
- * Action creator to add a query to the queryList
- * @param { IQuery } query the particular query to be added
+ * Action creator to load the attatched query to the gist, and then update the redux state upon success.
  */
-export const addQuery = (query: IQuery) => {
+export const loadQueryMap = (list: queryListType) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    const list: queryListType = getState().queryList;
-    const newList = update(list, {
-      $set: {
-        ...list,
-        [query.id]: query
-      }
-    });
-    const response = await updateGist(getState().userInfo, newList);
+    const response = await updateGist(getState().user, list);
     if (response.errorCode) {
-      //what should we do if the api fails?
       alert("API request failed :(");
+      return;
+    } else {
+      dispatch(updateList(list));
+    }
+  };
+};
+
+/**
+ * Action creator to add/edit a query to the queryList.
+ */
+export const editQuery = (query: IQuery) => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    const userInfo: IUserInfo = getState().user;
+    const resp = await getQueryTasks(getQueryURL(userInfo, query));
+    let newQuery = null;
+    if (resp.errorCode || !resp.items) {
+      alert("API request failed :(");
+      return;
+    } else {
+      newQuery = update(query, {
+        tasks: { $set: resp.items }
+      });
+    }
+
+    const list: queryListType = getState().queryList;
+    const newList = update(list, { [newQuery.id]: { $set: newQuery } });
+    const response = await updateGist(getState().user, newList);
+    if (response.errorCode) {
+      alert("API request failed :(");
+      return;
     } else {
       dispatch(updateList(newList));
     }
@@ -32,16 +54,16 @@ export const addQuery = (query: IQuery) => {
 };
 
 /**
- * Action creator to remove a query from the queryList
- * @param { string } queryName the name of the query to be removed
+ * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryName: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     let list: queryListType = getState().queryList;
     const newList = update(list, { $unset: [queryName] });
-    const response = await updateGist(getState().userInfo, newList);
+    const response = await updateGist(getState().user, newList);
     if (response.errorCode) {
       alert("API request failed :(");
+      return;
     } else {
       dispatch(updateList(newList));
     }

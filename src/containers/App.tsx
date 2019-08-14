@@ -21,6 +21,7 @@ const mapStateToProps = (state: IState) => {
 };
 
 function AppView(props: IChangeViewProps) {
+  //componentdidmount somewhere in here, do the mapstate to props thing with login/logout call getquerymap
   switch (props.UI) {
     case "Login": {
       return <LoginUI />;

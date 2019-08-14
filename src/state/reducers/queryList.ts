@@ -18,7 +18,6 @@ export const queryList = (
       const newList = action.updatedList;
       return update(state, {
         $set: {
-          ...state,
           queryList: newList
         }
       });
