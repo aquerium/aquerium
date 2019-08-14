@@ -1,3 +1,5 @@
+import { IUserInfo }
+
 /**
  * The action type for a login action.
  */
@@ -11,7 +13,7 @@ export type changeUILogoutAction = { type: string };
 /**
  * Action creator to send the user from login UI to home UI.
  */
-export const login = () => ({
+export const login = (user ) => ({
   type: "LOGIN"
 });
 
