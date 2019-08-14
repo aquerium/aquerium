@@ -32,6 +32,9 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
+  const tooltipToggle = (isTooltipVisible: boolean): void => {
+    toggleTooltip(!isTooltipVisible);
+  };
   return (
     <DefaultButton
       href="https://github.com"
@@ -43,7 +46,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
           content={props.item.name}
           calloutProps={calloutGapSpace}
           overflowMode={TooltipOverflowMode.Parent}
-          onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
+          onTooltipToggle={tooltipToggle}
         >
           <Text
             className={TaskTileClassNames.listGridQueryName}
