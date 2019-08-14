@@ -5,7 +5,6 @@ export type queryListType = { [id: string]: IQuery };
 
 /**
  * @interface
- *
  * This interface represents a single task, whether it's an issue or a PR
  *
  * @property { number } num the task number
@@ -26,7 +25,6 @@ export interface ITask {
 
 /**
  * @interface
- *
  * This interface represents a single query
  *
  * @property { string } id the unique id of a query

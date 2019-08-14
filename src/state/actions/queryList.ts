@@ -21,8 +21,7 @@ export const addQuery = (query: IQuery) => ({
 
 /**
  * Action creator to specified query from queryList
- * @param {string} queryID
- * The id of the query to be removed
+ * @param {string} queryID the id of the query to be removed
  */
 export const removeQuery = (queryID: string) => ({
   type: "REMOVE_QUERY",
