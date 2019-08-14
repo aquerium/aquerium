@@ -7,15 +7,12 @@ import {
   Link,
   CommandBarButton
 } from "office-ui-fabric-react";
-import { IState, logout } from "../state";
+import { logout } from "../state";
 import { connect } from "react-redux";
 
 interface ITopBarIconsProps {
   logout: () => void;
 }
-const mapStateToProps = (state: IState) => ({
-  UI: state.changeUI.currUI
-});
 
 function TopBarIconsView(props: ITopBarIconsProps) {
   const imageProps: IImageProps = {
@@ -103,6 +100,6 @@ const action = {
 };
 
 export const TopBarIcons = connect(
-  mapStateToProps,
+  undefined,
   action
 )(TopBarIconsView);

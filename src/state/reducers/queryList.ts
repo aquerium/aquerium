@@ -1,5 +1,5 @@
 import { addQueryAction, removeQueryAction } from "../actions/queryList";
-import { queryListType, IQuery } from "../state.types";
+import { queryListType } from "../state.types";
 import update from "immutability-helper";
 
 const DEFAULT_STATE: queryListType = {};

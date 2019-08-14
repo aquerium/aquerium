@@ -1,12 +1,7 @@
 /**
- * The action type for a login action.
+ * The action type for a login/logout action.
  */
-export type changeUILoginAction = { type: string };
-
-/**
- * The action type for a logout action.
- */
-export type changeUILogoutAction = { type: string };
+export type changeUILogAction = { type: string };
 
 /**
  * Action creator to send the user from login UI to Home UI.

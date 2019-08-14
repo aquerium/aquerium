@@ -10,7 +10,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { IState, login } from "../state";
+import { login } from "../state";
 import { connect } from "react-redux";
 
 const imageProps: IImageProps = {
