@@ -3,7 +3,7 @@ import { IUserInfo } from "../state.types";
 /**
  * The action type for a login action.
  */
-export type changeUILoginAction = { type: string; user: IUserInfo };
+export type changeUILoginAction = { type: string; userInformation: IUserInfo };
 
 /**
  * The action type for a login/logout action.
