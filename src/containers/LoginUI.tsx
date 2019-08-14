@@ -15,6 +15,7 @@ import {
 import { createGist } from "../util/api";
 import { login } from "../state";
 import { connect } from "react-redux";
+import { IState, IUserInfo } from "../state/state.types";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -29,25 +30,31 @@ const imageProps: IImageProps = {
  * @property { function } login a function that calls the login action
  */
 interface ILoginProps {
-  login: () => void;
+  login: (user: IUserInfo) => void;
 }
+
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user
+  };
+};
 
 function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  function onLogin(): void {
-    props.login();
+  function onLogin(user: IUserInfo): void {
+    props.login(user);
   }
 
   const checkPasswordValidity = async () => {
     const response = await createGist(currPAT);
-    if (response.errorCode) {
+    if (response.user === undefined) {
       setIsValidPAT(false);
     } else {
       setIsValidPAT(true);
       chrome.storage.sync.set({ token: currPAT });
-      onLogin();
+      onLogin(response.user);
     }
   };
 
@@ -141,6 +148,6 @@ const action = {
 };
 
 export const LoginUI = connect(
-  undefined,
+  mapStateToProps,
   action
 )(LoginUIComponent);

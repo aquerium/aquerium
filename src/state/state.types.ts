@@ -1,15 +1,23 @@
 /**
- * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
+ * @interface
+ * This interface defines the state object
+ *
+ * @property { queryListType } queryList a map of strings (query ID's) to IQueries
+ * @property { object } changeUI stores a string containing the current UI
+ * @property { object } user stores a user's personal data
  */
-export type queryListType = { [id: string]: IQuery };
+export interface IState {
+  queryList: queryListType;
+  changeUI: {
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+  };
+  user: IUserInfo;
+}
 
 /**
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR
  *
- * @interface
- */
-
-/**
  * @property { number } num the task number
  * @property { string } title the title of the given task
  * @property { "issue" | "pr" } type type can only be of "issue" or pull request, "pr"
@@ -27,12 +35,9 @@ export interface ITask {
 }
 
 /**
+ * @interface
  * This interface represents a single query
  *
- * @interface
- */
-
-/**
  * @property { string } id the unique id of a query
  * @property { string } name the name of the query
  * @property { "issue" | "pr" } type the type of tasks in the query, being issue, PR or both
@@ -71,15 +76,15 @@ export interface IQuery {
 }
 
 /**
- * @interface
- * This interface defines the state object
- *
- * @property { queryListType } queryList a map of strings (query ID's) to IQueries
- * @property { object } changeUI stores a string containing the current UI
+ * Contains relevant information for the authenticated user
  */
-export interface IState {
-  queryList: queryListType;
-  changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
-  };
+export interface IUserInfo {
+  token: string /*user's GitHub personal access token */;
+  username: string /* User's GitHub username */;
+  gistID: string /* ID of user's gist (for Aquerium) */;
 }
+
+/**
+ * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
+ */
+export type queryListType = { [id: string]: IQuery };
