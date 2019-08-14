@@ -67,17 +67,19 @@ export interface IQuery {
   stalenessPull: number;
   lastUpdated?: number;
   tasks: ITask[];
+  daysSinceUpdate: number;
 }
 
 /**
- * This interface defines the state object, which currently only stores the queryList
- *
  * @interface
- */
-
-/**
- * @property { queryListType } queryList a map of strings(query ID's) to IQueries
+ * This interface defines the state object
+ *
+ * @property { queryListType } queryList a map of strings (query ID's) to IQueries
+ * @property { object } changeUI stores a string containing the current UI
  */
 export interface IState {
   queryList: queryListType;
+  changeUI: {
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+  };
 }

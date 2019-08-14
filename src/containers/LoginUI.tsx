@@ -13,6 +13,8 @@ import {
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
 import { createGist } from "../util/api";
+import { login } from "../state";
+import { connect } from "react-redux";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -23,9 +25,20 @@ const imageProps: IImageProps = {
   onLoad: ev => console.log("image loaded", ev)
 };
 
-export const LoginUI = () => {
+/**
+ * @property { function } login a function that calls the login action
+ */
+interface ILoginProps {
+  login: () => void;
+}
+
+function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
+
+  function onLogin(): void {
+    props.login();
+  }
 
   const checkPasswordValidity = async () => {
     const response = await createGist(currPAT);
@@ -34,7 +47,7 @@ export const LoginUI = () => {
     } else {
       setIsValidPAT(true);
       chrome.storage.sync.set({ token: currPAT });
-      // TODO: Call Redux function to change from Login to Home UI
+      onLogin();
     }
   };
 
@@ -121,6 +134,13 @@ export const LoginUI = () => {
       </Link>
     </Stack>
   );
+}
+
+const action = {
+  login
 };
 
-export default LoginUI;
+export const LoginUI = connect(
+  undefined,
+  action
+)(LoginUIComponent);
