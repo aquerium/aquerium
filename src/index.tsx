@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { App } from "./components/App";
+import { App } from "./containers/App";
 import { mergeStyles } from "office-ui-fabric-react";
 import { createStore } from "redux";
 import { rootReducer } from "./state";

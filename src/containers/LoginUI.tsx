@@ -10,6 +10,8 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { login } from "../state";
+import { connect } from "react-redux";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -20,13 +22,27 @@ const imageProps: IImageProps = {
   onLoad: ev => console.log("image loaded", ev)
 };
 
-export const LoginUI = () => {
+/**
+ * @property { function } login a function that calls the login action
+ */
+interface ILoginProps {
+  login: () => void;
+}
+
+function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
+  function onLogin(): void {
+    props.login();
+  }
+
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setIsValidPAT(false);
-    else setIsValidPAT(true);
+    else {
+      setIsValidPAT(true);
+      onLogin();
+    }
   };
 
   const updateCurrPAT = (
@@ -110,6 +126,13 @@ export const LoginUI = () => {
       </Link>
     </Stack>
   );
+}
+
+const action = {
+  login
 };
 
-export default LoginUI;
+export const LoginUI = connect(
+  undefined,
+  action
+)(LoginUIComponent);

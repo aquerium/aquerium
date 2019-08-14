@@ -7,8 +7,14 @@ import {
   Link,
   CommandBarButton
 } from "office-ui-fabric-react";
+import { logout } from "../state";
+import { connect } from "react-redux";
 
-const TopBarIcons = () => {
+interface ITopBarIconsProps {
+  logout: () => void;
+}
+
+function TopBarIconsView(props: ITopBarIconsProps) {
   const imageProps: IImageProps = {
     src: "GlitterboxLogo2.png",
     imageFit: ImageFit.centerContain,
@@ -23,7 +29,8 @@ const TopBarIcons = () => {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut"
+          iconName: "SignOut",
+          onClick: props.logout
         }
       },
       {
@@ -84,6 +91,13 @@ const TopBarIcons = () => {
       />
     </Stack>
   );
+}
+
+const action = {
+  logout
 };
 
-export default TopBarIcons;
+export const TopBarIcons = connect(
+  undefined,
+  action
+)(TopBarIconsView);
