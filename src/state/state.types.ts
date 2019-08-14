@@ -1,7 +1,18 @@
 /**
- * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
+ * @interface
+ * This interface defines the state object
+ *
+ * @property { queryListType } queryList a map of strings (query ID's) to IQueries
+ * @property { object } changeUI stores a string containing the current UI
+ * @property { object } user stores a user's personal data
  */
-export type queryListType = { [id: string]: IQuery };
+export interface IState {
+  queryList: queryListType;
+  changeUI: {
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+  };
+  user: IUserInfo;
+}
 
 /**
  * @interface
@@ -65,22 +76,6 @@ export interface IQuery {
 }
 
 /**
- * @interface
- * This interface defines the state object
- *
- * @property { queryListType } queryList a map of strings (query ID's) to IQueries
- * @property { object } changeUI stores a string containing the current UI
- * @property { object } user stores a particular user's token, username, and gistID
- */
-export interface IState {
-  queryList: queryListType;
-  changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
-  };
-  user: IUserInfo;
-}
-
-/**
  * Contains relevant information for the authenticated user
  */
 export interface IUserInfo {
@@ -88,3 +83,8 @@ export interface IUserInfo {
   username: string /* User's GitHub username */;
   gistID: string /* ID of user's gist (for Aquerium) */;
 }
+
+/**
+ * @type { [id: string]: IQuery } this type defines the queryList, a map from query ID's to queries
+ */
+export type queryListType = { [id: string]: IQuery };

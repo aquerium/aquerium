@@ -40,20 +40,21 @@ function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  function onLogin(): void {
-    props.login({
-      //TODO replace with actual data upon merge
-      token: "fake token",
-      username: "fake username",
-      gistID: "fake gist"
-    });
+  function onLogin(user: IUserInfo): void {
+    props.login(user);
   }
 
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setIsValidPAT(false);
     else {
       setIsValidPAT(true);
-      onLogin();
+      const dummyData = {
+        //TODO This object is an IUser that will be replaced with actual data in Cathy's next PR
+        token: "fake token",
+        username: "fake username",
+        gistID: "fake gist"
+      };
+      onLogin(dummyData);
     }
   };
 
