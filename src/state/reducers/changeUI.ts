@@ -29,6 +29,30 @@ export const changeUI = (
         }
       });
     }
+    case "EDIT": {
+      return update(state, {
+        $set: {
+          ...state,
+          currUI: "EditQuery"
+        }
+      });
+    }
+    case "QUERY": {
+      return update(state, {
+        $set: {
+          ...state,
+          currUI: "QueryList"
+        }
+      });
+    }
+    case "HOME": {
+      return update(state, {
+        $set: {
+          ...state,
+          currUI: "Home"
+        }
+      });
+    }
     default:
       return state;
   }
