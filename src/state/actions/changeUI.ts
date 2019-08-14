@@ -3,7 +3,12 @@ import { IUserInfo } from "../state.types";
 /**
  * The action type for a login/logout action.
  */
-export type changeUILogAction = { type: string };
+export type changeUIAction = { type: string };
+
+/**
+ * The action type for a login action
+ */
+export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
  * Action creator to send the user from login UI to Home UI.

@@ -10,11 +10,11 @@ const DEFAULT_STATE: IUserInfo = { token: "", username: "", gistID: "" };
 export const userInfo = (state: IUserInfo = DEFAULT_STATE, action: changeUILoginAction) => {
   switch (action.type) {
     case "LOGIN": {
-      const { userInformation } = action as changeUILoginAction;
+      const { user } = action as changeUILoginAction;
       return update(state, {
-        token: { $set: userInformation.token },
-        username: { $set: userInformation.username },
-        gistID: { $set: userInformation.gistID }
+        token: { $set: user.token },
+        username: { $set: user.username },
+        gistID: { $set: user.gistID }
       });
     }
     default:
