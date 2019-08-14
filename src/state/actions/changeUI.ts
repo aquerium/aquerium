@@ -1,19 +1,19 @@
-import { IUserInfo }
+import { IUserInfo } from "../state.types";
 
 /**
  * The action type for a login action.
  */
-export type changeUILoginAction = { type: string };
+export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
- * The action type for a logout action.
+ * The action type for a login/logout action.
  */
-export type changeUILogoutAction = { type: string };
+export type changeUIAuthAction = { type: string };
 
 /**
  * Action creator to send the user from login UI to Home UI.
  */
-export const login = (user ) => ({
+export const login = () => ({
   type: "LOGIN"
 });
 
