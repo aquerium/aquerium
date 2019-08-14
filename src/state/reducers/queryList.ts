@@ -16,12 +16,7 @@ export const queryList = (
   switch (action.type) {
     case "ADD_QUERY": {
       const { query } = action as addQueryAction;
-      return update(state, {
-        $set: {
-          ...state,
-          [query.id]: query
-        }
-      });
+      return update(state, { [query.id]: { $set: query } });
     }
     case "REMOVE_QUERY": {
       const { queryID } = action as removeQueryAction;

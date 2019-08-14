@@ -29,10 +29,6 @@ interface ILoginProps {
   login: () => void;
 }
 
-const mapStateToProps = (state: IState) => ({
-  UI: state.changeUI.currUI
-});
-
 function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
@@ -137,6 +133,6 @@ const action = {
 };
 
 export const LoginUI = connect(
-  mapStateToProps,
+  undefined,
   action
 )(LoginUIComponent);
