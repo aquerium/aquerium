@@ -1,5 +1,5 @@
 /**
- * The action type for a login/logout action.
+ * The action type for changing UI.
  */
 export type changeUILogAction = { type: string };
 
