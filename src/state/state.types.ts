@@ -4,12 +4,10 @@
 export type queryListType = { [id: string]: IQuery };
 
 /**
+ * @interface
+ *
  * This interface represents a single task, whether it's an issue or a PR
  *
- * @interface
- */
-
-/**
  * @property { number } num the task number
  * @property { string } title the title of the given task
  * @property { "issue" | "pr" } type type can only be of "issue" or pull request, "pr"
@@ -27,12 +25,10 @@ export interface ITask {
 }
 
 /**
+ * @interface
+ *
  * This interface represents a single query
  *
- * @interface
- */
-
-/**
  * @property { string } id the unique id of a query
  * @property { string } name the name of the query
  * @property { "issue" | "pr" } type the type of tasks in the query, being issue, PR or both
