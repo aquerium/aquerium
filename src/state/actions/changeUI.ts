@@ -1,7 +1,7 @@
 import { IUserInfo } from "../state.types";
 
 /**
- * The action type for a login/logout action.
+ * The action type for changing UI.
  */
 export type changeUIAction = { type: string };
 
