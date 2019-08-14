@@ -14,44 +14,19 @@ export const changeUI = (
 ) => {
   switch (action.type) {
     case "LOGIN": {
-      return update(state, {
-        $set: {
-          ...state,
-          currUI: "Home"
-        }
-      });
+      return update(state, { currUI: { $set: "Home" } });
     }
     case "LOGOUT": {
-      return update(state, {
-        $set: {
-          ...state,
-          currUI: "Login"
-        }
-      });
+      return update(state, { currUI: { $set: "Login" } });
     }
     case "EDIT": {
-      return update(state, {
-        $set: {
-          ...state,
-          currUI: "EditQuery"
-        }
-      });
+      return update(state, { currUI: { $set: "EditQuery" } });
     }
     case "QUERY": {
-      return update(state, {
-        $set: {
-          ...state,
-          currUI: "QueryList"
-        }
-      });
+      return update(state, { currUI: { $set: "QueryList" } });
     }
     case "HOME": {
-      return update(state, {
-        $set: {
-          ...state,
-          currUI: "Home"
-        }
-      });
+      return update(state, { currUI: { $set: "Home" } });
     }
     default:
       return state;
