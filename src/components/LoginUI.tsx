@@ -1,3 +1,5 @@
+/* global chrome */
+
 import React from "react";
 import {
   Stack,
@@ -10,6 +12,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { createGist } from "../util/api";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -24,9 +27,15 @@ export const LoginUI = () => {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  const checkPasswordValidity = () => {
-    if (currPAT !== "correct") setIsValidPAT(false);
-    else setIsValidPAT(true);
+  const checkPasswordValidity = async () => {
+    const response = await createGist(currPAT);
+    if (response.errorCode) {
+      setIsValidPAT(false);
+    } else {
+      setIsValidPAT(true);
+      chrome.storage.sync.set({ token: currPAT });
+      // TODO: Call Redux function to change from Login to Home UI
+    }
   };
 
   const updateCurrPAT = (
@@ -36,10 +45,12 @@ export const LoginUI = () => {
     currPAT = newValue;
   };
 
-  const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const ensureEnter = async (
+    event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     if (!event) return;
     if (event.which === 13) {
-      checkPasswordValidity();
+      await checkPasswordValidity();
     }
   };
 

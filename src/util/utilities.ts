@@ -1,6 +1,6 @@
 import { IQuery, ITask } from "../state";
 import { IUserInfo } from "./api";
-import * as fetch from "isomorphic-fetch";
+import fetch from "isomorphic-fetch";
 
 /**
  * Returns the list of tasks representing the result of a specific query
