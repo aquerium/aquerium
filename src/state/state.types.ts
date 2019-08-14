@@ -76,6 +76,7 @@ export interface IQuery {
  *
  * @property { queryListType } queryList a map of strings (query ID's) to IQueries
  * @property { object } changeUI stores a string containing the current UI
+ * @property { object } user stores a particular user's token, username, and gistID
  */
 export interface IState {
   queryList: queryListType;
