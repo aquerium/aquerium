@@ -10,12 +10,18 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption,
-  IStyle
+  IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { IQuery } from "../state";
 import { MultiSelect } from "./MultiSelect";
+import {
+  EditQueryUIClassNames,
+  rootTokenGap,
+  actionIcons,
+  typeOptions,
+  reviewStatusOptions
+} from "./EditQueryUIStyles";
 
 enum InputStatuses {
   /* Whether the settings are validated and successfully updated to the new (or existing) query */
@@ -51,17 +57,6 @@ interface IEditQueryUIProps {
   currQuery?: IQuery;
 }
 
-const inputFieldStyles: IStyle = {
-  selectors: {
-    "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
-  },
-  boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)",
-  borderRadius: "3px",
-  transitionDelay: "0.15s",
-  transition: "box-shadow .15s linear, transform .15s linear",
-  width: 190
-};
-
 export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
     inputStatus: InputStatuses.successfulEdit,
@@ -83,13 +78,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         message: "Do you wish to save your changes?",
         actions: (
           <div>
-            <MessageBarButton
-              text="Save"
-              styles={{ root: { width: 90 } }}
-              onClick={this.setMessageBarSave}
-            />
+            <MessageBarButton text="Save" onClick={this.setMessageBarSave} />
             {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="Discard" styles={{ root: { width: 90 } }} />
+            <MessageBarButton text="Discard" />
           </div>
         ),
         renderMessageBar: true
@@ -128,13 +119,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       actions: (
         <div>
           {/* Insert query delete Redux and go back to home screen */}
-          <MessageBarButton text="Remove" styles={{ root: { width: 95 } }} />
+          <MessageBarButton text="Remove" />
           {/* Cancel and continue editing */}
-          <MessageBarButton
-            text="Cancel"
-            styles={{ root: { width: 90 } }}
-            onClick={this.onDismiss}
-          />
+          <MessageBarButton text="Cancel" onClick={this.onDismiss} />
         </div>
       ),
       renderMessageBar: true
@@ -149,9 +136,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     return (
       <MessageBar
         messageBarType={this.state.messageType}
-        styles={{
-          root: [inputFieldStyles, { width: 250 }]
-        }}
         onDismiss={this.onDismiss}
         actions={this.state.actions}
       >
@@ -180,10 +164,11 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     item?: IDropdownOption,
     index?: number
   ): void => {
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     const newKey = item.key === "issues and pr" ? undefined : item.key;
-    let enableReviewField = true;
-    if (newKey === "issues") enableReviewField = false;
+    const enableReviewField = newKey !== "issues";
     const updatedSelections = update(this.state.selections, {
       $merge: {
         type: newKey as IQuery["type"],
@@ -248,7 +233,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     item?: IDropdownOption,
     index?: number
   ): void => {
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     const newKey = item.key === "N/A" ? undefined : item.key;
     const updatedSelections = update(this.state.selections, {
       $merge: { reviewStatus: newKey as IQuery["reviewStatus"] }
@@ -282,43 +269,27 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         <Stack
           horizontalAlign="start"
           verticalAlign="space-evenly"
-          styles={{
-            root: {
-              padding: "2px 0px 2px 5px",
-              color: "#1b3e74"
-            }
-          }}
-          tokens={{
-            childrenGap: 5
-          }}
+          className={EditQueryUIClassNames.root}
+          tokens={rootTokenGap}
         >
           {this.state.renderMessageBar && this.messageBar()}
           <Stack horizontal horizontalAlign="start">
             <ActionButton
-              iconProps={{ iconName: "Back" }}
-              styles={{
-                icon: { fontSize: 20, color: "black" },
-                root: { fontSize: 15 }
-              }}
+              iconProps={actionIcons.back.name}
+              styles={actionIcons.back.styles}
               text="Back"
               onClick={this.setMessageBarCancel}
             />
             <ActionButton
-              iconProps={{ iconName: "CheckMark" }}
-              styles={{
-                icon: { fontSize: 25, color: "green" },
-                root: { color: "green", fontSize: 15 }
-              }}
+              iconProps={actionIcons.save.name}
+              styles={actionIcons.save.styles}
               text="Save"
               onClick={this.setMessageBarSave}
             />
 
             <ActionButton
-              iconProps={{ iconName: "Trash" }}
-              styles={{
-                icon: { fontSize: 17, color: "red" },
-                root: { color: "red", fontSize: 15 }
-              }}
+              iconProps={actionIcons.remove.name}
+              styles={actionIcons.remove.styles}
               text="Remove"
               onClick={this.setMessageBarRemove}
             />
@@ -330,23 +301,15 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             validateOnFocusIn
             validateOnFocusOut
             onGetErrorMessage={this.checkNameSelection}
-            styles={{ fieldGroup: inputFieldStyles }}
             required
           />
           <Stack horizontal horizontalAlign="center">
             <Dropdown
               required
-              styles={{ dropdown: inputFieldStyles }}
               onChange={this.setTypeSelection}
               label="Type of tasks"
-              selectedKey={
-                this.state.selections.type ? this.state.selections.type : "issues and pr"
-              }
-              options={[
-                { key: "issues", text: "Only Issues" },
-                { key: "pr", text: "Only Pull Requests" },
-                { key: "issues and pr", text: "Issues and Pull Requests" }
-              ]}
+              selectedKey={this.state.selections.type || "issues and pr"}
+              options={typeOptions}
             />
           </Stack>
           <Stack horizontal horizontalAlign="center">
@@ -356,7 +319,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               validateOnFocusIn
               validateOnFocusOut
               onGetErrorMessage={this.checkRepoSelection}
-              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("List a repository from which to track Issues and/or Pull Requests.")()}
           </Stack>
@@ -367,7 +329,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               validateOnFocusIn
               validateOnFocusOut
               onGetErrorMessage={this.checkAssigneeSelection}
-              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
           </Stack>
@@ -378,7 +339,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               validateOnFocusIn
               validateOnFocusOut
               onGetErrorMessage={this.checkAuthorSelection}
-              styles={{ fieldGroup: inputFieldStyles }}
             />
             {description("Track Issues and/or Pull Requests opened by a specific user.")()}
           </Stack>
@@ -389,16 +349,12 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               validateOnFocusIn
               validateOnFocusOut
               onGetErrorMessage={this.checkMentionSelection}
-              styles={{ fieldGroup: inputFieldStyles }}
             />
-            {description(
-              "Track Issues and/or Pull Requests that mention specific users.  Please enter names as comma-separated values."
-            )()}
+            {description("Track Issues and/or Pull Requests that mention a specific user.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <Dropdown
-              styles={{ dropdown: inputFieldStyles }}
-              disabled={this.state.enableReviewStatusField ? false : true}
+              disabled={!this.state.enableReviewStatusField}
               onChange={this.setReviewStatusSelection}
               label="Review Status"
               selectedKey={
@@ -406,15 +362,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
                   ? this.state.selections.reviewStatus
                   : ""
               }
-              options={[
-                { key: "No reviews", text: "No reviews" },
-                { key: "Review required", text: "Review required" },
-                { key: "Approved review", text: "Approved review" },
-                { key: "Changes requested", text: "Changes requested" },
-                { key: "Reviewed by you", text: "Reviewed by you" },
-                { key: "Awaiting review from you", text: "Awaiting review from you" },
-                { key: "", text: "N/A" }
-              ]}
+              options={reviewStatusOptions}
             />
             {description("Track Pull Requests with the single selected review requirement.")()}
           </Stack>
@@ -422,15 +370,13 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             <MultiSelect
               label="Repo Labels"
               onChange={this.setLabelsSelection}
-              inputFieldProps={inputFieldStyles}
-              items={this.state.selections.labels ? this.state.selections.labels : []}
+              items={this.state.selections.labels || []}
             />
             {description("The GitHub labels assigned to particular tasks.")()}
           </Stack>
           <Stack horizontal horizontalAlign="center">
             <Slider
               label="Last Updated"
-              styles={{ container: { width: 200 } }}
               onChange={this.setLastUpdatedSelection}
               min={1}
               defaultValue={this.state.selections.lastUpdated}
@@ -443,7 +389,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           <Stack horizontal horizontalAlign="center">
             <Slider
               label="Staleness for Issues"
-              styles={{ container: { width: 200 } }}
               onChange={this.setstalenessIssueSelection}
               min={1}
               defaultValue={this.state.selections.stalenessIssue}
@@ -454,7 +399,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           <Stack horizontal horizontalAlign="center">
             <Slider
               label="Staleness for Pull Requests"
-              styles={{ container: { width: 200 } }}
               onChange={this.setStalenessPullSelection}
               min={1}
               defaultValue={this.state.selections.stalenessPull}

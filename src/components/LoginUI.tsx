@@ -10,23 +10,23 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { LoginUIClassNames } from "./LoginUI.ClassNames";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 100,
-  height: 100,
-  onLoad: ev => console.log("image loaded", ev)
+  height: 100
 };
 
 export const LoginUI = () => {
   let currPAT: string = "";
-  const [isValidPAT, setIsValidPAT] = React.useState(true);
+  const [renderError, setRenderError] = React.useState(false);
 
   const checkPasswordValidity = () => {
-    if (currPAT !== "correct") setIsValidPAT(false);
-    else setIsValidPAT(true);
+    if (currPAT !== "correct") setRenderError(true);
+    else setRenderError(false);
   };
 
   const updateCurrPAT = (
@@ -34,6 +34,7 @@ export const LoginUI = () => {
     newValue?: string
   ) => {
     currPAT = newValue || "";
+    if (currPAT === "") setRenderError(false);
   };
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -46,84 +47,44 @@ export const LoginUI = () => {
   const getTextFieldStyles = (props: ITextFieldStyleProps) => {
     const { required } = props;
     return {
-      root: {
-        width: 175,
-        fontSize: 10,
-        color: "#1b3e74"
-      },
       fieldGroup: [
-        { width: 175 },
+        { width: 180 },
         required && {
-          borderColor: isValidPAT
-            ? props.theme.semanticColors.actionLink
+          borderColor: !renderError
+            ? props.theme.semanticColors.inputBorder
             : props.theme.semanticColors.errorText
         }
       ]
     };
   };
 
+  const stackTokens = {
+    childrenGap: "5%",
+    padding: "20 px"
+  };
+
   return (
-    <Stack
-      horizontalAlign="center"
-      verticalAlign="space-evenly"
-      tokens={{ childrenGap: "5%", padding: "20 px" }}
-    >
+    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
       <Image {...imageProps as any} />
-      <Text
-        styles={{
-          root: {
-            textAlign: "center",
-            padding: 10,
-            fontSize: 20,
-            color: "#1b3e74"
-          }
-        }}
-      >
-        Welcome to Aquerium!
-      </Text>
-      <Text
-        styles={{
-          root: {
-            textAlign: "center",
-            fontSize: 12,
-            color: "#1b3e74",
-            transform: "translateY(-60%)"
-          }
-        }}
-      >
+      <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
+      <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
       <Stack horizontal>
         <TextField
-          style={{ boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)" }}
           placeholder="Enter your GitHub PAT"
           required
-          borderless={isValidPAT}
           styles={getTextFieldStyles}
           onChange={updateCurrPAT}
           onKeyDown={ensureEnter}
-          errorMessage={isValidPAT ? "" : "InvalidPAT"}
+          errorMessage={renderError ? "InvalidPAT" : ""}
         />
-        <PrimaryButton
-          text="Submit"
-          allowDisabledFocus={true}
-          styles={{
-            root: {
-              color: "#ffffff",
-              width: "10px",
-              boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
-            }
-          }}
-          onClick={checkPasswordValidity}
-        />
+        <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={checkPasswordValidity} />
       </Stack>
       <Link
-        styles={{ root: { marginBottom: 5, position: "static" } }}
+        className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"
         target="_blank"
-        style={{
-          fontSize: "11px"
-        }}
       >
         Need a Personal Access Token (PAT)? Get one here.
       </Link>

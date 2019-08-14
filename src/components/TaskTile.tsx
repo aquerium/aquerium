@@ -24,28 +24,26 @@ interface IRenderTileProps {
   item: IQuery;
 }
 
+const gridStackStyle = {
+  root: { maxWidth: "100%" }
+};
+
 export const TaskTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
+  const calloutGapSpace = { gapSpace: 0 };
   return (
     <DefaultButton
       href="https://github.com"
       target="_blank"
       className={TaskTileClassNames.listGridExampleTile}
-      styles={{ root: { background: "rgba(255, 255, 255, 0.5)" } }}
     >
-      <Stack
-        horizontalAlign="center"
-        verticalAlign="space-evenly"
-        styles={{ root: { maxWidth: "100%" } }}
-      >
+      <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
           content={props.item.name}
-          calloutProps={{ gapSpace: 0 }}
+          calloutProps={calloutGapSpace}
           overflowMode={TooltipOverflowMode.Parent}
-          onTooltipToggle={(isTooltipVisible: boolean) =>
-            toggleTooltip(!isTooltipVisible)
-          }
+          onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
         >
           <Text
             className={TaskTileClassNames.listGridQueryName}
@@ -56,9 +54,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             {props.item.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>
-          {props.item.tasks.length}
-        </Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>{props.item.tasks.length}</Text>
       </Stack>
     </DefaultButton>
   );

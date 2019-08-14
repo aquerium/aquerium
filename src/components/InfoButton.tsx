@@ -1,13 +1,38 @@
 import React from "react";
-import { ITextFieldProps, getId, Callout, IconButton } from "office-ui-fabric-react";
+import {
+  ITextFieldProps,
+  getId,
+  Callout,
+  IconButton,
+  mergeStyleSets
+} from "office-ui-fabric-react";
 
-export interface IInfoButtonState {
+interface IInfoButtonState {
   isCalloutVisible: boolean;
 }
 
-export interface IInfoButtonProps extends ITextFieldProps {
+interface IInfoButtonProps extends ITextFieldProps {
   calloutText: string;
 }
+
+const InfoButtonStyles = mergeStyleSets({
+  icon: {
+    bottom: -15,
+    left: 10,
+    selectors: {
+      "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
+    },
+    borderRadius: 3,
+    transitionDelay: "0.05s"
+  },
+  callout: {
+    padding: 5
+  }
+});
+
+const infoIcon = {
+  iconName: "Info"
+};
 
 class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   public state: IInfoButtonState = { isCalloutVisible: false };
@@ -28,20 +53,10 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
       <>
         <IconButton
           id={this._iconButtonId}
-          iconProps={{ iconName: "Info" }}
+          iconProps={infoIcon}
           ariaLabel="Info"
           onClick={this._onIconClick}
-          styles={{
-            root: {
-              bottom: -15,
-              left: 10,
-              selectors: {
-                "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
-              },
-              borderRadius: 3,
-              transitionDelay: "0.05s"
-            }
-          }}
+          className={InfoButtonStyles.icon}
         />
         {this.state.isCalloutVisible && (
           <Callout
@@ -51,7 +66,6 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             title={this.props.label}
             ariaDescribedBy={this._descriptionId}
             role="alertdialog"
-            styles={{ root: { padding: 5 } }}
           >
             <span id={this._descriptionId}>{this.props.calloutText}</span>
           </Callout>
