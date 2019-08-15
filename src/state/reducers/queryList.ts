@@ -1,5 +1,5 @@
 import { addQueryAction, removeQueryAction } from "../actions/queryList";
-import { queryListType, IQuery } from "../state.types";
+import { queryListType } from "../state.types";
 import update from "immutability-helper";
 
 const DEFAULT_STATE: queryListType = {};
@@ -13,20 +13,14 @@ export const queryList = (
   state: queryListType = DEFAULT_STATE,
   action: addQueryAction | removeQueryAction
 ) => {
-
   switch (action.type) {
     case "ADD_QUERY": {
-      const actionQuery: IQuery = (action as addQueryAction).query;
-      return update(state, {
-        $set: {
-          ...state,
-          [actionQuery.id]: actionQuery
-        }
-      });
+      const { query } = action as addQueryAction;
+      return update(state, { [query.id]: { $set: query } });
     }
     case "REMOVE_QUERY": {
-      const actionQueryID = (action as removeQueryAction).queryID;
-      return update(state, { $unset: [actionQueryID] });
+      const { queryID } = action as removeQueryAction;
+      return update(state, { $unset: [queryID] });
     }
     default:
       return state;

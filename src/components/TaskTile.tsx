@@ -11,17 +11,10 @@ import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import { IQuery } from "../state";
 
 /**
- * interface for the props read in to the TaskTile function
- *
- * @interface
- */
-
-/**
- * @property { IQuery } item
- * represents a single IQuery to be rendered
+ * @property { IQuery } query represents a single IQuery to be rendered
  */
 interface IRenderTileProps {
-  item: IQuery;
+  query: IQuery;
 }
 
 const gridStackStyle = {
@@ -43,8 +36,8 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
     >
       <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
-          content={props.item.name}
           calloutProps={calloutGapSpace}
+          content={props.query.name}
           overflowMode={TooltipOverflowMode.Parent}
           onTooltipToggle={tooltipToggle}
         >
@@ -54,10 +47,10 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
           >
-            {props.item.name}
+            {props.query.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>{props.item.tasks.length}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>{props.query.tasks.length}</Text>
       </Stack>
     </DefaultButton>
   );

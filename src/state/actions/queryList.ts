@@ -1,18 +1,17 @@
 import { IQuery } from "../state.types";
 
 /**
- * @type { type: string; query: IQuery } this type defines an action that adds a query to the queryList
+ * The action that adds a query to the queryList.
  */
 export type addQueryAction = { type: string; query: IQuery };
 
 /**
- * @type { type: string; queryID: string } this type defines an action that removes a query from the queryList
+ * The action that removes a query from the queryList.
  */
 export type removeQueryAction = { type: string; queryID: string };
 
 /**
- * Action creator to add a query to the queryList
- * @param { IQuery } query the particular query to be added
+ * Action creator to add a query to the queryList.
  */
 export const addQuery = (query: IQuery) => ({
   type: "ADD_QUERY",
@@ -20,9 +19,7 @@ export const addQuery = (query: IQuery) => ({
 });
 
 /**
- * Action creator to specified query from queryList
- * @param {string} queryID
- * The id of the query to be removed
+ * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => ({
   type: "REMOVE_QUERY",

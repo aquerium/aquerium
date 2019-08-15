@@ -1,10 +1,12 @@
-import { loadTheme, Customizer } from "office-ui-fabric-react";
 import React from "react";
-import { HomeUI } from "./HomeUI";
-import { LoginUI } from "../containers/LoginUI";
+import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
-import { EditQueryUI } from "./EditQuery";
-import { hoveringAndShading } from "./HoveringAndShadingSyles";
+import { LoginUI } from "./LoginUI";
+import { IState } from "../state";
+import { connect } from "react-redux";
+import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
+import { Customizer } from "@uifabric/utilities";
+import { loadTheme } from "@uifabric/styling";
 
 initializeIcons();
 
@@ -74,10 +76,47 @@ const scopedSettings = {
   }
 };
 
-export function App() {
-  return (
-    <Customizer scopedSettings={scopedSettings}>
-      <EditQueryUI />
-    </Customizer>
-  );
+/**
+ * @property { string } UI the UI that will be displayed
+ */
+interface IAppViewProps {
+  UI: string;
 }
+
+const mapStateToProps = (state: IState) => {
+  return {
+    UI: state.changeUI.currUI
+  };
+};
+
+class AppView extends React.Component<IAppViewProps> {
+  // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
+  public async componentDidMount(): Promise<void> {}
+
+  public render(): JSX.Element | null {
+    switch (this.props.UI) {
+      case "Login": {
+        return (
+          <Customizer scopedSettings={scopedSettings}>
+            <LoginUI />
+          </Customizer>
+        );
+      }
+      case "Home": {
+        return (
+          <Customizer scopedSettings={scopedSettings}>
+            <HomeUI />
+          </Customizer>
+        );
+      }
+      default:
+        return (
+          <Customizer scopedSettings={scopedSettings}>
+            <LoginUI />
+          </Customizer>
+        );
+    }
+  }
+}
+
+export const App = connect(mapStateToProps)(AppView);

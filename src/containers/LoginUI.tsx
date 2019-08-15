@@ -10,7 +10,10 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { LoginUIClassNames } from "./LoginUI.ClassNames";
+import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
+import { login } from "../state";
+import { connect } from "react-redux";
+import { IState, IUserInfo } from "../state/state.types";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -20,13 +23,39 @@ const imageProps: IImageProps = {
   height: 100
 };
 
-export const LoginUI = () => {
-  let currPAT: string = "";
+/**
+ * @property { function } login a function that calls the login action
+ */
+interface ILoginProps {
+  login: (user: IUserInfo) => void;
+}
+
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user
+  };
+};
+
+function LoginUIComponent(props: ILoginProps) {
+  let currPAT: any = "";
   const [renderError, setRenderError] = React.useState(false);
+
+  function onLogin(user: IUserInfo): void {
+    props.login(user);
+  }
 
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setRenderError(true);
-    else setRenderError(false);
+    else {
+      setRenderError(false);
+      const dummyData = {
+        //TODO This object is an IUser that will be replaced with actual data in Cathy's next PR
+        token: "fake token",
+        username: "fake username",
+        gistID: "fake gist"
+      };
+      onLogin(dummyData);
+    }
   };
 
   const updateCurrPAT = (
@@ -90,6 +119,13 @@ export const LoginUI = () => {
       </Link>
     </Stack>
   );
+}
+
+const action = {
+  login
 };
 
-export default LoginUI;
+export const LoginUI = connect(
+  mapStateToProps,
+  action
+)(LoginUIComponent);
