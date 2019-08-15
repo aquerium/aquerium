@@ -40,10 +40,6 @@ function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  function onLogin(user: IUserInfo): void {
-    props.login(user);
-  }
-
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setIsValidPAT(false);
     else {
@@ -54,7 +50,7 @@ function LoginUIComponent(props: ILoginProps) {
         username: "fake username",
         gistID: "fake gist"
       };
-      onLogin(dummyData);
+      props.login(dummyData);
     }
   };
 
