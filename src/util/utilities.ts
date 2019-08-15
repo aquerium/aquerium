@@ -1,5 +1,4 @@
-import { IQuery, ITask } from "../state";
-import { IUserInfo } from "./api";
+import { IQuery, ITask, IUserInfo } from "../state";
 import fetch from "isomorphic-fetch";
 
 /**
