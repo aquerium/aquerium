@@ -43,10 +43,6 @@ function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
-  function onLogin(user: IUserInfo): void {
-    props.login(user);
-  }
-
   const checkPasswordValidity = async () => {
     const response = await createGist(currPAT);
     if (response.user === undefined) {
@@ -54,7 +50,7 @@ function LoginUIComponent(props: ILoginProps) {
     } else {
       setIsValidPAT(true);
       chrome.storage.sync.set({ token: currPAT });
-      onLogin(response.user);
+      props.login(response.user);
     }
   };
 
