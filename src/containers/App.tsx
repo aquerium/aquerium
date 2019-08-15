@@ -1,9 +1,12 @@
+/* global chrome */
+
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { IState } from "../state";
 import { connect } from "react-redux";
+import { toHome } from "../state/actions";
 
 initializeIcons();
 
@@ -12,6 +15,7 @@ initializeIcons();
  */
 interface IAppViewProps {
   UI: string;
+  toHome: () => void;
 }
 
 const mapStateToProps = (state: IState) => {
@@ -21,8 +25,13 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-  // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
-  public async componentDidMount(): Promise<void> {}
+  public async componentDidMount(): Promise<void> {
+    chrome.storage.sync.get(["token"], result => {
+      if (result.token) {
+        this.props.toHome();
+      }
+    });
+  }
 
   public render(): JSX.Element | null {
     switch (this.props.UI) {
@@ -38,4 +47,11 @@ class AppView extends React.Component<IAppViewProps> {
   }
 }
 
-export const App = connect(mapStateToProps)(AppView);
+const action = {
+  toHome
+};
+
+export const App = connect(
+  mapStateToProps,
+  action
+)(AppView);
