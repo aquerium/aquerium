@@ -8,6 +8,8 @@ import {
   buttonProps
 } from "./MultiSelectStyles";
 
+const ENTER_KEYCODE = 13;
+
 interface IMultiSelectProps {
   label: string;
   items: string[];
@@ -82,7 +84,7 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
   };
 
   private _addItem = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    if (ev.which !== 13) {
+    if (ev.which !== ENTER_KEYCODE) {
       return;
     }
     const { onChange, items } = this.props;
