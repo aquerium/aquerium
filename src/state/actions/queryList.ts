@@ -13,20 +13,23 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
 /**
  * Action creator to load the existing querymap from the gist, and then update the redux state upon success.
  */
-export const loadQueryMap = () => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
-    const userInfo: IUserInfo = getState().user;
-    const response1 = await getQueryMapObj(userInfo);
-    if (response1.errorCode || !response1.queryMap) {
-      alert("Gist Loading Failed :(");
-      return;
-    } else {
-      //we have a valid query map, and need to update the redux state with it.
-      const list = response1.queryMap;
-      dispatch(updateList(list));
-    }
-  };
-};
+// export const loadQueryMap = ( list : queryListType ) => {
+//   return async function(dispatch: Dispatch, getState: () => IState) {
+//     const userInfo: IUserInfo = getState().user;
+//     const response1 = await getQueryMapObj(userInfo);
+//     if (response1.errorCode) {
+//       alert("Gist Loading Failed :(");
+//       return;
+//     } else if (!response1.queryMap) {
+//       alert("queryMap is undefined :(. Are you sure your login credentials are correct?");
+//       return;
+//     } else {
+//       //we have a valid query map, and need to update the redux state with it.
+//       const list = response1.queryMap;
+//       dispatch(updateList(list));
+//     }
+//   };
+// };
 
 /**
  * Action creator to add/edit a query to the queryList.
@@ -54,7 +57,7 @@ export const editQuery = (query: IQuery) => {
       alert("API request failed :(");
       return;
     } else {
-      dispatch(updateList(newList));
+      dispatch(updateMap(newList));
     }
   };
 };
@@ -71,7 +74,7 @@ export const removeQuery = (queryName: string) => {
       alert("API request failed :(");
       return;
     } else {
-      dispatch(updateList(newList));
+      dispatch(updateMap(newList));
     }
   };
 };
@@ -79,7 +82,7 @@ export const removeQuery = (queryName: string) => {
 /**
  * Action creator to replace the current queryList with the attatched queryList
  */
-export const updateList = (updatedList: queryListType) => ({
+export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
   updatedList
 });
