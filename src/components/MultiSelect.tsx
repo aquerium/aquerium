@@ -8,6 +8,9 @@ import {
   buttonProps
 } from "./MultiSelectStyles";
 
+/** @constant
+    @type {number} value corresponding to enter key 
+*/
 const ENTER_KEYCODE = 13;
 
 interface IMultiSelectProps {

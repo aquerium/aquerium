@@ -15,6 +15,9 @@ import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
 
+/** @constant
+    @type {number} value corresponding to enter key 
+*/
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
