@@ -36,9 +36,7 @@ class AppView extends React.Component<IAppViewProps> {
           gistID: result.gistID
         };
         const response = await getQueryMapObj(user);
-        if (response.queryMap === undefined) {
-          return;
-        } else {
+        if (response.queryMap !== undefined) {
           this.props.login(user);
           // TODO: Call Trip's function passing in response.queryMap
         }
