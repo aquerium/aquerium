@@ -7,11 +7,26 @@ import {
   Link,
   CommandBarButton
 } from "office-ui-fabric-react";
-import { logout } from "../state";
+import { logout, editQuery, IQuery } from "../state";
 import { connect } from "react-redux";
+
+const newQuery: IQuery = {
+  id: "13451",
+  name: "example",
+  type: "issue",
+  repo: "OfficeDev/office-ui-fabric-react",
+  assignee: "kkjeer",
+  stalenessIssue: 10,
+  stalenessPull: 10,
+  tasks: [
+    // { num: 134, title: "poop", type: "pr", state: "open", createdAt: "asdf", updatedAt: "asdfs" }
+  ],
+  daysSinceUpdate: 5
+};
 
 interface ITopBarIconsProps {
   logout: () => void;
+  editQuery: (query: IQuery) => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -24,14 +39,25 @@ function TopBarIconsView(props: ITopBarIconsProps) {
   };
 
   const getMenuItems = () => {
+    function foo() {
+      return props.editQuery(newQuery);
+    }
     return [
+      {
+        key: "add query",
+        name: "Add Query",
+        iconProps: {
+          iconName: "Add"
+        },
+        onClick: foo
+      },
       {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut",
-          onClick: props.logout
-        }
+          iconName: "SignOut"
+        },
+        onClick: props.logout
       },
       {
         key: "edit queries",
@@ -94,7 +120,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  logout
+  logout,
+  editQuery
 };
 
 export const TopBarIcons = connect(

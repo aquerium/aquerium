@@ -10,6 +10,8 @@ import { getQueryMapObj } from "../../api";
  */
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
+export type editQueryAction = { type: string; query: IQuery };
+
 /**
  * Action creator to load the existing querymap from the gist, and then update the redux state upon success.
  */
@@ -35,8 +37,10 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * Action creator to add/edit a query to the queryList.
  * This action creator gets the resulting tasks from the attached query and stores them in a new query before putting it in the queryMap.
  */
-export const editQuery = (query: IQuery) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+export const editQuery = (query: IQuery) => ({
+  type: "EDIT_QUERY",
+  query
+  /*return async function(dispatch: Dispatch, getState: () => IState) {
     const userInfo: IUserInfo = getState().user;
     const resp = await getQueryTasks(getQueryURL(userInfo, query));
     let newQuery = null;
@@ -59,8 +63,8 @@ export const editQuery = (query: IQuery) => {
     } else {
       dispatch(updateMap(newList));
     }
-  };
-};
+  };*/
+});
 
 /**
  * Action creator to remove the specified query from queryList.

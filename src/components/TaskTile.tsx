@@ -47,8 +47,10 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             {props.query.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>{props.query.tasks.length}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>
+          {props.query.tasks.length.toString()}
+        </Text>
       </Stack>
     </DefaultButton>
   );
-};
+}; //because props.query is undefined!
