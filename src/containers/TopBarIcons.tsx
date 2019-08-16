@@ -1,3 +1,5 @@
+/* global chrome */
+
 import * as React from "react";
 import {
   Image,
@@ -23,15 +25,20 @@ function TopBarIconsView(props: ITopBarIconsProps) {
     height: 80
   };
 
+  function onLogout(): void {
+    chrome.storage.sync.set({ token: "" });
+    props.logout();
+  }
+
   const getMenuItems = () => {
     return [
       {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut",
-          onClick: props.logout
-        }
+          iconName: "SignOut"
+        },
+        onClick: onLogout
       },
       {
         key: "edit queries",
