@@ -12,7 +12,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { createGist } from "../util/api";
+import { createGist, getQueryMapObj } from "../util/api";
 import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
@@ -44,14 +44,36 @@ function LoginUIComponent(props: ILoginProps) {
   const [isValidPAT, setIsValidPAT] = React.useState(true);
 
   const checkPasswordValidity = async () => {
-    const response = await createGist(currPAT);
-    if (response.user === undefined) {
-      setIsValidPAT(false);
-    } else {
-      setIsValidPAT(true);
-      chrome.storage.sync.set({ token: currPAT });
-      props.login(response.user);
-    }
+    chrome.storage.sync.get(["username", "gistID"], async result => {
+      if (result.username !== "" && result.gistID !== "") {
+        const user: IUserInfo = {
+          token: currPAT,
+          username: result.username,
+          gistID: result.gistID
+        };
+        const responseMap = await getQueryMapObj(user); // This gets called twice if a user's pat is invalid and they try it again
+        if (responseMap.queryMap === undefined) {
+          setIsValidPAT(false);
+        } else {
+          setIsValidPAT(true);
+          chrome.storage.sync.set({ token: currPAT, username: user.username, gistID: user.gistID });
+          props.login(user);
+        }
+      } else {
+        const responseGist = await createGist(currPAT);
+        if (responseGist.user === undefined) {
+          setIsValidPAT(false);
+        } else {
+          setIsValidPAT(true);
+          chrome.storage.sync.set({
+            token: currPAT,
+            username: responseGist.user.username,
+            gistID: responseGist.user.gistID
+          });
+          props.login(responseGist.user);
+        }
+      }
+    });
   };
 
   const updateCurrPAT = (
@@ -64,7 +86,9 @@ function LoginUIComponent(props: ILoginProps) {
   const ensureEnter = async (
     event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    if (!event) return;
+    if (!event) {
+      return;
+    }
     if (event.which === 13) {
       await checkPasswordValidity();
     }

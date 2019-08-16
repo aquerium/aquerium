@@ -1,3 +1,3 @@
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ token: "" });
+  chrome.storage.sync.set({ token: "", username: "", gistID: "" });
 });
