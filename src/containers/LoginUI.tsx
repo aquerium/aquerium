@@ -140,7 +140,7 @@ function LoginUIComponent(props: ILoginProps) {
           styles={getTextFieldStyles}
           onChange={updateCurrPAT}
           onKeyDown={ensureEnter}
-          errorMessage={isValidPAT ? "" : "InvalidPAT"}
+          errorMessage={isValidPAT ? "" : "Your PAT is invalid or expired."}
         />
         <PrimaryButton
           text="Submit"
