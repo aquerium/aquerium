@@ -28,13 +28,6 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       }
     },
     {
-      key: "edit queries",
-      name: "Edit Queries",
-      iconProps: {
-        iconName: "Edit"
-      }
-    },
-    {
       key: "sign out",
       name: "Sign Out",
       iconProps: {
