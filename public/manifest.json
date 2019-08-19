@@ -9,7 +9,7 @@
     "default_icon": "GlitterboxLogo2.png"
   },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["./dist/background.js"],
     "persistent": false
   },
   "icons": {
