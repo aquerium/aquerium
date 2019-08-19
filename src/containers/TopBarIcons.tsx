@@ -8,7 +8,7 @@ import {
   CommandBarButton,
   Text
 } from "office-ui-fabric-react";
-import { logout } from "../state";
+import { logout, editQuery, IQuery } from "../state";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
@@ -19,6 +19,7 @@ import {
 
 interface ITopBarIconsProps {
   logout: () => void;
+  editQuery: (query: IQuery) => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -36,8 +37,9 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         key: "add query",
         name: "Add Query",
         iconProps: {
-          iconName: "Add"
-        }
+          iconName: "SignOut"
+        },
+        onClick: props.logout
       },
       {
         key: "edit queries",
@@ -77,7 +79,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  logout
+  logout,
+  editQuery
 };
 
 export const TopBarIcons = connect(

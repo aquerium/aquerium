@@ -10,10 +10,8 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
-import { login } from "../state";
 import { connect } from "react-redux";
-import { IState, IUserInfo } from "../state/state.types";
+import { IState, IUserInfo, login } from "../state";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -40,10 +38,6 @@ function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [renderError, setRenderError] = React.useState(false);
 
-  function onLogin(user: IUserInfo): void {
-    props.login(user);
-  }
-
   const checkPasswordValidity = () => {
     if (currPAT !== "correct") setRenderError(true);
     else {
@@ -54,7 +48,7 @@ function LoginUIComponent(props: ILoginProps) {
         username: "fake username",
         gistID: "fake gist"
       };
-      onLogin(dummyData);
+      props.login(dummyData);
     }
   };
 
