@@ -2,9 +2,8 @@ import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
-import { IState, queryListType } from "../state";
+import { IState, queryListType, updateMap } from "../state";
 import { connect } from "react-redux";
-import { updateMap } from "../state";
 
 initializeIcons();
 
@@ -26,14 +25,7 @@ const mapStateToProps = (state: IState) => {
 class AppView extends React.Component<IAppViewProps> {
   // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {
-    //Check to see if credentials exist (local storage)
-    //if not, go to loginUI
-    //if they do, call getObjQueryMap
-    //if this call fails, PAT is probably invalid, go to login UI
-    //if this succeeds, we have valid credentials AND a valid queryMAP
-    //call login(userInfo)
-    //this.props.updateMap(list);
-    //the order of these calls doesn't really matter
+    //TODO: Once Cathy's authenitcation PR is approved, add a call to props.updateMap with the verified queryMap
   }
 
   public render(): JSX.Element | null {

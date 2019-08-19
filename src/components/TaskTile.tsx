@@ -53,4 +53,4 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
       </Stack>
     </DefaultButton>
   );
-}; //because props.query is undefined!
+};

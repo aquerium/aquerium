@@ -10,9 +10,8 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { login } from "../state";
 import { connect } from "react-redux";
-import { IState, IUserInfo } from "../state/state.types";
+import { IState, IUserInfo, login } from "../state";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
