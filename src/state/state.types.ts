@@ -20,18 +20,22 @@ export interface IState {
  *
  * @property { number } num the task number
  * @property { string } title the title of the given task
+ * @property { string } author the author of the given task
  * @property { "issue" | "pr" } type type can only be of "issue" or pull request, "pr"
  * @property { "open" | "closed" } state state of a task only be "open" or "closed"
  * @property { string } createdAt time stamp for creation
  * @property { string } updatedAt time stamp for last update
+ * @property { string } url url to this specific task
  */
 export interface ITask {
   num: number;
   title: string;
+  author: string;
   type: "issue" | "pr";
   state: "open" | "closed";
   createdAt: string;
   updatedAt: string;
+  url: string;
 }
 
 /**
