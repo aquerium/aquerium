@@ -29,11 +29,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
     toggleTooltip(!isTooltipVisible);
   };
   return (
-    <DefaultButton
-      href="https://github.com"
-      target="_blank"
-      className={TaskTileClassNames.listGridExampleTile}
-    >
+    <DefaultButton href="https://github.com" className={TaskTileClassNames.listGridExampleTile}>
       <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
           calloutProps={calloutGapSpace}
@@ -50,7 +46,9 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             {props.query.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>{props.query.tasks.length}</Text>
+        <Text className={TaskTileClassNames.listGridElmCount}>
+          {props.query.tasks.length.toString()}
+        </Text>
       </Stack>
     </DefaultButton>
   );

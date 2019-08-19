@@ -1,4 +1,4 @@
-import { mergeStyleSets, mergeStyles } from "@uifabric/styling";
+import { mergeStyleSets } from "@uifabric/styling";
 
 export const rootTokenGap = {
   childrenGap: 5
@@ -7,7 +7,7 @@ export const rootTokenGap = {
 export const actionIcons = {
   back: {
     name: { iconName: "Back" },
-    styles: { root: { fontSize: 15 }, icon: { fontSize: 20, color: "black" } }
+    styles: { root: { fontSize: 15 }, icon: { fontSize: 20 } }
   },
   save: {
     name: { iconName: "CheckMark" },
