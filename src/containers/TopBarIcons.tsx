@@ -51,9 +51,9 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut",
-          onClick: props.logout
-        }
+          iconName: "SignOut"
+        },
+        onClick: props.logout
       }
     ]
   };
