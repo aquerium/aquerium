@@ -3,11 +3,10 @@ import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
 import { QueryTaskTile } from "./QueryTaskTile";
 import { ITask } from "../state";
 
-/**
- * @property { queryListType } queryList the queryList map that is passed in, element at a time, to be rendered by TaskTile
- */
 interface IQueryTaskListUIProps {
+  /** The array of tasks that will be rendered */
   tasks: ITask[];
+  /** The labels, if any, associated with a certain query */
   labels?: string[];
 }
 

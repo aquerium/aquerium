@@ -3,10 +3,8 @@ import { IQuery } from "../state";
 import { QueryTaskListNavBar } from "./QueryTaskTileNavBar";
 import { QueryTaskList } from "./QueryTaskList";
 
-/**
- * @property { queryListType } currQuery the current query whose tasks are to be rendered
- */
 interface IQueryTaskListUIProps {
+  /** the current query whose tasks are to be rendered */
   currQuery: IQuery;
 }
 

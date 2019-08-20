@@ -10,10 +10,8 @@ import {
 import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
 import { IQuery } from "../state";
 
-/**
- * @property { IQuery } query represents a single IQuery to be rendered
- */
 interface IQueryTaskListNavBarProps {
+  /** A single IQuery to be rendered */
   query: IQuery;
 }
 

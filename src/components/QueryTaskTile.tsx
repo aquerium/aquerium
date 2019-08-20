@@ -4,12 +4,10 @@ import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
 import { Stack, Text, DefaultButton, Link } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 
-/**
- * @property { ITask } task represents a single ITask to be rendered
- * @property { string[] } labels represents a list of labels to be listed
- */
 interface IQueryTaskTile {
+  /** A single ITask to be rendered */
   task: ITask;
+  /** A list of labels to be listed */
   labels: string[];
 }
 
