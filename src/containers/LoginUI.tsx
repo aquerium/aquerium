@@ -41,6 +41,36 @@ const mapStateToProps = (state: IState) => {
   };
 };
 
+const getTextFieldStyles = (renderError: boolean) => {
+  return (props: ITextFieldStyleProps) => {
+    const { required } = props;
+    return {
+      fieldGroup: [
+        { width: 180 },
+        required && {
+          borderColor: !renderError
+            ? props.theme.semanticColors.inputBorder
+            : props.theme.semanticColors.errorText
+        }
+      ]
+    };
+  };
+};
+
+const stackTokens = {
+  childrenGap: "5%",
+  padding: "20 px"
+};
+
+const onKeyDown = (checkPasswordValidity: () => void) => {
+  return (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!event) return;
+    if (event.which === ENTER_KEYCODE) {
+      checkPasswordValidity();
+    }
+  };
+};
+
 function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
   const [renderError, setRenderError] = React.useState(false);
@@ -71,32 +101,6 @@ function LoginUIComponent(props: ILoginProps) {
     if (currPAT === "") setRenderError(false);
   };
 
-  const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (!event) return;
-    if (event.which === ENTER_KEYCODE) {
-      checkPasswordValidity();
-    }
-  };
-
-  const getTextFieldStyles = (props: ITextFieldStyleProps) => {
-    const { required } = props;
-    return {
-      fieldGroup: [
-        { width: 180 },
-        required && {
-          borderColor: !renderError
-            ? props.theme.semanticColors.inputBorder
-            : props.theme.semanticColors.errorText
-        }
-      ]
-    };
-  };
-
-  const stackTokens = {
-    childrenGap: "5%",
-    padding: "20 px"
-  };
-
   return (
     <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
       <Image {...imageProps as any} />
@@ -108,9 +112,9 @@ function LoginUIComponent(props: ILoginProps) {
         <TextField
           placeholder="Enter your GitHub PAT"
           required
-          styles={getTextFieldStyles}
+          styles={getTextFieldStyles(renderError)}
           onChange={updateCurrPAT}
-          onKeyDown={ensureEnter}
+          onKeyDown={onKeyDown(checkPasswordValidity)}
           errorMessage={renderError ? "InvalidPAT" : ""}
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={checkPasswordValidity} />
