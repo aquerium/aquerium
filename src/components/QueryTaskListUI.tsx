@@ -2,6 +2,6 @@ import * as React from "react";
 import { initializeIcons } from "@uifabric/icons";
 initializeIcons();
 
-export const NewQueryUI = () => {};
+export const QueryTaskListUI = () => {};
 
-export default NewQueryUI;
+export default QueryTaskListUI;

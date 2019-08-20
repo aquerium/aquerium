@@ -5,10 +5,17 @@ import {
   ImageFit,
   Stack,
   Link,
-  CommandBarButton
+  CommandBarButton,
+  Text
 } from "office-ui-fabric-react";
 import { logout, editQuery, IQuery } from "../state";
 import { connect } from "react-redux";
+import {
+  topBarItemGap,
+  TopBarIconsUIClassNames,
+  getMenuIconName,
+  menuIconSize
+} from "../components/TopBarIconsStyles";
 
 interface ITopBarIconsProps {
   logout: () => void;
@@ -24,11 +31,11 @@ function TopBarIconsView(props: ITopBarIconsProps) {
     height: 80
   };
 
-  const getMenuItems = () => {
-    return [
+  const menuProps = {
+    items: [
       {
-        key: "sign out",
-        name: "Sign Out",
+        key: "add query",
+        name: "Add Query",
         iconProps: {
           iconName: "SignOut"
         },
@@ -41,54 +48,31 @@ function TopBarIconsView(props: ITopBarIconsProps) {
           iconName: "Edit"
         },
         onClick: () => {}
+      },
+      {
+        key: "sign out",
+        name: "Sign Out",
+        iconProps: {
+          iconName: "SignOut",
+          onClick: props.logout
+        }
       }
-    ];
+    ]
   };
 
   return (
-    <Stack
-      horizontal
-      verticalAlign="center"
-      styles={{
-        root: {
-          height: "80",
-          position: "relative"
-        }
-      }}
-    >
-      <Link
-        href="https://github.com"
-        target="_blank"
-        styles={{
-          root: {
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-61%)"
-          }
-        }}
-      >
+    <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={topBarItemGap}>
+      <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
         <Image {...imageProps as any} title="My GitHub Home" />
       </Link>
+      <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
-        menuIconProps={{ iconName: "More" }}
+        menuIconProps={getMenuIconName}
         title="Options"
-        styles={{
-          root: {
-            width: 20,
-            height: 20,
-            background: "#rgba(240,240,240,0)",
-            margin: "auto",
-            position: "absolute",
-            right: 20
-          },
-          menuIcon: { fontSize: 20, color: "#1b374" }
-        }}
+        className={TopBarIconsUIClassNames.menu}
+        styles={menuIconSize}
         persistMenu={false}
-        menuProps={{
-          items: getMenuItems(),
-          shouldFocusOnMount: true,
-          shouldFocusOnContainer: true
-        }}
+        menuProps={menuProps}
       />
     </Stack>
   );

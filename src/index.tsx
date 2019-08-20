@@ -11,10 +11,8 @@ import thunk from "redux-thunk";
 mergeStyles({
   selectors: {
     ":global(body), :global(html), :global(#app)": {
-      width: 300,
-      maxWidth: 344,
-      height: 344,
-      maxHeight: 344,
+      width: 290,
+      height: 274,
       margin: 0,
       padding: 0
     }
