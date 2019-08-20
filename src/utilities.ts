@@ -21,8 +21,26 @@ export async function getQueryTasks(url: string): Promise<{ items?: ITask[]; err
  * @param user IUserInfo object with the user's relevant information
  * @param query IQuery object
  */
-export function getQueryURL(user: IUserInfo, query: IQuery): string {
-  let qualifiers = "";
+export function getQueryURLEndpoint(user: IUserInfo, query: IQuery): string {
+  return "https://api.github.com/search/issues?q=" + getQualifiersStr(user, query);
+}
+
+/**
+ * Constructs the friendly HTML URL given a specific query
+ * @param user IUserInfo object with the user's relevant information
+ * @param query IQuery object
+ */
+export function getQueryURLHTML(user: IUserInfo, query: IQuery): string {
+  return (
+    "https://github.com/" +
+    (query.repo ? query.repo + "/" : "") +
+    "issues?q=" +
+    getQualifiersStr(user, query)
+  );
+}
+
+function getQualifiersStr(user: IUserInfo, query: IQuery): string {
+  let qualifiers = "%20is:open";
   qualifiers += query.type ? "%20is:" + query.type : "";
   qualifiers += query.repo ? "%20repo:" + query.repo : "";
   qualifiers += query.assignee ? "%20assignee:" + query.assignee : "";
@@ -35,8 +53,7 @@ export function getQueryURL(user: IUserInfo, query: IQuery): string {
     });
   }
   qualifiers += query.lastUpdated ? "%20updated:<=" + getRefDate(query.lastUpdated) : "";
-
-  return "https://api.github.com/search/issues?q=" + qualifiers;
+  return qualifiers;
 }
 
 /**
