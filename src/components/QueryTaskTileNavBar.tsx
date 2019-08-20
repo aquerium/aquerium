@@ -8,16 +8,17 @@ import {
   TooltipOverflowMode
 } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
+import { IQuery } from "../state";
 
 /**
  * @property { IQuery } query represents a single IQuery to be rendered
  */
-interface IRenderTileProps {
-  title: string;
+interface IQueryTaskListNavBarProps {
+  query: IQuery;
 }
 
-export const QueryTaskListNavBar = (props: IRenderTileProps): JSX.Element => {
-  const { title } = props;
+export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Element => {
+  const { query } = props;
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
 
@@ -28,7 +29,7 @@ export const QueryTaskListNavBar = (props: IRenderTileProps): JSX.Element => {
     toggleTooltip(!isTooltipVisible);
   };
   return (
-    <Stack horizontal horizontalAlign="center" verticalAlign="center">
+    <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
       <ActionButton
         iconProps={iconProps.back}
         styles={iconSize}
@@ -36,7 +37,7 @@ export const QueryTaskListNavBar = (props: IRenderTileProps): JSX.Element => {
       />
       <TooltipHost
         calloutProps={calloutGapSpace}
-        content={title}
+        content={query.name}
         overflowMode={TooltipOverflowMode.Parent}
         onTooltipToggle={tooltipToggle}
         id={tooltipId}
@@ -47,7 +48,7 @@ export const QueryTaskListNavBar = (props: IRenderTileProps): JSX.Element => {
           block
           aria-labelledby={isTooltipVisible ? tooltipId : undefined}
         >
-          {title}
+          {query.name}
         </Text>
       </TooltipHost>
       <ActionButton

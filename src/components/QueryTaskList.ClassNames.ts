@@ -42,7 +42,7 @@ export const QueryTaskClassNames = mergeStyleSets({
       outline: "none",
       border: "none",
       background: "#f8f8f8",
-      height: "50px",
+      height: "59px",
       paddingLeft: 10,
       paddingTop: 5
     }
@@ -61,18 +61,18 @@ export const QueryTaskClassNames = mergeStyleSets({
     color: "#1b3e74",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     width: "100%",
-    maxWidth: "250",
+    maxWidth: "200px",
     height: "100%"
   },
   basicInfo: {
-    color: "#323130",
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
+    maxWidth: "200px",
     height: "100%",
-    fontSize: 12,
-    fontFamily: "Segoe UI Light"
+    fontSize: 12
   },
   infoIcon: {
     padding: 3

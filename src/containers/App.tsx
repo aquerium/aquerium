@@ -4,7 +4,7 @@ import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { QueryTaskListUI } from "../components/QueryTaskListUI";
-import { IState, ITask, toEditQuery } from "../state";
+import { IState } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
 import { Customizer } from "@uifabric/utilities";
@@ -118,7 +118,7 @@ class AppView extends React.Component<IAppViewProps> {
       default:
         return (
           <Customizer scopedSettings={scopedSettings}>
-            <EditQueryUI />
+            <HomeUI />
           </Customizer>
         );
     }

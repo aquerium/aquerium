@@ -24,11 +24,9 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   return (
     <Stack horizontal verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>
       <Stack horizontalAlign="start" styles={gridStackStyle}>
-        <Link className={QueryTaskClassNames.taskTitle} nowrap block href={task.url}>
-          {task.title}
-        </Link>
+        <Link className={QueryTaskClassNames.taskTitle}>{task.title}</Link>
         <Text className={QueryTaskClassNames.basicInfo} nowrap block>
-          {"#" + task.num + " opened " + task.createdAt + " by " + task.author}
+          #{task.num} opened {task.createdAt} by {task.author}
         </Text>
       </Stack>
       <div className={QueryTaskClassNames.infoIcon}>{description(taskInfo)()}</div>

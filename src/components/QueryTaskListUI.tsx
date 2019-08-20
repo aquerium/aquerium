@@ -7,16 +7,13 @@ interface IQueryTaskListUIProps {
   currQuery: IQuery;
 }
 
-export class QueryTaskListUI extends React.Component<IQueryTaskListUIProps> {
-  public render = (): JSX.Element => {
-    const { currQuery } = this.props;
-    return (
-      <>
-        <QueryTaskListNavBar title={currQuery.name} />
-        <QueryTaskList tasks={currQuery.tasks} labels={currQuery.labels} />
-      </>
-    );
-  };
-}
+export const QueryTaskListUI = (props: IQueryTaskListUIProps): JSX.Element => {
+  return (
+    <>
+      <QueryTaskListNavBar query={props.currQuery} />
+      <QueryTaskList tasks={props.currQuery.tasks} labels={props.currQuery.labels} />
+    </>
+  );
+};
 
 export default QueryTaskListUI;
