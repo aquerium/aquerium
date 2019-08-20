@@ -93,29 +93,22 @@ class AppView extends React.Component<IAppViewProps> {
   // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {}
 
-  public render(): JSX.Element | null {
+  private uiToRender = () => {
     switch (this.props.UI) {
       case "Login": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
-          </Customizer>
-        );
+        return <LoginUI />;
       }
       case "Home": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <HomeUI />
-          </Customizer>
-        );
+        return <HomeUI />;
       }
-      default:
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <HomeUI />
-          </Customizer>
-        );
+      default: {
+        return <HomeUI />;
+      }
     }
+  };
+
+  public render(): JSX.Element | null {
+    return <Customizer scopedSettings={scopedSettings}>{this.uiToRender()}</Customizer>;
   }
 }
 
