@@ -10,6 +10,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
 import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
@@ -19,8 +20,7 @@ const imageProps: IImageProps = {
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 100,
-  height: 100,
-  onLoad: ev => console.log("image loaded", ev)
+  height: 100
 };
 
 /**
@@ -38,16 +38,16 @@ const mapStateToProps = (state: IState) => {
 
 function LoginUIComponent(props: ILoginProps) {
   let currPAT: any = "";
-  const [isValidPAT, setIsValidPAT] = React.useState(true);
+  const [renderError, setRenderError] = React.useState(false);
 
   function onLogin(user: IUserInfo): void {
     props.login(user);
   }
 
   const checkPasswordValidity = () => {
-    if (currPAT !== "correct") setIsValidPAT(false);
+    if (currPAT !== "correct") setRenderError(true);
     else {
-      setIsValidPAT(true);
+      setRenderError(false);
       const dummyData = {
         //TODO This object is an IUser that will be replaced with actual data in Cathy's next PR
         token: "fake token",
@@ -62,7 +62,8 @@ function LoginUIComponent(props: ILoginProps) {
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
-    currPAT = newValue;
+    currPAT = newValue || "";
+    if (currPAT === "") setRenderError(false);
   };
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -75,41 +76,28 @@ function LoginUIComponent(props: ILoginProps) {
   const getTextFieldStyles = (props: ITextFieldStyleProps) => {
     const { required } = props;
     return {
-      root: {
-        width: 175,
-        fontSize: 10,
-        color: "#1b3e74"
-      },
       fieldGroup: [
-        { width: 175 },
+        { width: 180 },
         required && {
-          borderColor: isValidPAT
-            ? props.theme.semanticColors.actionLink
+          borderColor: !renderError
+            ? props.theme.semanticColors.inputBorder
             : props.theme.semanticColors.errorText
         }
       ]
     };
   };
 
+  const stackTokens = {
+    childrenGap: "5%",
+    padding: "20 px"
+  };
+
   return (
-    <Stack
-      horizontalAlign="center"
-      verticalAlign="space-evenly"
-      tokens={{ childrenGap: "5%", padding: "20 px" }}
-    >
+    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
       <Image {...imageProps as any} />
-      <Text
-        styles={{
-          root: {
-            textAlign: "center",
-            padding: 20,
-            fontSize: 12,
-            color: "#1b3e74"
-          }
-        }}
-      >
-        Welcome to Aquerium! <br />
-        Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.
+      <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
+      <Text className={LoginUIClassNames.aqueriumInfo}>
+        Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
       <Stack horizontal>
         <TextField
@@ -118,24 +106,16 @@ function LoginUIComponent(props: ILoginProps) {
           styles={getTextFieldStyles}
           onChange={updateCurrPAT}
           onKeyDown={ensureEnter}
-          errorMessage={isValidPAT ? "" : "InvalidPAT"}
+          errorMessage={renderError ? "InvalidPAT" : ""}
         />
-        <PrimaryButton
-          text="Submit"
-          allowDisabledFocus={true}
-          styles={{ root: { color: "#ffffff", width: "10px" } }}
-          onClick={checkPasswordValidity}
-        />
+        <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={checkPasswordValidity} />
       </Stack>
       <Link
-        styles={{ root: { marginBottom: 5, position: "static" } }}
+        className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"
         target="_blank"
-        style={{
-          fontSize: "11px"
-        }}
       >
-        Don't have a Personal Access Token (PAT)? Get one here.
+        Need a Personal Access Token (PAT)? Get one here.
       </Link>
     </Stack>
   );

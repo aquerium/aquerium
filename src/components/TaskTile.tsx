@@ -17,26 +17,29 @@ interface IRenderTileProps {
   query: IQuery;
 }
 
+const gridStackStyle = {
+  root: { maxWidth: "100%" }
+};
+
 export const TaskTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
+  const calloutGapSpace = { gapSpace: 0 };
+  const tooltipToggle = (isTooltipVisible: boolean): void => {
+    toggleTooltip(!isTooltipVisible);
+  };
   return (
     <DefaultButton
       href="https://github.com"
       target="_blank"
       className={TaskTileClassNames.listGridExampleTile}
-      styles={{ root: { background: "rgba(255, 255, 255, 0.5)" } }}
     >
-      <Stack
-        horizontalAlign="center"
-        verticalAlign="space-evenly"
-        styles={{ root: { maxWidth: "100%" } }}
-      >
+      <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
+          calloutProps={calloutGapSpace}
           content={props.query.name}
-          calloutProps={{ gapSpace: 0 }}
           overflowMode={TooltipOverflowMode.Parent}
-          onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
+          onTooltipToggle={tooltipToggle}
         >
           <Text
             className={TaskTileClassNames.listGridQueryName}
