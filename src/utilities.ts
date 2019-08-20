@@ -3,8 +3,8 @@ import { IUserInfo } from "./api";
 import * as fetch from "isomorphic-fetch";
 
 /**
- * Returns the list of tasks representing the result of a specific query
- * @param url API endpoint for a specific query
+ * Returns the list of tasks representing the result of a specific query.
+ * @param url API endpoint for a specific query.
  */
 export async function getQueryTasks(url: string): Promise<{ items?: ITask[]; errorCode?: number }> {
   const response = await fetch(url);
@@ -17,18 +17,18 @@ export async function getQueryTasks(url: string): Promise<{ items?: ITask[]; err
 }
 
 /**
- * Constructs the API endpoint given a specific query
- * @param user IUserInfo object with the user's relevant information
- * @param query IQuery object
+ * Constructs the API endpoint given a specific query.
+ * @param user Contains the user's relevant information.
+ * @param query Query to get the endpoint URL for.
  */
 export function getQueryURLEndpoint(user: IUserInfo, query: IQuery): string {
   return "https://api.github.com/search/issues?q=" + getQualifiersStr(user, query);
 }
 
 /**
- * Constructs the friendly HTML URL given a specific query
- * @param user IUserInfo object with the user's relevant information
- * @param query IQuery object
+ * Constructs the friendly HTML URL given a specific query.
+ * @param user Contains the user's relevant information.
+ * @param query Query to get the HTML URL for.
  */
 export function getQueryURLHTML(user: IUserInfo, query: IQuery): string {
   return (
@@ -57,9 +57,9 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
 }
 
 /**
- * Constructs the qualifier string for reviewStatus
- * @param reviewStatus User's input for review status
- * @param username User's GitHub username
+ * Constructs the qualifier string for review status.
+ * @param reviewStatus User's input for review status.
+ * @param username User's GitHub username.
  */
 function getReviewString(reviewStatus: string, username: string): string {
   switch (reviewStatus) {
