@@ -2,7 +2,7 @@ import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
-import { IState, queryListType, updateMap, login, IUserInfo } from "../state";
+import { IState, login } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
 import { Customizer } from "@uifabric/utilities";
@@ -78,25 +78,22 @@ const scopedSettings = {
 
 /**
  * @property { string } UI the UI that will be displayed
- * @property { queryList } list the queryList that will store the updated queries from Gist
- * @property { IUserInfo } user the interface that stores the user's validated token, username, and gistID
+ * @property { function } login the login function attempts to authenticate the user upon opening
  */
 interface IAppViewProps {
   UI: string;
-  //updateMap: (list: queryListType) => void;
-  // login: (user: IUserInfo) => void; //STUB, will be implemented when Cathy's PR is approved
+  login: (currPAT: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    UI: state.changeUI.currUI,
-    user: state.user
+    UI: state.changeUI.currUI
   };
 };
 
 class AppView extends React.Component<IAppViewProps> {
   public async componentDidMount(): Promise<void> {
-    //stub
+    this.props.login("");
   }
   public render(): JSX.Element | null {
     switch (this.props.UI) {
@@ -124,7 +121,9 @@ class AppView extends React.Component<IAppViewProps> {
   }
 }
 
-const action = {};
+const action = {
+  login
+};
 
 export const App = connect(
   mapStateToProps,

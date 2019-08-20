@@ -28,13 +28,13 @@ export const login = (currPAT: string) => {
             username: result.username,
             gistID: result.gistID
           };
-          const responseMap = await getQueryMapObj(user); // This gets called twice if a user's pat is invalid and they try it again
+          const responseMap = await getQueryMapObj(user);
           if (responseMap.queryMap === undefined) {
             //If queryMap is undefined, this this user has invalid credentials
-            dispatch(setValidPAT(false));
+            dispatch(setValidPAT(true));
           } else {
             //else, the user's querymap already exists
-            dispatch(setValidPAT(true));
+            dispatch(setValidPAT(false));
             chrome.storage.sync.set({
               token: currPAT,
               username: user.username,
@@ -44,14 +44,14 @@ export const login = (currPAT: string) => {
             dispatch(toHome());
           }
         } else {
-          //if username and gistID aren't in storage, then this is a new user!
+          //if username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid
           const responseGist = await createGist(currPAT);
           if (responseGist.user === undefined) {
-            //if the pat is invalid yet again
-            dispatch(setValidPAT(false));
-          } else {
-            //if the pat is valid, make a new user and save the creds
+            //if the pat is invalid
             dispatch(setValidPAT(true));
+          } else {
+            //if the pat is valid, make a new user and save their userInfo to the gist
+            dispatch(setValidPAT(false));
             chrome.storage.sync.set({
               token: currPAT,
               username: responseGist.user.username,
@@ -78,6 +78,16 @@ export const login = (currPAT: string) => {
         }
       });
     }
+  };
+};
+
+/**
+ * Action creator to clear a user's stored token and then logout
+ */
+export const clearTokenLogout = () => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    chrome.storage.sync.set({ token: "" });
+    dispatch(logout());
   };
 };
 

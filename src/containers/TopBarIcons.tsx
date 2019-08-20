@@ -8,7 +8,7 @@ import {
   CommandBarButton,
   Text
 } from "office-ui-fabric-react";
-import { logout, editQuery, IQuery } from "../state";
+import { clearTokenLogout, editQuery, IQuery } from "../state";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
@@ -17,9 +17,11 @@ import {
   menuIconSize
 } from "../components/TopBarIconsStyles";
 
+/**
+ * @property { function } clearTokenLogout a function linked with the action creator to log the user out, which also clears the user's PAT from local storage
+ */
 interface ITopBarIconsProps {
-  logout: () => void;
-  editQuery: (query: IQuery) => void;
+  clearTokenLogout: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -41,20 +43,12 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         }
       },
       {
-        key: "edit queries",
-        name: "Edit Queries",
-        iconProps: {
-          iconName: "Edit"
-        },
-        onClick: () => {}
-      },
-      {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut",
-          onClick: props.logout
-        }
+          iconName: "SignOut"
+        },
+        onClick: props.clearTokenLogout
       }
     ]
   };
@@ -78,8 +72,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  logout,
-  editQuery
+  clearTokenLogout
 };
 
 export const TopBarIcons = connect(

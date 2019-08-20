@@ -1,7 +1,7 @@
 import update from "immutability-helper";
 import { setValidPATAction } from "../actions";
 
-const DEFAULT_STATE: boolean = true;
+const DEFAULT_STATE: boolean = false;
 
 /**
  * This reducer sets the validity of the user's entered PAT on the Login UI

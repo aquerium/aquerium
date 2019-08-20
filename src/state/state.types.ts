@@ -13,7 +13,7 @@ export interface IState {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
   };
   user: IUserInfo;
-  validPAT: boolean;
+  setValidPAT: boolean;
 }
 
 /**

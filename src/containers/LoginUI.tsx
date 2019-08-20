@@ -30,16 +30,20 @@ const imageProps: IImageProps = {
 
 /**
  * @property { function } login a function that calls the login action
+ * @property { function } setValidPAT a function that sets the validity of the PAT for the UI to respond to
+ * @property { boolean } invalidPAT a boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object
  */
 interface ILoginProps {
   login: (PAT: string) => void;
-  setValidPAT: (isValid: boolean) => void;
-  isValidPAT: boolean;
+  setValidPAT: (isInvalid: boolean) => void;
+  invalidPAT: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
+  console.log(state);
+
   return {
-    isValidPAT: state.validPAT //isValidPAT is our new hook
+    invalidPAT: state.setValidPAT //isValidPAT is our new hook
   };
 };
 
@@ -99,10 +103,8 @@ function LoginUIComponent(props: ILoginProps) {
   };
 
   function onLogin() {
-    console.log("here");
-    console.log(props.isValidPAT); //does this not call?
+    //console.log(props); //props.isValidPAT is undefined!
     props.login(currPAT);
-    console.log(props.isValidPAT);
   }
 
   return (
@@ -116,10 +118,10 @@ function LoginUIComponent(props: ILoginProps) {
         <TextField
           placeholder="Enter your GitHub PAT"
           required
-          styles={getTextFieldStyles(props.isValidPAT)}
+          styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
-          errorMessage={props.isValidPAT ? "InvalidPAT" : ""}
+          errorMessage={props.invalidPAT ? "InvalidPAT" : ""}
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
