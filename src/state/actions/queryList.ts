@@ -15,7 +15,7 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  */
 export const editQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    const userInfo: IUserInfo = getState().user;
+    /*const userInfo: IUserInfo = getState().user;
     const resp = await getQueryTasks(getQueryURL(userInfo, query));
     let newQuery = null;
     if (resp.errorCode || !resp.items) {
@@ -26,34 +26,34 @@ export const editQuery = (query: IQuery) => {
       newQuery = update(query, {
         tasks: { $set: resp.items }
       });
-    }
+    }*/
     //once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const list: queryListType = getState().queryList;
-    const newList = update(list, { [newQuery.id]: { $set: newQuery } });
-    const response = await updateGist(getState().user, newList);
+    const newList = update(list, { [query.id]: { $set: query } });
+    /*const response = await updateGist(getState().user, newList);
     if (response.errorCode) {
       alert("API request failed :(");
       return;
-    } else {
-      dispatch(updateMap(newList));
-    }
+    } else {*/
+    dispatch(updateMap(newList));
+    //}
   };
 };
 
 /**
  * Action creator to remove the specified query from queryList.
  */
-export const removeQuery = (queryName: string) => {
+export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     let list: queryListType = getState().queryList;
-    const newList = update(list, { $unset: [queryName] });
-    const response = await updateGist(getState().user, newList);
+    const newList = update(list, { $unset: [queryID] });
+    /*const response = await updateGist(getState().user, newList);
     if (response.errorCode) {
       alert("API request failed :(");
       return;
-    } else {
-      dispatch(updateMap(newList));
-    }
+    } else {*/
+    dispatch(updateMap(newList));
+    //}
   };
 };
 

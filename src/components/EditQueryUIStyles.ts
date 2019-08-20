@@ -1,4 +1,4 @@
-import { mergeStyleSets, mergeStyles } from "@uifabric/styling";
+import { mergeStyleSets } from "@uifabric/styling";
 
 export const rootTokenGap = {
   childrenGap: 5

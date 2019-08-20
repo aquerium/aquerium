@@ -12,6 +12,7 @@ import {
 } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import { IState, IUserInfo, login } from "../state";
+import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",

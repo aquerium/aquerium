@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 import update from "immutability-helper";
-import { TaskTileClassNames } from "./TaskTile.ClassNames";
+import { TaskTileClassNames } from "../components/TaskTile.ClassNames";
 import {
   Stack,
   TextField,
@@ -12,16 +12,18 @@ import {
   Dropdown,
   IDropdownOption
 } from "office-ui-fabric-react";
-import { description } from "./InfoButton";
-import { IQuery } from "../state";
-import { MultiSelect } from "./MultiSelect";
+import { description } from "../components/InfoButton";
+import { IQuery, toHome, editQuery, removeQuery, IState, queryListType } from "../state";
+import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "./EditQueryUIStyles";
+} from "../components/EditQueryUIStyles";
+import { connect } from "react-redux";
+import { createUid } from "../utilities/uIDGenerator";
 
 enum InputStatuses {
   /* Value indicating that the input has been validated and successfully updated to the new (or existing) query */
@@ -55,7 +57,17 @@ interface IEditQueryUIState {
 
 interface IEditQueryUIProps {
   currQuery?: IQuery;
+  queryList: queryListType;
+  toHome: () => void;
+  editQuery: (query: IQuery) => void;
+  removeQuery: (id: string) => void;
 }
+
+const mapStateToProps = (state: IState) => {
+  return {
+    queryList: state.queryList
+  };
+};
 
 export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
@@ -229,14 +241,32 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         actions: (
           <div>
             <MessageBarButton text="Save" onClick={this._setMessageBarSave} />
-            {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="Discard" />
+            <MessageBarButton text="Discard" onClick={this.props.toHome} />
           </div>
         ),
         renderMessageBar: true
       });
+    } else {
+      let query: IQuery = this.state.selections;
+      if (query.id === "") {
+        //in thise case, we need to generate a unique ID for this query
+        let newID: string = createUid();
+        while (!this._isValidID(newID)) {
+          newID = createUid();
+        }
+        const newQuery = update(this.state.selections, { id: { $set: newID } });
+        this.props.editQuery(newQuery);
+      } else this.props.editQuery(query); //if not, the ID already exists in the map, so just update it
+      this.props.toHome();
     }
-    //Else go back to home screen.
+  };
+
+  private _isValidID = (id: string): boolean => {
+    const map: queryListType = this.props.queryList;
+    for (const key in map) {
+      if (id === key) return false;
+    }
+    return true;
   };
 
   private _setMessageBarSave = (): void => {
@@ -251,7 +281,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         actions: undefined,
         renderMessageBar: true
       });
-      //Use Redux to save query selections
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -268,14 +297,23 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       message: "Are you sure you wish to delete this query?",
       actions: (
         <div>
-          {/* Insert query delete Redux and go back to home screen */}
-          <MessageBarButton text="Remove" />
+          {/* Insert query, delete Redux, and go back to home screen */}
+          <MessageBarButton text="Remove" onClick={this._onRemove} />
           {/* Cancel and continue editing */}
           <MessageBarButton text="Cancel" onClick={this._onDismissMessageBar} />
         </div>
       ),
       renderMessageBar: true
     });
+  };
+
+  private _onRemove = (): void => {
+    const queryID: string = this.state.selections.id;
+    if (queryID !== "") {
+      //if the ID exists, this is a real query we should remove
+      this.props.removeQuery(queryID);
+    }
+    this.props.toHome();
   };
 
   private _onDismissMessageBar = (): void => {
@@ -425,4 +463,13 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   };
 }
 
-export default EditQueryUI;
+const action = {
+  toHome,
+  editQuery,
+  removeQuery
+};
+
+export const EditQuery = connect(
+  mapStateToProps,
+  action
+)(EditQueryUI);

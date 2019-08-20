@@ -18,13 +18,6 @@ export const getMenuItems = [
     }
   },
   {
-    key: "edit queries",
-    name: "Edit Queries",
-    iconProps: {
-      iconName: "Edit"
-    }
-  },
-  {
     key: "sign out",
     name: "Sign Out",
     iconProps: {

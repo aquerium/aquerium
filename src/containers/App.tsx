@@ -2,6 +2,7 @@ import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
+import { EditQuery } from "./EditQuery";
 import { IState, queryListType, updateMap } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
@@ -110,6 +111,13 @@ class AppView extends React.Component<IAppViewProps> {
         return (
           <Customizer scopedSettings={scopedSettings}>
             <HomeUI />
+          </Customizer>
+        );
+      }
+      case "EditQuery": {
+        return (
+          <Customizer scopedSettings={scopedSettings}>
+            <EditQuery />
           </Customizer>
         );
       }
