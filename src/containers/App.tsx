@@ -1,8 +1,10 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
+import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
-import { IState } from "../state";
+import { QueryTaskListUI } from "../components/QueryTaskListUI";
+import { IState, ITask, toEditQuery } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
 import { Customizer } from "@uifabric/utilities";
@@ -54,7 +56,8 @@ const scopedSettings = {
       root: {
         boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
       }
-    }
+    },
+    target: "_blank"
   },
   Dropdown: {
     styles: {
@@ -73,6 +76,9 @@ const scopedSettings = {
   },
   Slider: {
     styles: { container: { width: 200 } }
+  },
+  Link: {
+    target: "_blank"
   }
 };
 
@@ -112,7 +118,7 @@ class AppView extends React.Component<IAppViewProps> {
       default:
         return (
           <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
+            <EditQueryUI />
           </Customizer>
         );
     }
