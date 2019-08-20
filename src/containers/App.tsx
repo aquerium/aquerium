@@ -83,8 +83,8 @@ const scopedSettings = {
  */
 interface IAppViewProps {
   UI: string;
-  updateMap: (list: queryListType) => void;
-  login: (user: IUserInfo) => void; //STUB, will be implemented when Cathy's PR is approved
+  //updateMap: (list: queryListType) => void;
+  // login: (user: IUserInfo) => void; //STUB, will be implemented when Cathy's PR is approved
 }
 
 const mapStateToProps = (state: IState) => {
@@ -95,11 +95,9 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-  // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {
-    //TODO: Once Cathy's authenitcation PR is approved, add a call to props.updateMap with the verified queryMap
+    //stub
   }
-
   public render(): JSX.Element | null {
     switch (this.props.UI) {
       case "Login": {
@@ -126,10 +124,7 @@ class AppView extends React.Component<IAppViewProps> {
   }
 }
 
-const action = {
-  updateMap,
-  login
-};
+const action = {};
 
 export const App = connect(
   mapStateToProps,

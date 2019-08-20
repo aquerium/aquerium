@@ -5,6 +5,7 @@
  * @property { queryListType } queryList a map of strings (query ID's) to IQueries
  * @property { object } changeUI stores a string containing the current UI
  * @property { object } user stores a user's personal data
+ * @property { boolean } validPAT stores a boolean that determines whether a user's PAT was valid
  */
 export interface IState {
   queryList: queryListType;
@@ -12,6 +13,7 @@ export interface IState {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
   };
   user: IUserInfo;
+  validPAT: boolean;
 }
 
 /**

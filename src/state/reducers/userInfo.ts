@@ -12,7 +12,7 @@ export const userInfo = (
   action: changeUILoginAction | changeUIAction
 ) => {
   switch (action.type) {
-    case "LOGIN": {
+    case "USER": {
       const { user } = action as changeUILoginAction;
       return update(state, { $set: user });
     }
