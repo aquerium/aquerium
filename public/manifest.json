@@ -8,6 +8,10 @@
     "default_popup": "index.html",
     "default_icon": "GlitterboxLogo2.png"
   },
+  "background": {
+    "scripts": ["./dist/background.js"],
+    "persistent": false
+  },
   "icons": {
     "131": "GlitterboxLogo2.png"
   },
