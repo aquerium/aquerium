@@ -43,10 +43,10 @@ export const editQuery = (query: IQuery) => {
 /**
  * Action creator to remove the specified query from queryList.
  */
-export const removeQuery = (queryName: string) => {
+export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     let list: queryListType = getState().queryList;
-    const newList = update(list, { $unset: [queryName] });
+    const newList = update(list, { $unset: [queryID] });
     const response = await updateGist(getState().user, newList);
     if (response.errorCode) {
       alert("API request failed :(");

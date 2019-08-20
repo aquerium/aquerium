@@ -37,9 +37,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         key: "add query",
         name: "Add Query",
         iconProps: {
-          iconName: "SignOut"
-        },
-        onClick: props.logout
+          iconName: "Add"
+        }
       },
       {
         key: "edit queries",

@@ -2,7 +2,7 @@ import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
-import { IState, queryListType, updateMap } from "../state";
+import { IState, queryListType, updateMap, login, IUserInfo } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
 import { Customizer } from "@uifabric/utilities";
@@ -78,16 +78,19 @@ const scopedSettings = {
 
 /**
  * @property { string } UI the UI that will be displayed
+ * @property { queryList } list the queryList that will store the updated queries from Gist
+ * @property { IUserInfo } user the interface that stores the user's validated token, username, and gistID
  */
 interface IAppViewProps {
   UI: string;
   updateMap: (list: queryListType) => void;
+  login: (user: IUserInfo) => void; //STUB, will be implemented when Cathy's PR is approved
 }
 
 const mapStateToProps = (state: IState) => {
   return {
     UI: state.changeUI.currUI,
-    list: state.queryList
+    user: state.user
   };
 };
 
@@ -124,7 +127,8 @@ class AppView extends React.Component<IAppViewProps> {
 }
 
 const action = {
-  updateMap
+  updateMap,
+  login
 };
 
 export const App = connect(
