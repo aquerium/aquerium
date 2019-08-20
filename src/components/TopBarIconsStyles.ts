@@ -5,8 +5,8 @@ export const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
-  width: 50,
-  height: 50
+  width: 40,
+  height: 40
 };
 
 export const getMenuIconName = {
