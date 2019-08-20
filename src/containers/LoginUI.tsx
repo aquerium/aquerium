@@ -95,7 +95,12 @@ function LoginUIComponent(props: ILoginProps) {
   };
 
   return (
-    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
+    <Stack
+      horizontalAlign="center"
+      verticalAlign="space-evenly"
+      tokens={stackTokens}
+      className={LoginUIClassNames.root}
+    >
       <Image {...imageProps as any} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>

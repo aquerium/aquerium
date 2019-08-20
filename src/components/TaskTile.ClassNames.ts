@@ -25,7 +25,7 @@ interface ITaskTile {
 
 export const TaskTileClassNames: ITaskTile = mergeStyleSets({
   root: {
-    height: "100%",
+    height: "274",
     width: "100%",
     overflow: "auto",
     overflowY: "scroll"

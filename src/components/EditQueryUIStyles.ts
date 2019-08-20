@@ -22,7 +22,10 @@ export const actionIcons = {
 export const EditQueryUIClassNames = mergeStyleSets({
   root: {
     padding: "2px 0px 2px 5px",
-    color: "#1b3e74"
+    color: "#1b3e74",
+    height: "100%",
+    overflow: "hidden",
+    overflowY: "scroll"
   }
 });
 

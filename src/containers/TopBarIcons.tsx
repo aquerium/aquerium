@@ -1,20 +1,13 @@
 import * as React from "react";
-import {
-  Image,
-  IImageProps,
-  ImageFit,
-  Stack,
-  Link,
-  CommandBarButton,
-  Text
-} from "office-ui-fabric-react";
+import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
 import { logout } from "../state";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
   TopBarIconsUIClassNames,
   getMenuIconName,
-  menuIconSize
+  menuIconSize,
+  imageProps
 } from "../components/TopBarIconsStyles";
 
 interface ITopBarIconsProps {
@@ -22,14 +15,6 @@ interface ITopBarIconsProps {
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
-  const imageProps: IImageProps = {
-    src: "GlitterboxLogo2.png",
-    imageFit: ImageFit.centerContain,
-    maximizeFrame: true,
-    width: 80,
-    height: 80
-  };
-
   const menuProps = {
     items: [
       {
@@ -43,9 +28,9 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         key: "sign out",
         name: "Sign Out",
         iconProps: {
-          iconName: "SignOut",
-          onClick: props.logout
-        }
+          iconName: "SignOut"
+        },
+        onClick: props.logout
       }
     ]
   };
