@@ -15,6 +15,8 @@ import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
 
+const ENTER_KEYCODE = 13;
+
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
   imageFit: ImageFit.centerContain,
@@ -68,7 +70,7 @@ function LoginUIComponent(props: ILoginProps) {
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!event) return;
-    if (event.which === 13) {
+    if (event.which === ENTER_KEYCODE) {
       checkPasswordValidity();
     }
   };
@@ -89,7 +91,7 @@ function LoginUIComponent(props: ILoginProps) {
 
   const stackTokens = {
     childrenGap: "5%",
-    padding: "20 px"
+    padding: "20px"
   };
 
   return (

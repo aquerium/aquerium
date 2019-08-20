@@ -40,14 +40,6 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         }
       },
       {
-        key: "edit queries",
-        name: "Edit Queries",
-        iconProps: {
-          iconName: "Edit"
-        },
-        onClick: () => {}
-      },
-      {
         key: "sign out",
         name: "Sign Out",
         iconProps: {

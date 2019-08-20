@@ -112,7 +112,7 @@ class AppView extends React.Component<IAppViewProps> {
       default:
         return (
           <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
+            <HomeUI />
           </Customizer>
         );
     }
