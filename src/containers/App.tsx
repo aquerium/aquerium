@@ -4,7 +4,7 @@ import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { IState } from "../state";
 import { connect } from "react-redux";
-import { hoveringAndShading } from "../components/HoveringAndShadingStyles";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 
