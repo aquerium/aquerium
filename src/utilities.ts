@@ -5,7 +5,7 @@ import fetch from "isomorphic-fetch";
 /**
  * Represents an issue item in GitHub's API.
  */
-export interface IIssue {
+interface IIssue {
   url: string;
   repository_url: string;
   labels_url: string;
@@ -96,7 +96,7 @@ export interface IIssue {
 /**
  * Represents a pull request item in GitHub's API.
  */
-export interface IPull {
+interface IPull {
   url: string;
   repository_url: string;
   labels_url: string;

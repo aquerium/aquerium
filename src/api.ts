@@ -19,7 +19,7 @@ export interface IUserInfo {
 /**
  * Represents the object structure for using GitHub Gists API
  */
-export interface IGist {
+interface IGist {
   /* Description of the gist */
   description: string;
   /* Whether the gist is public or private */
