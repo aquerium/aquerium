@@ -7,13 +7,11 @@ import {
   getId,
   DefaultButton
 } from "office-ui-fabric-react";
-import { TaskTileClassNames } from "./TaskTile.ClassNames";
+import { QueryTileClassNames } from "./QueryTile.styles";
 import { IQuery } from "../state";
 
-/**
- * @property { IQuery } query represents a single IQuery to be rendered
- */
 interface IRenderTileProps {
+  /** A single IQuery to be rendered. */
   query: IQuery;
 }
 
@@ -21,7 +19,7 @@ const gridStackStyle = {
   root: { maxWidth: "100%" }
 };
 
-export const TaskTile = (props: IRenderTileProps): JSX.Element => {
+export const QueryTile = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
@@ -29,11 +27,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
     toggleTooltip(!isTooltipVisible);
   };
   return (
-    <DefaultButton
-      href="https://github.com"
-      target="_blank"
-      className={TaskTileClassNames.listGridExampleTile}
-    >
+    <DefaultButton className={QueryTileClassNames.queryTile}>
       <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
           calloutProps={calloutGapSpace}
@@ -42,7 +36,7 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
           onTooltipToggle={tooltipToggle}
         >
           <Text
-            className={TaskTileClassNames.listGridQueryName}
+            className={QueryTileClassNames.queryName}
             nowrap
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
@@ -50,7 +44,9 @@ export const TaskTile = (props: IRenderTileProps): JSX.Element => {
             {props.query.name}
           </Text>
         </TooltipHost>
-        <Text className={TaskTileClassNames.listGridElmCount}>{props.query.tasks.length}</Text>
+        <Text className={QueryTileClassNames.queryTaskCount}>
+          {props.query.tasks.length.toString()}
+        </Text>
       </Stack>
     </DefaultButton>
   );
