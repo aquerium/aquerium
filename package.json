@@ -22,9 +22,12 @@
     "@types/isomorphic-fetch": "0.0.35",
     "@types/node": "^12.6.8",
     "@types/react": "^16.8.23",
-    "@types/react-dom": "^16.8.5"
+    "@types/react-dom": "^16.8.5",
+    "webpack-cli": "^3.3.7"
   },
   "scripts": {
+    "start:background": "webpack -w --progress",
+    "build:background": "webpack",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

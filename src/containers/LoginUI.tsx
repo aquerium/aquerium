@@ -10,9 +10,11 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
 import { IState, IUserInfo, login } from "../state";
-import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
+
+const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
@@ -22,10 +24,8 @@ const imageProps: IImageProps = {
   height: 100
 };
 
-/**
- * @property { function } login a function that calls the login action
- */
 interface ILoginProps {
+  /** A function that calls the login action */
   login: (user: IUserInfo) => void;
 }
 
@@ -63,7 +63,7 @@ function LoginUIComponent(props: ILoginProps) {
 
   const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!event) return;
-    if (event.which === 13) {
+    if (event.which === ENTER_KEYCODE) {
       checkPasswordValidity();
     }
   };
@@ -84,11 +84,16 @@ function LoginUIComponent(props: ILoginProps) {
 
   const stackTokens = {
     childrenGap: "5%",
-    padding: "20 px"
+    padding: "20px"
   };
 
   return (
-    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
+    <Stack
+      horizontalAlign="center"
+      verticalAlign="space-evenly"
+      tokens={stackTokens}
+      className={LoginUIClassNames.root}
+    >
       <Image {...imageProps as any} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>

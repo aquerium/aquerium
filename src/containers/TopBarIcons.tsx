@@ -1,36 +1,22 @@
 import * as React from "react";
-import {
-  Image,
-  IImageProps,
-  ImageFit,
-  Stack,
-  Link,
-  CommandBarButton,
-  Text
-} from "office-ui-fabric-react";
 import { logout, toEditQuery } from "../state";
+import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
   TopBarIconsUIClassNames,
   getMenuIconName,
-  menuIconSize
-} from "../components/TopBarIconsStyles";
+  menuIconSize,
+  imageProps
+} from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
+  /** Function called when user wishes to logout. */
   logout: () => void;
   toEditQuery: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
-  const imageProps: IImageProps = {
-    src: "GlitterboxLogo2.png",
-    imageFit: ImageFit.centerContain,
-    maximizeFrame: true,
-    width: 80,
-    height: 80
-  };
-
   const menuProps = {
     items: [
       {

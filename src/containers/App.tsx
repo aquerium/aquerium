@@ -5,7 +5,7 @@ import { LoginUI } from "./LoginUI";
 import { EditQuery } from "./EditQuery";
 import { IState, queryListType, updateMap } from "../state";
 import { connect } from "react-redux";
-import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 
@@ -78,7 +78,7 @@ const scopedSettings = {
 };
 
 /**
- * @property { string } UI the UI that will be displayed
+ * @property { string } UI The UI that will be displayed.
  */
 interface IAppViewProps {
   UI: string;
@@ -98,21 +98,17 @@ class AppView extends React.Component<IAppViewProps> {
     //TODO: Once Cathy's authenitcation PR is approved, add a call to props.updateMap with the verified queryMap
   }
 
-  public render(): JSX.Element | null {
+  public render(): JSX.Element {
+    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
+  }
+
+  private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
-          </Customizer>
-        );
+        return <LoginUI />;
       }
       case "Home": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <HomeUI />
-          </Customizer>
-        );
+        return <HomeUI />;
       }
       case "EditQuery": {
         return (
@@ -121,14 +117,11 @@ class AppView extends React.Component<IAppViewProps> {
           </Customizer>
         );
       }
-      default:
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
-          </Customizer>
-        );
+      default: {
+        return <HomeUI />;
+      }
     }
-  }
+  };
 }
 
 const action = {

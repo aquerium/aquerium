@@ -12,7 +12,7 @@ mergeStyles({
   selectors: {
     ":global(body), :global(html), :global(#app)": {
       width: 290,
-      height: 274,
+      height: 364,
       margin: 0,
       padding: 0
     }
