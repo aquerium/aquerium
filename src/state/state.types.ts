@@ -32,6 +32,8 @@ export interface ITask {
   state: "open" | "closed";
   createdAt: string;
   updatedAt: string;
+  /** The HTML URL for this task. */
+  url: string;
 }
 
 /**
@@ -79,7 +81,7 @@ export interface IQuery {
  * Contains relevant information for the authenticated user
  */
 export interface IUserInfo {
-  token: string /*user's GitHub personal access token */;
+  token: string /* User's GitHub personal access token */;
   username: string /* User's GitHub username */;
   gistID: string /* ID of user's gist (for Aquerium) */;
 }

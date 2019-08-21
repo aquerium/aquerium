@@ -1,193 +1,27 @@
-import { IQuery, ITask } from "./state";
-import { IUserInfo } from "./api";
+import { IQuery, ITask, IUserInfo } from "./state";
 import fetch from "isomorphic-fetch";
 
 /**
  * Represents an issue item in GitHub's API.
  */
 interface IIssue {
-  url: string;
-  repository_url: string;
-  labels_url: string;
-  comments_url: string;
-  events_url: string;
   html_url: string;
-  id: number;
-  node_id: string;
   number: number;
   title: string;
-  user: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    gravatar_id: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-  };
-  labels: [
-    { id: number; node_id: string; url: string; name: string; color: string; default: boolean }
-  ];
-  state: string;
-  locked: boolean;
-  assignee: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    gravatar_id: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-  };
-  assignees: [
-    {
-      login: string;
-      id: number;
-      node_id: string;
-      avatar_url: string;
-      gravatar_id: string;
-      url: string;
-      html_url: string;
-      followers_url: string;
-      following_url: string;
-      gists_url: string;
-      starred_url: string;
-      subscriptions_url: string;
-      organizations_url: string;
-      repos_url: string;
-      events_url: string;
-      received_events_url: string;
-      type: string;
-      site_admin: boolean;
-    }
-  ];
-  milestone: string;
-  comments: number;
   created_at: string;
   updated_at: string;
-  closed_at: string;
-  author_association: string;
-  body: string;
-  score: number;
 }
 
 /**
  * Represents a pull request item in GitHub's API.
  */
 interface IPull {
-  url: string;
-  repository_url: string;
-  labels_url: string;
-  comments_url: string;
-  events_url: string;
   html_url: string;
-  id: number;
-  node_id: string;
   number: number;
   title: string;
-  user: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    gravatar_id: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-  };
-  labels: [
-    { id: number; node_id: string; url: string; name: string; color: string; default: boolean }
-  ];
-  state: string;
-  locked: boolean;
-  assignee: {
-    login: string;
-    id: number;
-    node_id: string;
-    avatar_url: string;
-    gravatar_id: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-  };
-  assignees: [
-    {
-      login: string;
-      id: number;
-      node_id: string;
-      avatar_url: string;
-      gravatar_id: string;
-      url: string;
-      html_url: string;
-      followers_url: string;
-      following_url: string;
-      gists_url: string;
-      starred_url: string;
-      subscriptions_url: string;
-      organizations_url: string;
-      repos_url: string;
-      events_url: string;
-      received_events_url: string;
-      type: string;
-      site_admin: boolean;
-    }
-  ];
-  milestone: string;
-  comments: number;
   created_at: string;
   updated_at: string;
-  closed_at: string;
-  author_association: string;
-  pull_request: {
-    url: string;
-    html_url: string;
-    diff_url: string;
-    patch_url: string;
-  };
-  body: string;
-  score: number;
+  pull_request: {};
 }
 
 /**
@@ -210,7 +44,8 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
       type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
       state: "open",
       createdAt: item.created_at.substring(0, 10),
-      updatedAt: item.updated_at.substring(0, 10)
+      updatedAt: item.updated_at.substring(0, 10),
+      url: item.html_url
     };
     tasks.push(task);
   });
@@ -257,11 +92,6 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   return qualifiers;
 }
 
-/**
- * Constructs the qualifier string for review status.
- * @param reviewStatus User's input for review status.
- * @param username User's GitHub username.
- */
 function getReviewString(reviewStatus: string, username: string): string {
   switch (reviewStatus) {
     case "No reviews":
