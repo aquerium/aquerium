@@ -9,7 +9,7 @@ interface ITileListUIProps {
   queryList: queryListType;
 }
 
-function TileListComponent(props: ITileListUIProps) {
+function QueryListComponent(props: ITileListUIProps) {
   return (
     <div className={QueryTileClassNames.root}>
       <div className={QueryTileClassNames.listContainer}>
@@ -25,4 +25,4 @@ const mapStateToProps = (state: IState) => ({
   queryList: state.queryList
 });
 
-export const TileListUI = connect(mapStateToProps)(TileListComponent);
+export const TileListUI = connect(mapStateToProps)(QueryListComponent);
