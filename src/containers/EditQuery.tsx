@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 import update from "immutability-helper";
-import { TaskTileClassNames } from "../components/TaskTile.ClassNames";
+import { QueryTileClassNames } from "../components/QueryTile.styles";
 import {
   Stack,
   TextField,
@@ -21,7 +21,7 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "../components/EditQueryUIStyles";
+} from "../components/EditQueryUI.styles";
 import { connect } from "react-redux";
 import { createUid } from "../utilities/uIDGenerator";
 
@@ -78,14 +78,14 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, daysSinceUpdate: 7, tasks: [] }
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 7, tasks: [] }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
 
   public render = (): JSX.Element => {
     return (
-      <div className={TaskTileClassNames.root}>
+      <div className={QueryTileClassNames.root}>
         <Stack
           horizontalAlign="start"
           verticalAlign="space-evenly"
