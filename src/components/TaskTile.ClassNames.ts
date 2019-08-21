@@ -2,24 +2,20 @@ import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShadingSyles";
 
 /**
- * interface for grid styling
+ * Interface for grid styling
  *
  * @interface
  */
-
-/**
- * Defines styles for the various aspects of the TaskTile grid
- * @property {string} root
- * @property { string } listContainer
- * @property { string } listGridExampleTile
- * @property { string } listGridQueryName
- * @property { string } listGridElmCount
- */
 interface ITaskTile {
+  /** Root container for the grid of queries. */
   root: string;
+  /** Grid of queries. */
   listContainer: string;
+  /** A single tile for a query. */
   listGridExampleTile: string;
+  /** The styles for the query title. */
   listGridQueryName: string;
+  /** The styles for the number of tasks assigned to this query. */
   listGridElmCount: string;
 }
 

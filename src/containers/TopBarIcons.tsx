@@ -8,9 +8,10 @@ import {
   getMenuIconName,
   menuIconSize,
   imageProps
-} from "./TopBarIconsStyles";
+} from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
+  /** Function called when user wishes to logout. */
   logout: () => void;
 }
 

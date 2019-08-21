@@ -24,36 +24,39 @@ import {
 } from "./EditQueryUIStyles";
 
 enum InputStatuses {
-  /* Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
+  /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
   successfulEdit = 0,
-  /* Value indicating that the current user input is not valid. */
+  /** Value indicating that the current user input is not valid. */
   invalidEdit,
-  /* Value indicating that that the user input has been saved to the current query edits. */
+  /** Value indicating that that the user input has been saved to the current query edits. */
   saved
 }
 
 interface IEditQueryUIState {
-  /* Tracks the state of changes the user is making to a query's settings. */
+  /** Tracks the state of changes the user is making to a query's settings. */
   inputStatus: InputStatuses;
-  /** Tracks the the type of message that should be rendered, 
-      given the action the user wants to take and the status of the query's settings.
-  */
+  /**
+   * Tracks the the type of message that should be rendered,
+   * given the action the user wants to take and the status of the query's settings.
+   */
   messageType: MessageBarType;
-  /* Tracks the message that should be rendered by the message bar, if needed. */
+  /** Tracks the message that should be rendered by the message bar, if needed. */
   message: string;
-  /* MessageBarButton items, if any, that are the options a user can take given a message. */
+  /** MessageBarButton items, if any, that are the options a user can take given a message. */
   actions?: JSX.Element;
-  /* Whether or not a message bar should be rendered, given the action the user wants to take. */
+  /** Whether or not a message bar should be rendered, given the action the user wants to take. */
   renderMessageBar: boolean;
-  /* Whether the review status field is enabled or not, depending on if PR's are in the query. */
+  /** Whether the review status field is enabled or not, depending on if PR's are in the query. */
   enableReviewStatusField: boolean;
-  /** The current selections the user is making to a query, which will be used to either construct
-      a new query or edit an existing one.
-  */
+  /**
+   * The current selections the user is making to a query, which will be used to either construct
+   * a new query or edit an existing one.
+   */
   selections: IQuery;
 }
 
 interface IEditQueryUIProps {
+  /** Current query whose properties are edited. */
   currQuery?: IQuery;
 }
 

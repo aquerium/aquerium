@@ -25,10 +25,8 @@ const imageProps: IImageProps = {
   height: 100
 };
 
-/**
- * @property { function } login a function that calls the login action
- */
 interface ILoginProps {
+  /** A function that calls the login action */
   login: (user: IUserInfo) => void;
 }
 

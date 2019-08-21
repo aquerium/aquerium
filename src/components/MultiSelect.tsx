@@ -11,8 +11,11 @@ import {
 const ENTER_KEYCODE = 13;
 
 interface IMultiSelectProps {
+  /** The titleof the MultiSelect field. */
   label: string;
+  /** The labels that are added/removed. */
   items: string[];
+  /** The funciton to be called after adding/removing labels. */
   onChange: (items: string[]) => void;
 }
 
