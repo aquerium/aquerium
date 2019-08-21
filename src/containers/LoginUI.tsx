@@ -10,7 +10,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
+import { LoginUIClassNames } from "./LoginUI.styles";
 import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";

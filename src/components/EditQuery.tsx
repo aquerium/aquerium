@@ -1,6 +1,5 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import update from "immutability-helper";
-import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import {
   Stack,
   TextField,
@@ -21,7 +20,7 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "./EditQueryUIStyles";
+} from "./EditQueryUI.styles";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */

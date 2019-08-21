@@ -6,7 +6,7 @@ import {
   dropdownAndLabels,
   labels,
   buttonProps
-} from "./MultiSelectStyles";
+} from "./MultiSelect.styles";
 
 const ENTER_KEYCODE = 13;
 

@@ -6,20 +6,20 @@ import { hoveringAndShading } from "./HoveringAndShadingSyles";
  *
  * @interface
  */
-interface ITaskTile {
+interface IQueryTile {
   /** Root container for the grid of queries. */
   root: string;
   /** Grid of queries. */
   listContainer: string;
   /** A single tile for a query. */
-  listGridExampleTile: string;
+  queryTile: string;
   /** The styles for the query title. */
-  listGridQueryName: string;
+  queryName: string;
   /** The styles for the number of tasks assigned to this query. */
-  listGridElmCount: string;
+  queryTaskCount: string;
 }
 
-export const TaskTileClassNames: ITaskTile = mergeStyleSets({
+export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
     height: "274",
     width: "100%",
@@ -35,7 +35,7 @@ export const TaskTileClassNames: ITaskTile = mergeStyleSets({
     boxSizing: "border-box",
     padding: 8
   },
-  listGridExampleTile: [
+  queryTile: [
     hoveringAndShading,
     {
       textAlign: "center",
@@ -47,7 +47,7 @@ export const TaskTileClassNames: ITaskTile = mergeStyleSets({
       background: "#f8f8f8"
     }
   ],
-  listGridQueryName: {
+  queryName: {
     color: "#323130",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -57,7 +57,7 @@ export const TaskTileClassNames: ITaskTile = mergeStyleSets({
     fontSize: 18,
     fontFamily: "Segoe UI Light"
   },
-  listGridElmCount: {
+  queryTaskCount: {
     fontSize: 48,
     fontFamily: "Segoe UI Light",
     color: "#605e5c"

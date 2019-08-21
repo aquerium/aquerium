@@ -1,6 +1,6 @@
 import React from "react";
-import { TaskTile } from "../components/TaskTile";
-import { TaskTileClassNames } from "../components/TaskTile.ClassNames";
+import { QueryTile } from "../components/QueryTile";
+import { QueryTileClassNames } from "../components/QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 
@@ -11,10 +11,10 @@ interface ITileListUIProps {
 
 function TileListComponent(props: ITileListUIProps) {
   return (
-    <div className={TaskTileClassNames.root}>
-      <div className={TaskTileClassNames.listContainer}>
+    <div className={QueryTileClassNames.root}>
+      <div className={QueryTileClassNames.listContainer}>
         {Object.keys(props.queryList).map(key => (
-          <TaskTile query={props.queryList[key]} key={key} />
+          <QueryTile query={props.queryList[key]} key={key} />
         ))}
       </div>
     </div>
