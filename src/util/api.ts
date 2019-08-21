@@ -1,22 +1,21 @@
 import fetch from "isomorphic-fetch";
-import { IQuery, IUserInfo } from "./state";
-
+import { IQuery, IUserInfo } from "../state";
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
 
 /**
  * Represents the object structure for using GitHub Gists API
  */
-export interface IGist {
-  /* Description of the gist */
+interface IGist {
+  /** Description of the gist */
   description: string;
-  /* Whether the gist is public or private */
+  /** Whether the gist is public or private */
   public: boolean;
-  /* Files contained in the gist */
+  /** Files contained in the gist */
   files: {
-    /* Name of the file */
+    /** Name of the file */
     [key: string]: {
-      /* File contents */
+      /** File contents */
       content: string;
     };
   };

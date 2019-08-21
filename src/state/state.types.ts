@@ -23,7 +23,7 @@ export interface ITask {
   /** The title of the given task. */
   title: string;
   /** Person who opened this task. */
-  author: string;
+  author?: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** State of a task only be "open" or "closed". */
@@ -32,7 +32,8 @@ export interface ITask {
   createdAt: string;
   /** Time stamp for last update. */
   updatedAt: string;
-  url: string;
+  /** The HTML URL for this task. */
+  url?: string;
 }
 
 /**
@@ -72,6 +73,7 @@ export interface IQuery {
   lastUpdated?: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
+  url?: string;
 }
 
 /**
