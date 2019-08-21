@@ -76,12 +76,10 @@ const scopedSettings = {
   }
 };
 
-/**
- * @property { string } UI the UI that will be displayed
- * @property { function } login the login function attempts to authenticate the user upon opening
- */
 interface IAppViewProps {
+  /** The UI that will be displayed.  */
   UI: string;
+  /** The login function attempts to authenticate the user upon opening. */
   login: (currPAT: string) => void;
 }
 

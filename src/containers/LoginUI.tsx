@@ -28,20 +28,18 @@ const imageProps: IImageProps = {
   height: 100
 };
 
-/**
- * @property { function } login a function that calls the login action
- * @property { function } setValidPAT a function that sets the validity of the PAT for the UI to respond to
- * @property { boolean } invalidPAT a boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object
- */
 interface ILoginProps {
+  /** A function that calls the login action. */
   login: (PAT: string) => void;
+  /** A function that sets the validity of the PAT for the UI to respond to. */
   setValidPAT: (isInvalid: boolean) => void;
+  /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
   invalidPAT: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    invalidPAT: state.invalidPAT
+    invalidPAT: state.user.invalidPAT
   };
 };
 

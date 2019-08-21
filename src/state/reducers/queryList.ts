@@ -1,4 +1,4 @@
-import { updateQueryListAction } from "../actions/queryList";
+import { updateQueryListAction } from "../actions";
 import { queryListType } from "../state.types";
 import update from "immutability-helper";
 

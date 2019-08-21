@@ -29,7 +29,8 @@ export const login = (currPAT: string) => {
           const user: IUserInfo = {
             token: currPAT,
             username: result.username,
-            gistID: result.gistID
+            gistID: result.gistID,
+            invalidPAT: false
           };
           const responseMap = await getQueryMapObj(user);
           if (responseMap.queryMap === undefined) {
@@ -41,7 +42,8 @@ export const login = (currPAT: string) => {
             chrome.storage.sync.set({
               token: currPAT,
               username: user.username,
-              gistID: user.gistID
+              gistID: user.gistID,
+              invalidPAT: false
             });
             dispatch(storeUserInfo(user));
             dispatch(toHome());
@@ -58,7 +60,8 @@ export const login = (currPAT: string) => {
             chrome.storage.sync.set({
               token: currPAT,
               username: responseGist.user.username,
-              gistID: responseGist.user.gistID
+              gistID: responseGist.user.gistID,
+              invalidPAT: false
             });
             dispatch(storeUserInfo(responseGist.user));
             dispatch(toHome());
@@ -71,7 +74,8 @@ export const login = (currPAT: string) => {
           const user: IUserInfo = {
             token: result.token,
             username: result.username,
-            gistID: result.gistID
+            gistID: result.gistID,
+            invalidPAT: false
           };
           const response = await getQueryMapObj(user);
           if (response.queryMap) {

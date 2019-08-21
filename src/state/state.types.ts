@@ -5,7 +5,6 @@
  * @property { queryListType } queryList a map of strings (query ID's) to IQueries
  * @property { object } changeUI stores a string containing the current UI
  * @property { object } user stores a user's personal data
- * @property { boolean } invalidPAT stores a boolean that determines whether a user's PAT was valid
  */
 export interface IState {
   queryList: queryListType;
@@ -13,7 +12,6 @@ export interface IState {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
   };
   user: IUserInfo;
-  invalidPAT: boolean;
 }
 
 /**
@@ -80,9 +78,10 @@ export interface IQuery {
  * Contains relevant information for the authenticated user
  */
 export interface IUserInfo {
-  token: string /*user's GitHub personal access token */;
-  username: string /* User's GitHub username */;
-  gistID: string /* ID of user's gist (for Aquerium) */;
+  token: string; //user's GitHub personal access token
+  username: string; // User's GitHub username
+  gistID: string; // ID of user's gist (for Aquerium)
+  invalidPAT: boolean; // Stores whether the user's PAT entered was invalid
 }
 
 /**

@@ -1,20 +1,8 @@
 import fetch from "isomorphic-fetch";
-import { IQuery } from "./state";
+import { IQuery, IUserInfo } from "./state";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
-
-/**
- * Contains relevant information for the authenticated user
- */
-export interface IUserInfo {
-  /* User's GitHub personal access token */
-  token: string;
-  /* User's GitHub username */
-  username: string;
-  /* ID of user's gist (for Aquerium) */
-  gistID: string;
-}
 
 /**
  * Represents the object structure for using GitHub Gists API
@@ -61,7 +49,8 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
       user: {
         token: token,
         username: responseJSON.owner.login,
-        gistID: responseJSON.id
+        gistID: responseJSON.id,
+        invalidPAT: false
       }
     };
   } catch (error) {
