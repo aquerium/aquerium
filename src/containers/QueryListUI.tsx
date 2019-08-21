@@ -25,4 +25,4 @@ const mapStateToProps = (state: IState) => ({
   queryList: state.queryList
 });
 
-export const TileListUI = connect(mapStateToProps)(QueryListComponent);
+export const QueryListUI = connect(mapStateToProps)(QueryListComponent);
