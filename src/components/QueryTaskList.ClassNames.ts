@@ -20,13 +20,11 @@ interface QueryTaskClassNames {
 }
 
 export const QueryTaskClassNames = mergeStyleSets({
-  root: {
+  listContainer: {
     height: "100%",
     width: "100%",
     overflow: "auto",
-    overflowY: "scroll"
-  },
-  listContainer: {
+    overflowY: "scroll",
     display: "grid",
     gridTemplateColumns: "1fr",
     gridAutoRows: "1fr",
