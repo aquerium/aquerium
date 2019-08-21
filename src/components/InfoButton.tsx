@@ -72,12 +72,14 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             ariaDescribedBy={this._descriptionId}
             role="alertdialog"
           >
-            {this.props.calloutText.map(text => (
-              <span id={this._descriptionId}>
-                {text}
-                <br />
-              </span>
-            ))}
+            <div id={this._descriptionId}>
+              {this.props.calloutText.map(text => (
+                <span>
+                  {text}
+                  <br />
+                </span>
+              ))}
+            </div>
           </Callout>
         )}
       </>
