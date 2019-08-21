@@ -41,7 +41,7 @@ interface ILoginProps {
 
 const mapStateToProps = (state: IState) => {
   return {
-    invalidPAT: state.invalidPAT //isValidPAT is our new hook
+    invalidPAT: state.invalidPAT
   };
 };
 
@@ -78,20 +78,6 @@ const onKeyDown = (checkPasswordValidity: () => void) => {
 function LoginUIComponent(props: ILoginProps) {
   let currPAT: string = "";
 
-  // const checkPasswordValidity = () => {
-  //   if (currPAT !== "correct") setValidPAT(true);
-  //   else {
-  //     setValidPAT(false);
-  //     const dummyData = {
-  //       //TODO This object is an IUser that will be replaced with actual data in Cathy's next PR
-  //       token: "fake token",
-  //       username: "fake username",
-  //       gistID: "fake gist"
-  //     };
-  //     onLogin(dummyData);
-  //   }
-  // };
-
   const updateCurrPAT = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
@@ -101,7 +87,6 @@ function LoginUIComponent(props: ILoginProps) {
   };
 
   function onLogin() {
-    //console.log(props); //props.isValidPAT is undefined!
     props.login(currPAT);
   }
 
