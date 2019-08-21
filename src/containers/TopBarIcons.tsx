@@ -13,6 +13,7 @@ import {
 interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
+  /** A function linked with the action creator to send the user to the EditQueryUI */
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {

@@ -14,17 +14,10 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and stores them in a new query before putting it in the queryMap.
  */
 
-const fakeInfo = {
-  token: "hahaha",
-  username: "tmaster628",
-  gistID: "agafasdf"
-};
-
 export const editQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    //make some fake userInfo
     const userInfo: IUserInfo = getState().user;
-    const resp = await getQueryTasks(getQueryURL(fakeInfo, query));
+    const resp = await getQueryTasks(getQueryURL(userInfo, query));
     let newQuery = undefined;
     if (resp.errorCode || !resp.items) {
       alert("API request failed :(");
@@ -39,14 +32,13 @@ export const editQuery = (query: IQuery) => {
     //once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const list: queryListType = getState().queryList;
     const newList = update(list, { [query.id]: { $set: !newQuery ? query : newQuery } });
-    //const response = await updateGist(getState().user, newList);
-    //if (response.errorCode) {
-    //  alert("API request failed :(");
-    //  return;
-    //} else {
-    dispatch(updateMap(newList));
-
-    // }
+    const response = await updateGist(getState().user, newList);
+    if (response.errorCode) {
+      alert("API request failed :(");
+      return;
+    } else {
+      dispatch(updateMap(newList));
+    }
   };
 };
 
