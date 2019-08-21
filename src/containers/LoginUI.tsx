@@ -10,7 +10,7 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
+import { LoginUIClassNames } from "./LoginUI.styles";
 import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
@@ -28,10 +28,8 @@ const imageProps: IImageProps = {
   height: 100
 };
 
-/**
- * @property { function } login a function that calls the login action
- */
 interface ILoginProps {
+  /** A function that calls the login action */
   login: (user: IUserInfo) => void;
 }
 
@@ -102,7 +100,12 @@ function LoginUIComponent(props: ILoginProps) {
   };
 
   return (
-    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
+    <Stack
+      horizontalAlign="center"
+      verticalAlign="space-evenly"
+      tokens={stackTokens}
+      className={LoginUIClassNames.root}
+    >
       <Image {...imageProps as any} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>

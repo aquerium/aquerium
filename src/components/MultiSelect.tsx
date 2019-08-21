@@ -6,7 +6,7 @@ import {
   dropdownAndLabels,
   labels,
   buttonProps
-} from "./MultiSelectStyles";
+} from "./MultiSelect.styles";
 
 /** @constant
     @type {number} value corresponding to enter key 
@@ -14,8 +14,11 @@ import {
 const ENTER_KEYCODE = 13;
 
 interface IMultiSelectProps {
+  /** The title of the MultiSelect field. */
   label: string;
+  /** The labels that are added/removed. */
   items: string[];
+  /** The function to be called after adding/removing labels. */
   onChange: (items: string[]) => void;
 }
 

@@ -8,6 +8,7 @@ import {
 } from "office-ui-fabric-react";
 
 interface IInfoButtonState {
+  /** A boolean that controls whether or not the callout info button is visible. */
   isCalloutVisible: boolean;
 }
 

@@ -1,6 +1,5 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import update from "immutability-helper";
-import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import {
   Stack,
   TextField,
@@ -21,7 +20,7 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "./EditQueryUIStyles";
+} from "./EditQueryUI.styles";
 
 enum InputStatuses {
   /* Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
@@ -33,13 +32,14 @@ enum InputStatuses {
 }
 
 interface IEditQueryUIState {
-  /* Tracks the state of changes the user is making to a query's settings. */
+  /** Tracks the state of changes the user is making to a query's settings. */
   inputStatus: InputStatuses;
-  /** Tracks the the type of message that should be rendered, 
-      given the action the user wants to take and the status of the query's settings.
-  */
+  /**
+   * Tracks the the type of message that should be rendered,
+   * given the action the user wants to take and the status of the query's settings.
+   */
   messageType: MessageBarType;
-  /* Tracks the message that should be rendered by the message bar, if needed. */
+  /** Tracks the message that should be rendered by the message bar, if needed. */
   message: string;
   /* MessageBarButton items, if any, that are the options a user can take given a message. */
   actions?: JSX.Element;
@@ -47,13 +47,15 @@ interface IEditQueryUIState {
   renderMessageBar: boolean;
   /* Whether the review status field is enabled or not, depending on if PR's are in the query. */
   enableReviewStatusField: boolean;
-  /** The current selections the user is making to a query, which will be used to either construct
-      a new query or edit an existing one.
-  */
+  /**
+   * The current selections the user is making to a query, which will be used to either construct
+   * a new query or edit an existing one.
+   */
   selections: IQuery;
 }
 
 interface IEditQueryUIProps {
+  /** Current query whose properties are edited. */
   currQuery?: IQuery;
 }
 
@@ -66,20 +68,15 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, daysSinceUpdate: 7, tasks: [] }
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 7, tasks: [] }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
 
   public render = (): JSX.Element => {
     return (
-      <div className={TaskTileClassNames.root}>
-        <Stack
-          horizontalAlign="start"
-          verticalAlign="space-evenly"
-          className={EditQueryUIClassNames.root}
-          tokens={rootTokenGap}
-        >
+      <div className={EditQueryUIClassNames.root}>
+        <Stack horizontalAlign="start" verticalAlign="space-evenly" tokens={rootTokenGap}>
           {this.state.renderMessageBar && this._renderMessageBar()}
           <Stack horizontal horizontalAlign="start">
             <ActionButton
