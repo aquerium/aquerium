@@ -1,19 +1,220 @@
 import { IQuery, ITask } from "./state";
 import { IUserInfo } from "./api";
-import * as fetch from "isomorphic-fetch";
+import fetch from "isomorphic-fetch";
 
 /**
- * Returns the list of tasks representing the result of a specific query.
+ * Represents an issue item in GitHub's API.
+ */
+export interface IIssue {
+  url: string;
+  repository_url: string;
+  labels_url: string;
+  comments_url: string;
+  events_url: string;
+  html_url: string;
+  id: number;
+  node_id: string;
+  number: number;
+  title: string;
+  user: {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: string;
+    site_admin: boolean;
+  };
+  labels: [
+    { id: number; node_id: string; url: string; name: string; color: string; default: boolean }
+  ];
+  state: string;
+  locked: boolean;
+  assignee: {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: string;
+    site_admin: boolean;
+  };
+  assignees: [
+    {
+      login: string;
+      id: number;
+      node_id: string;
+      avatar_url: string;
+      gravatar_id: string;
+      url: string;
+      html_url: string;
+      followers_url: string;
+      following_url: string;
+      gists_url: string;
+      starred_url: string;
+      subscriptions_url: string;
+      organizations_url: string;
+      repos_url: string;
+      events_url: string;
+      received_events_url: string;
+      type: string;
+      site_admin: boolean;
+    }
+  ];
+  milestone: string;
+  comments: number;
+  created_at: string;
+  updated_at: string;
+  closed_at: string;
+  author_association: string;
+  body: string;
+  score: number;
+}
+
+/**
+ * Represents a pull request item in GitHub's API.
+ */
+export interface IPull {
+  url: string;
+  repository_url: string;
+  labels_url: string;
+  comments_url: string;
+  events_url: string;
+  html_url: string;
+  id: number;
+  node_id: string;
+  number: number;
+  title: string;
+  user: {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: string;
+    site_admin: boolean;
+  };
+  labels: [
+    { id: number; node_id: string; url: string; name: string; color: string; default: boolean }
+  ];
+  state: string;
+  locked: boolean;
+  assignee: {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: string;
+    site_admin: boolean;
+  };
+  assignees: [
+    {
+      login: string;
+      id: number;
+      node_id: string;
+      avatar_url: string;
+      gravatar_id: string;
+      url: string;
+      html_url: string;
+      followers_url: string;
+      following_url: string;
+      gists_url: string;
+      starred_url: string;
+      subscriptions_url: string;
+      organizations_url: string;
+      repos_url: string;
+      events_url: string;
+      received_events_url: string;
+      type: string;
+      site_admin: boolean;
+    }
+  ];
+  milestone: string;
+  comments: number;
+  created_at: string;
+  updated_at: string;
+  closed_at: string;
+  author_association: string;
+  pull_request: {
+    url: string;
+    html_url: string;
+    diff_url: string;
+    patch_url: string;
+  };
+  body: string;
+  score: number;
+}
+
+/**
+ * Converts and returns the list of tasks representing the result of a specific query.
  * @param url API endpoint for a specific query.
  */
-export async function getQueryTasks(url: string): Promise<{ items?: ITask[]; errorCode?: number }> {
+export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; errorCode?: number }> {
   const response = await fetch(url);
   if (!response.ok) {
     return { errorCode: response.status };
   }
   const responseText = await response.text();
   const { items = [] } = JSON.parse(responseText);
-  return { items: items };
+
+  const tasks: ITask[] = [];
+  items.forEach(function(item: IIssue | IPull) {
+    const task: ITask = {
+      num: item.number,
+      title: item.title,
+      type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
+      state: "open",
+      createdAt: item.created_at.substring(0, 10),
+      updatedAt: item.updated_at.substring(0, 10)
+    };
+    tasks.push(task);
+  });
+  return { tasks: tasks };
 }
 
 /**

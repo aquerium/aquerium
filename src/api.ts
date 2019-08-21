@@ -1,4 +1,4 @@
-import * as fetch from "isomorphic-fetch";
+import fetch from "isomorphic-fetch";
 import { IQuery } from "./state";
 
 const GIST_NAME = "aquerium_helper.json";
