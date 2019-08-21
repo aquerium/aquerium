@@ -6,11 +6,16 @@ import {
   dropdownAndLabels,
   labels,
   buttonProps
-} from "./MultiSelectStyles";
+} from "./MultiSelect.styles";
+
+const ENTER_KEYCODE = 13;
 
 interface IMultiSelectProps {
+  /** The title of the MultiSelect field. */
   label: string;
+  /** The labels that are added/removed. */
   items: string[];
+  /** The function to be called after adding/removing labels. */
   onChange: (items: string[]) => void;
 }
 
@@ -82,7 +87,7 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
   };
 
   private _addItem = (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    if (ev.which !== 13) {
+    if (ev.which !== ENTER_KEYCODE) {
       return;
     }
     const { onChange, items } = this.props;
