@@ -1,6 +1,5 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
-import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { EditQuery } from "./EditQuery";
@@ -114,14 +113,10 @@ class AppView extends React.Component<IAppViewProps> {
         return <HomeUI />;
       }
       case "EditQuery": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <EditQuery />
-          </Customizer>
-        );
+        return <EditQuery />;
       }
       default: {
-        return <HomeUI />;
+        return <EditQuery />;
       }
     }
   };

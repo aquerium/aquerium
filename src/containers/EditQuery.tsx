@@ -85,13 +85,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
 
   public render = (): JSX.Element => {
     return (
-      <div className={QueryTileClassNames.root}>
-        <Stack
-          horizontalAlign="start"
-          verticalAlign="space-evenly"
-          className={EditQueryUIClassNames.root}
-          tokens={rootTokenGap}
-        >
+      <div className={EditQueryUIClassNames.root}>
+        <Stack horizontalAlign="start" verticalAlign="space-evenly" tokens={rootTokenGap}>
           {this.state.renderMessageBar && this._renderMessageBar()}
           <Stack horizontal horizontalAlign="start">
             <ActionButton
