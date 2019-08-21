@@ -22,6 +22,8 @@ export interface ITask {
   num: number;
   /** The title of the given task. */
   title: string;
+  /** Person who opened this task. */
+  author: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** State of a task only be "open" or "closed". */
@@ -30,6 +32,7 @@ export interface ITask {
   createdAt: string;
   /** Time stamp for last update. */
   updatedAt: string;
+  url: string;
 }
 
 /**

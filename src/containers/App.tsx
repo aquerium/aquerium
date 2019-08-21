@@ -1,9 +1,11 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
+import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { EditQuery } from "./EditQuery";
 import { IState, login } from "../state";
+import { QueryTaskListUI } from "../components/QueryTaskListUI";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
@@ -55,7 +57,8 @@ const scopedSettings = {
       root: {
         boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
       }
-    }
+    },
+    target: "_blank"
   },
   Dropdown: {
     styles: {
@@ -74,6 +77,9 @@ const scopedSettings = {
   },
   Slider: {
     styles: { container: { width: 200 } }
+  },
+  Link: {
+    target: "_blank"
   }
 };
 
