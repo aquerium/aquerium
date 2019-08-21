@@ -72,6 +72,7 @@ export interface IQuery {
   stalenessPull: number;
   lastUpdated?: number;
   tasks: ITask[];
+  url: string;
 }
 
 /**
