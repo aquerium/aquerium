@@ -8,7 +8,7 @@ import {
   getMenuIconName,
   menuIconSize,
   imageProps
-} from "../components/TopBarIconsStyles";
+} from "./TopBarIconsStyles";
 
 interface ITopBarIconsProps {
   logout: () => void;
