@@ -4,7 +4,7 @@ import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { QueryTaskListUI } from "../components/QueryTaskListUI";
-import { IState } from "../state";
+import { IState, ITask } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
 import { Customizer } from "@uifabric/utilities";
@@ -99,7 +99,7 @@ class AppView extends React.Component<IAppViewProps> {
   // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {}
 
-  private uiToRender = () => {
+  private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
         return <LoginUI />;
@@ -113,8 +113,8 @@ class AppView extends React.Component<IAppViewProps> {
     }
   };
 
-  public render(): JSX.Element | null {
-    return <Customizer scopedSettings={scopedSettings}>{this.uiToRender()}</Customizer>;
+  public render(): JSX.Element {
+    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
   }
 }
 
