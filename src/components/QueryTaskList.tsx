@@ -13,10 +13,12 @@ interface IQueryTaskListProps {
 export const QueryTaskList = (props: IQueryTaskListProps): JSX.Element => {
   const { tasks, labels } = props;
   return (
-    <div className={QueryTaskClassNames.listContainer}>
-      {tasks.map(task => (
-        <QueryTaskTile task={task} labels={labels || []} />
-      ))}
+    <div className={QueryTaskClassNames.root}>
+      <div className={QueryTaskClassNames.listContainer}>
+        {tasks.map(task => (
+          <QueryTaskTile task={task} labels={labels || []} />
+        ))}
+      </div>
     </div>
   );
 };
