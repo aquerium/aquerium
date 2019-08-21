@@ -8,7 +8,7 @@ import {
   CommandBarButton,
   Text
 } from "office-ui-fabric-react";
-import { clearTokenLogout, editQuery, IQuery } from "../state";
+import { clearTokenLogout } from "../state";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
