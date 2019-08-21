@@ -8,15 +8,15 @@ const GIST_DESCRIP = "helper gist for Aquerium";
  * Represents the object structure for using GitHub Gists API
  */
 interface IGist {
-  /* Description of the gist */
+  /** Description of the gist */
   description: string;
-  /* Whether the gist is public or private */
+  /** Whether the gist is public or private */
   public: boolean;
-  /* Files contained in the gist */
+  /** Files contained in the gist */
   files: {
-    /* Name of the file */
+    /** Name of the file */
     [key: string]: {
-      /* File contents */
+      /** File contents */
       content: string;
     };
   };
