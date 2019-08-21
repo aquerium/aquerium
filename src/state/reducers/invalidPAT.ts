@@ -6,10 +6,10 @@ const DEFAULT_STATE: boolean = false;
 /**
  * This reducer sets the validity of the user's entered PAT on the Login UI
  */
-export const setValidPAT = (state: boolean = DEFAULT_STATE, action: setValidPATAction) => {
+export const invalidPAT = (state: boolean = DEFAULT_STATE, action: setValidPATAction) => {
   switch (action.type) {
     case "SET_VALID_PAT": {
-      return update(state, { $set: action.isValid });
+      return update(state, { $set: action.isInvalid });
     }
     default:
       return state;

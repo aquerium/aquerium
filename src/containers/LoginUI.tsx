@@ -13,7 +13,7 @@ import {
 import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
 import { login, setValidPAT } from "../state";
 import { connect } from "react-redux";
-import { IState, IUserInfo } from "../state/state.types";
+import { IState } from "../state/state.types";
 
 /** @constant
  @type {number} value corresponding to enter key 
@@ -40,10 +40,8 @@ interface ILoginProps {
 }
 
 const mapStateToProps = (state: IState) => {
-  console.log(state);
-
   return {
-    invalidPAT: state.setValidPAT //isValidPAT is our new hook
+    invalidPAT: state.invalidPAT //isValidPAT is our new hook
   };
 };
 

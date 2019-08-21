@@ -1,7 +1,7 @@
 /**
  * The action type for setting PAT validity.
  */
-export type setValidPATAction = { type: string; isValid: boolean };
+export type setValidPATAction = { type: string; isInvalid: boolean };
 
 /**
  * Action creator to set the validity of a user's PAT in the Login UI.

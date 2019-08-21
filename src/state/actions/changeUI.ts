@@ -15,7 +15,10 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
- * Action creator to send the user from login UI to Home UI. This action creator
+ * Action creator to send the user from login UI to Home UI.
+ * This action creator takes in a string that determines whether a user is attempting a login from opening the extension or signing in on the login page.
+ * If they are signing in on opening, the currPAT field will be blank, and this action will check to see if the user has valid credentials in local storage.
+ * If they are logging in on the login screen, the action creator will check to see that their PAT is valid, as well as if they're a new or returning user.
  */
 
 export const login = (currPAT: string) => {
