@@ -3,7 +3,7 @@ import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { EditQuery } from "./EditQuery";
-import { IState, queryListType, updateMap } from "../state";
+import { IState, login } from "../state";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
@@ -77,25 +77,22 @@ const scopedSettings = {
   }
 };
 
-/**
- * @property { string } UI The UI that will be displayed.
- */
 interface IAppViewProps {
+  /** The UI that will be displayed.  */
   UI: string;
-  updateMap: (list: queryListType) => void;
+  /** The login function attempts to authenticate the user upon opening. */
+  login: (currPAT: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    UI: state.changeUI.currUI,
-    list: state.queryList
+    UI: state.changeUI.currUI
   };
 };
 
 class AppView extends React.Component<IAppViewProps> {
-  // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {
-    //TODO: Once Cathy's authenitcation PR is approved, add a call to props.updateMap with the verified queryMap
+    this.props.login("");
   }
 
   public render(): JSX.Element {
@@ -125,7 +122,7 @@ class AppView extends React.Component<IAppViewProps> {
 }
 
 const action = {
-  updateMap
+  login
 };
 
 export const App = connect(
