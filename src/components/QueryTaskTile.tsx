@@ -1,6 +1,6 @@
 import React from "react";
 import { ITask } from "../state/state.types";
-import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
+import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { Stack, Text, DefaultButton, Link } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 

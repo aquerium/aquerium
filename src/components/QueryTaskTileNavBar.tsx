@@ -7,7 +7,7 @@ import {
   TooltipHost,
   TooltipOverflowMode
 } from "office-ui-fabric-react";
-import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
+import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { IQuery } from "../state";
 
 interface IQueryTaskListNavBarProps {

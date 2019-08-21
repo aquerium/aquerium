@@ -1,5 +1,5 @@
 import React from "react";
-import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
+import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { QueryTaskTile } from "./QueryTaskTile";
 import { ITask } from "../state";
 
