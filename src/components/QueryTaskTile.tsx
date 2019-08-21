@@ -5,9 +5,9 @@ import { Stack, Text, DefaultButton, Link } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 
 interface IQueryTaskTile {
-  /** A single ITask to be rendered */
+  /** A single ITask to be rendered. */
   task: ITask;
-  /** A list of labels to be listed */
+  /** A list of labels to be listed. */
   labels: string[];
 }
 

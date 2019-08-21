@@ -11,7 +11,7 @@ import { QueryTaskClassNames } from "./QueryTaskList.ClassNames";
 import { IQuery } from "../state";
 
 interface IQueryTaskListNavBarProps {
-  /** A single IQuery to be rendered */
+  /** A single IQuery to be rendered. */
   query: IQuery;
 }
 

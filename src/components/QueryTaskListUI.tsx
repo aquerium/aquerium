@@ -4,7 +4,7 @@ import { QueryTaskListNavBar } from "./QueryTaskTileNavBar";
 import { QueryTaskList } from "./QueryTaskList";
 
 interface IQueryTaskListUIProps {
-  /** the current query whose tasks are to be rendered */
+  /** The current query whose tasks are to be rendered. */
   currQuery: IQuery;
 }
 

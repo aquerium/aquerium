@@ -4,9 +4,9 @@ import { QueryTaskTile } from "./QueryTaskTile";
 import { ITask } from "../state";
 
 interface IQueryTaskListUIProps {
-  /** The array of tasks that will be rendered */
+  /** The array of tasks that will be rendered. */
   tasks: ITask[];
-  /** The labels, if any, associated with a certain query */
+  /** The labels, if any, associated with a certain query. */
   labels?: string[];
 }
 

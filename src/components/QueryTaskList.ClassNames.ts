@@ -2,20 +2,20 @@ import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShadingSyles";
 
 /**
- * Defines styles for the various aspects of the QueryTaskList grid
- * @property {string} root
- * @property { string } listContainer
- * @property { string } taskTile
- * @property { string } queryTitle
- * @property { string } basicInfo
- * @property { string } infoIcon
+ * Defines styles for the various aspects of the QueryTaskList grid.
  */
 interface QueryTaskClassNames {
+  /** The root container for the entire task list. */
   root: string;
+  /** The container/grid for the task tiles. */
   listContainer: string;
+  /** The task tile. */
   taskTile: string;
+  /** The styles for the title of the query (in NavBar). */
   queryTitle: string;
+  /** The styles for the task number, author and date created. */
   basicInfo: string;
+  /** The info icon with extra information. */
   infoIcon: string;
 }
 

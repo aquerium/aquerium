@@ -1,24 +1,18 @@
 import { mergeStyleSets } from "@uifabric/styling";
 
 /**
- * interface for grid styling
- *
- * @interface
- */
-
-/**
- * Defines styles for the various aspects of the TaskTile grid
- * @property {string} root
- * @property { string } listContainer
- * @property { string } listGridExampleTile
- * @property { string } listGridQueryName
- * @property { string } listGridElmCount
+ * Interface for grid styling.
  */
 interface ITaskTile {
+  /** Container for the entire grid of queries. */
   root: string;
+  /** Grid of queries. */
   listContainer: string;
+  /** Query tile styles. */
   listGridExampleTile: string;
+  /** Query title styles. */
   listGridQueryName: string;
+  /** Styles for task count for a query. */
   listGridElmCount: string;
 }
 

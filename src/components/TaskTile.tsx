@@ -10,10 +10,8 @@ import {
 import { TaskTileClassNames } from "./TaskTile.ClassNames";
 import { IQuery } from "../state";
 
-/**
- * @property { IQuery } query represents a single IQuery to be rendered
- */
 interface IRenderTileProps {
+  /** Represents a single IQuery to be rendered. */
   query: IQuery;
 }
 
