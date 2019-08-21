@@ -2,7 +2,7 @@
 import { IUserInfo, IState } from "../state.types";
 import { getQueryMapObj, createGist } from "../../api";
 import { Dispatch } from "redux";
-import { setValidPAT } from "../actions";
+import { setIsInvalidPAT } from "../actions";
 
 /**
  * The action type for changing UI.
@@ -35,10 +35,10 @@ export const login = (currPAT: string) => {
           const responseMap = await getQueryMapObj(user);
           if (responseMap.queryMap === undefined) {
             //If queryMap is undefined, this this user has invalid credentials
-            dispatch(setValidPAT(true));
+            dispatch(setIsInvalidPAT(true));
           } else {
             //else, the user's querymap already exists
-            dispatch(setValidPAT(false));
+            dispatch(setIsInvalidPAT(false));
             chrome.storage.sync.set({
               token: currPAT,
               username: user.username,
@@ -53,10 +53,10 @@ export const login = (currPAT: string) => {
           const responseGist = await createGist(currPAT);
           if (responseGist.user === undefined) {
             //if the pat is invalid
-            dispatch(setValidPAT(true));
+            dispatch(setIsInvalidPAT(true));
           } else {
             //if the pat is valid, make a new user and save their userInfo to the gist
-            dispatch(setValidPAT(false));
+            dispatch(setIsInvalidPAT(false));
             chrome.storage.sync.set({
               token: currPAT,
               username: responseGist.user.username,
