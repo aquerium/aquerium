@@ -13,30 +13,40 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * Action creator to add/edit a query to the queryList.
  * This action creator gets the resulting tasks from the attached query and stores them in a new query before putting it in the queryMap.
  */
+
+const fakeInfo = {
+  token: "hahaha",
+  username: "tmaster628",
+  gistID: "agafasdf"
+};
+
 export const editQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    /*const userInfo: IUserInfo = getState().user;
-    const resp = await getQueryTasks(getQueryURL(userInfo, query));
-    let newQuery = null;
+    //make some fake userInfo
+    const userInfo: IUserInfo = getState().user;
+    const resp = await getQueryTasks(getQueryURL(fakeInfo, query));
+    let newQuery = undefined;
     if (resp.errorCode || !resp.items) {
       alert("API request failed :(");
       return;
     } else {
+      console.log(resp.items);
       //we have a valid task array, and need to store it in our new query.
       newQuery = update(query, {
         tasks: { $set: resp.items }
       });
-    }*/
+    }
     //once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const list: queryListType = getState().queryList;
-    const newList = update(list, { [query.id]: { $set: query } });
-    /*const response = await updateGist(getState().user, newList);
-    if (response.errorCode) {
-      alert("API request failed :(");
-      return;
-    } else {*/
+    const newList = update(list, { [query.id]: { $set: !newQuery ? query : newQuery } });
+    //const response = await updateGist(getState().user, newList);
+    //if (response.errorCode) {
+    //  alert("API request failed :(");
+    //  return;
+    //} else {
     dispatch(updateMap(newList));
-    //}
+
+    // }
   };
 };
 
@@ -47,13 +57,13 @@ export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     let list: queryListType = getState().queryList;
     const newList = update(list, { $unset: [queryID] });
-    /*const response = await updateGist(getState().user, newList);
+    const response = await updateGist(getState().user, newList);
     if (response.errorCode) {
       alert("API request failed :(");
       return;
-    } else {*/
-    dispatch(updateMap(newList));
-    //}
+    } else {
+      dispatch(updateMap(newList));
+    }
   };
 };
 
