@@ -10,8 +10,8 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
-import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
 import { login, setIsInvalidPAT, IState } from "../state";
+import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
 
 // Value corresponding to enter key.
@@ -29,7 +29,7 @@ interface ILoginProps {
   /** A function that calls the login action. */
   login: (PAT: string) => void;
   /** A function that sets the validity of the PAT for the UI to respond to. */
-  setValidPAT: (isInvalid: boolean) => void;
+  setIsInvalidPAT: (isInvalid: boolean) => void;
   /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
   invalidPAT: boolean;
 }
@@ -86,7 +86,12 @@ function LoginUIComponent(props: ILoginProps) {
   }
 
   return (
-    <Stack horizontalAlign="center" verticalAlign="space-evenly" tokens={stackTokens}>
+    <Stack
+      horizontalAlign="center"
+      verticalAlign="space-evenly"
+      tokens={stackTokens}
+      className={LoginUIClassNames.root}
+    >
       <Image {...imageProps as any} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>

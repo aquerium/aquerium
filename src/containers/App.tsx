@@ -4,7 +4,7 @@ import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { IState, login } from "../state";
 import { connect } from "react-redux";
-import { hoveringAndShading } from "../components/HoveringAndShadingSyles";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 
@@ -93,30 +93,24 @@ class AppView extends React.Component<IAppViewProps> {
   public async componentDidMount(): Promise<void> {
     this.props.login("");
   }
-  public render(): JSX.Element | null {
+
+  public render(): JSX.Element {
+    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
+  }
+
+  private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
-          </Customizer>
-        );
+        return <LoginUI />;
       }
       case "Home": {
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <HomeUI />
-          </Customizer>
-        );
+        return <HomeUI />;
       }
-      default:
-        return (
-          <Customizer scopedSettings={scopedSettings}>
-            <LoginUI />
-          </Customizer>
-        );
+      default: {
+        return <HomeUI />;
+      }
     }
-  }
+  };
 }
 
 const action = {

@@ -8,10 +8,12 @@ import {
 } from "office-ui-fabric-react";
 
 interface IInfoButtonState {
+  /** A boolean that controls whether or not the callout info button is visible. */
   isCalloutVisible: boolean;
 }
 
 interface IInfoButtonProps extends ITextFieldProps {
+  /** The text to be rendered by the info button. */
   calloutText: string;
 }
 
@@ -20,7 +22,7 @@ const InfoButtonStyles = mergeStyleSets({
     bottom: -15,
     left: 10,
     selectors: {
-      "&:hover": { boxShadow: "0 4px 8px 1.5px rgba(0,0,0,.2)" }
+      "&:hover": { background: "transparent" }
     },
     borderRadius: 3,
     transitionDelay: "0.05s"
@@ -66,6 +68,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             title={this.props.label}
             ariaDescribedBy={this._descriptionId}
             role="alertdialog"
+            className={InfoButtonStyles.callout}
           >
             <span id={this._descriptionId}>{this.props.calloutText}</span>
           </Callout>

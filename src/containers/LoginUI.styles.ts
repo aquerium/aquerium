@@ -1,6 +1,9 @@
 import { mergeStyleSets } from "@uifabric/styling";
 
 export const LoginUIClassNames = mergeStyleSets({
+  root: {
+    height: "100%"
+  },
   aqueriumTitle: {
     textAlign: "center",
     color: "#1b3e74",
