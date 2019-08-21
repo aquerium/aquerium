@@ -1,28 +1,6 @@
-import { IQuery, ITask, IUserInfo } from "./state";
+import { IQuery, ITask, IUserInfo } from "../state";
+import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
-
-/**
- * Represents an issue item in GitHub's API.
- */
-interface IIssue {
-  html_url: string;
-  number: number;
-  title: string;
-  created_at: string;
-  updated_at: string;
-}
-
-/**
- * Represents a pull request item in GitHub's API.
- */
-interface IPull {
-  html_url: string;
-  number: number;
-  title: string;
-  created_at: string;
-  updated_at: string;
-  pull_request: {};
-}
 
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
