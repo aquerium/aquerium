@@ -77,7 +77,7 @@ const scopedSettings = {
 };
 
 /**
- * @property { string } UI the UI that will be displayed
+ * @property { string } UI The UI that will be displayed.
  */
 interface IAppViewProps {
   UI: string;
@@ -93,6 +93,10 @@ class AppView extends React.Component<IAppViewProps> {
   // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
   public async componentDidMount(): Promise<void> {}
 
+  public render(): JSX.Element {
+    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
+  }
+
   private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
@@ -106,10 +110,6 @@ class AppView extends React.Component<IAppViewProps> {
       }
     }
   };
-
-  public render(): JSX.Element {
-    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
-  }
 }
 
 export const App = connect(mapStateToProps)(AppView);
