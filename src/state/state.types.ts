@@ -78,10 +78,14 @@ export interface IQuery {
  * Contains relevant information for the authenticated user
  */
 export interface IUserInfo {
-  token: string; //user's GitHub personal access token
-  username: string; // User's GitHub username
-  gistID: string; // ID of user's gist (for Aquerium)
-  invalidPAT: boolean; // Stores whether the user's PAT entered was invalid
+  /** User's GitHub personal access token. */
+  token: string;
+  /** User's GitHub username. */
+  username: string;
+  /** ID of user's gist (for Aquerium). */
+  gistID: string;
+  /** Stores whether the user's PAT entered was invalid. */
+  invalidPAT: boolean;
 }
 
 /**

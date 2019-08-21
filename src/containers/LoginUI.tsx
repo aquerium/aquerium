@@ -11,13 +11,10 @@ import {
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
 import { LoginUIClassNames } from "../components/LoginUI.ClassNames";
-import { login, setValidPAT } from "../state";
+import { login, setIsInvalidPAT, IState } from "../state";
 import { connect } from "react-redux";
-import { IState } from "../state/state.types";
 
-/** @constant
- @type {number} value corresponding to enter key 
-*/
+// Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
@@ -81,7 +78,7 @@ function LoginUIComponent(props: ILoginProps) {
     newValue?: string
   ) => {
     currPAT = newValue || "";
-    if (currPAT === "") setValidPAT(false);
+    if (currPAT === "") setIsInvalidPAT(false);
   };
 
   function onLogin() {
@@ -119,7 +116,7 @@ function LoginUIComponent(props: ILoginProps) {
 
 const action = {
   login,
-  setValidPAT
+  setIsInvalidPAT
 };
 
 export const LoginUI = connect(

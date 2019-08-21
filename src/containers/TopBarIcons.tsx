@@ -17,10 +17,8 @@ import {
   menuIconSize
 } from "../components/TopBarIconsStyles";
 
-/**
- * @property { function } clearTokenLogout a function linked with the action creator to log the user out, which also clears the user's PAT from local storage
- */
 interface ITopBarIconsProps {
+  /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
 }
 
