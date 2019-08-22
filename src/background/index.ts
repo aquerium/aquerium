@@ -1,5 +1,5 @@
-import { getQueryMapObj, updateGist } from "../util/api";
-import { getQueryTasks, getQueryURLEndpoint } from "../util/utilities";
+import { getQueryMapObj, updateGist } from "../util";
+import { getQueryTasks, getQueryURLEndpoint } from "../util";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
