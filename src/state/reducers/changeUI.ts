@@ -1,14 +1,17 @@
 import update from "immutability-helper";
-import { changeUIAction } from "../actions/changeUI";
+import { changeUIAction, changeUIQueryTaskListAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
-const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
+const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login", currQuery: undefined };
 
 /**
  * This reducer deals with changing the UI. When receiving an action, currUI is updated to reflect the UI that
  * should be shown.
  */
-export const changeUI = (state: IState["changeUI"] = DEFAULT_STATE, action: changeUIAction) => {
+export const changeUI = (
+  state: IState["changeUI"] = DEFAULT_STATE,
+  action: changeUIAction | changeUIQueryTaskListAction
+) => {
   switch (action.type) {
     case "LOGIN": {
       return update(state, { currUI: { $set: "Home" } });
@@ -20,7 +23,8 @@ export const changeUI = (state: IState["changeUI"] = DEFAULT_STATE, action: chan
       return update(state, { currUI: { $set: "EditQuery" } });
     }
     case "QUERY": {
-      return update(state, { currUI: { $set: "QueryList" } });
+      const { query } = action as changeUIQueryTaskListAction;
+      return update(state, { $set: { currUI: "QueryList", currQuery: query } });
     }
     case "HOME": {
       return update(state, { currUI: { $set: "Home" } });

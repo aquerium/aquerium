@@ -65,7 +65,8 @@ interface IEditQueryUIProps {
 
 const mapStateToProps = (state: IState) => {
   return {
-    queryList: state.queryList
+    queryList: state.queryList,
+    currQuery: state.changeUI.currQuery
   };
 };
 

@@ -3,7 +3,7 @@ import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { EditQuery } from "./EditQuery";
-import { IState, login } from "../state";
+import { IState, login, IQuery } from "../state";
 import { QueryTaskListUI } from "../components/QueryTaskListUI";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
@@ -85,13 +85,16 @@ const scopedSettings = {
 interface IAppViewProps {
   /** The UI that will be displayed.  */
   UI: string;
+  /** A query that is potentially stored if we enter queryTaskList UI*/
+  currQuery?: IQuery;
   /** The login function attempts to authenticate the user upon opening. */
   login: (currPAT: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    UI: state.changeUI.currUI
+    UI: state.changeUI.currUI,
+    currQuery: state.changeUI.currQuery
   };
 };
 
@@ -115,8 +118,11 @@ class AppView extends React.Component<IAppViewProps> {
       case "EditQuery": {
         return <EditQuery />;
       }
+      case "QueryList": {
+        return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
+      }
       default: {
-        return <EditQuery />;
+        return <LoginUI />;
       }
     }
   };

@@ -1,6 +1,6 @@
 import { IUserInfo } from "../state.types";
 import update from "immutability-helper";
-import { changeUILoginAction, changeUIAction, setValidPATAction } from "../actions";
+import { changeUILoginAction, setValidPATAction } from "../actions";
 
 const DEFAULT_STATE: IUserInfo = { token: "", username: "", gistID: "", invalidPAT: false };
 
@@ -9,7 +9,7 @@ const DEFAULT_STATE: IUserInfo = { token: "", username: "", gistID: "", invalidP
  */
 export const user = (
   state: IUserInfo = DEFAULT_STATE,
-  action: changeUILoginAction | changeUIAction
+  action: changeUILoginAction | setValidPATAction
 ) => {
   switch (action.type) {
     case "USER": {

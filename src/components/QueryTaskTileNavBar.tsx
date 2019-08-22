@@ -8,14 +8,17 @@ import {
   TooltipOverflowMode
 } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { IQuery } from "../state";
+import { IQuery, toEditQuery, toHome } from "../state";
+import { connect } from "react-redux";
 
 interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
+  toEditQuery: () => void;
+  toHome: () => void;
 }
 
-export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Element => {
+export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.Element => {
   const { query } = props;
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
@@ -26,13 +29,12 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
   const tooltipToggle = (isTooltipVisible: boolean): void => {
     toggleTooltip(!isTooltipVisible);
   };
+  function editQuery() {
+    props.toEditQuery();
+  }
   return (
     <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-      <ActionButton
-        iconProps={iconProps.back}
-        styles={iconSize}
-        //Add onClick functionality
-      />
+      <ActionButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
       <TooltipHost
         calloutProps={calloutGapSpace}
         content={query.name}
@@ -49,11 +51,17 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
           {query.name}
         </Text>
       </TooltipHost>
-      <ActionButton
-        iconProps={iconProps.edit}
-        styles={iconSize}
-        //Add onClick functionality
-      />
+      <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={editQuery} />
     </Stack>
   );
 };
+
+const action = {
+  toEditQuery,
+  toHome
+};
+
+export const QueryTaskListNavBar = connect(
+  undefined,
+  action
+)(QueryTaskListNavBarView);
