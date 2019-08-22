@@ -5,18 +5,27 @@ import {
   ActionButton,
   Text,
   TooltipHost,
-  TooltipOverflowMode
+  TooltipOverflowMode,
+  Link
 } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { IQuery, toEditQuery, toHome } from "../state";
+import { IQuery, toEditQuery, toHome, IUserInfo, IState } from "../state";
 import { connect } from "react-redux";
+import { getQueryURLHTML } from "../util/utilities";
 
 interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
   toEditQuery: () => void;
   toHome: () => void;
+  user: IUserInfo;
 }
+
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user
+  };
+};
 
 export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.Element => {
   const { query } = props;
@@ -32,6 +41,11 @@ export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.E
   function editQuery() {
     props.toEditQuery();
   }
+  function returnQueryURL(): string {
+    const str = getQueryURLHTML(props.user, props.query);
+    console.log(str);
+    return str;
+  }
   return (
     <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
       <ActionButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
@@ -42,14 +56,16 @@ export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.E
         onTooltipToggle={tooltipToggle}
         id={tooltipId}
       >
-        <Text
+        <Link
+          href={returnQueryURL()}
+          target="_blank"
           className={QueryTaskClassNames.queryTitle}
           nowrap
           block
           aria-labelledby={isTooltipVisible ? tooltipId : undefined}
         >
           {query.name}
-        </Text>
+        </Link>
       </TooltipHost>
       <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={editQuery} />
     </Stack>
@@ -62,6 +78,6 @@ const action = {
 };
 
 export const QueryTaskListNavBar = connect(
-  undefined,
+  mapStateToProps,
   action
 )(QueryTaskListNavBarView);

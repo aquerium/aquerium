@@ -1,6 +1,5 @@
 import React, { FormEvent } from "react";
 import update from "immutability-helper";
-import { QueryTileClassNames } from "../components/QueryTile.styles";
 import {
   Stack,
   TextField,
@@ -21,9 +20,9 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "../components/EditQueryUI.styles";
+} from "./EditQueryUI.styles";
 import { connect } from "react-redux";
-import { createUid } from "../utilities/uIDGenerator";
+import { createUid } from "../util/uIDGenerator";
 
 enum InputStatuses {
   /* Value indicating that the input has been validated and successfully updated to the new (or existing) query */
@@ -66,7 +65,7 @@ interface IEditQueryUIProps {
 const mapStateToProps = (state: IState) => {
   return {
     queryList: state.queryList,
-    currQuery: state.changeUI.currQuery
+    currQuery: state.changeUI.currQuery //when we leave this UI we need to be sure to undefine this
   };
 };
 
@@ -352,7 +351,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       return;
     }
     const newKey = item.key === "issues and pr" ? undefined : item.key;
-    const enableReviewField = newKey !== "issues";
+    const enableReviewField = newKey !== "issue";
+    console.log(newKey);
     const updatedSelections = update(this.state.selections, {
       type: {
         $set: newKey as IQuery["type"]

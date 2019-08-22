@@ -30,7 +30,7 @@ export const EditQueryUIClassNames = mergeStyleSets({
 });
 
 export const typeOptions = [
-  { key: "issues", text: "Only Issues" },
+  { key: "issue", text: "Only Issues" },
   { key: "pr", text: "Only Pull Requests" },
   { key: "issues and pr", text: "Issues and Pull Requests" }
 ];

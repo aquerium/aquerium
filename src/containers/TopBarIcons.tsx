@@ -8,7 +8,7 @@ import {
   getMenuIconName,
   menuIconSize,
   imageProps
-} from "../components/TopBarIcons.styles";
+} from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */

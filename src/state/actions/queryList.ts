@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { isHomeLoadingTrue, isHomeLoadingFalse } from "./changeUI";
 
 /**
  * @type { type: string } this type defines an action that updates the queryList
@@ -17,13 +18,15 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
 export const editQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     const userInfo: IUserInfo = getState().user;
+    //call loading start, and end it in various places
+    dispatch(isHomeLoadingTrue());
     const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
     let newQuery = undefined;
     if (resp.errorCode || !resp.tasks) {
-      alert("API request failed :(");
+      dispatch(isHomeLoadingFalse());
+      //some error
       return;
     } else {
-      console.log(resp.tasks);
       //we have a valid task array, and need to store it in our new query.
       newQuery = update(query, {
         tasks: { $set: resp.tasks }
@@ -33,8 +36,8 @@ export const editQuery = (query: IQuery) => {
     const list: queryListType = getState().queryList;
     const newList = update(list, { [query.id]: { $set: !newQuery ? query : newQuery } });
     const response = await updateGist(getState().user, newList);
+    dispatch(isHomeLoadingFalse()); //is this too early?
     if (response.errorCode) {
-      alert("API request failed :(");
       return;
     } else {
       dispatch(updateMap(newList));
@@ -49,7 +52,9 @@ export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     let list: queryListType = getState().queryList;
     const newList = update(list, { $unset: [queryID] });
+    dispatch(isHomeLoadingTrue());
     const response = await updateGist(getState().user, newList);
+    dispatch(isHomeLoadingFalse()); //too early?
     if (response.errorCode) {
       alert("API request failed :(");
       return;

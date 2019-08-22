@@ -53,6 +53,10 @@ export function getQueryURLHTML(user: IUserInfo, query: IQuery): string {
   );
 }
 
+export function getTaskURLHTML(repo: string, type: string, taskNo: number) {
+  return "https://github.com/" + repo + "/" + (type === "issue" ? "issues" : "pull") + "/" + taskNo;
+}
+
 function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   let qualifiers = "%20is:open";
   qualifiers += query.type ? "%20is:" + query.type : "";

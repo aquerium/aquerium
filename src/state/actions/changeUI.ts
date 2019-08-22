@@ -37,6 +37,7 @@ export const login = (currPAT: string) => {
             gistID: result.gistID,
             invalidPAT: false
           };
+          //some indicator
           const responseMap = await getQueryMapObj(user);
           if (responseMap.queryMap === undefined) {
             //If queryMap is undefined, this this user has invalid credentials
@@ -50,8 +51,8 @@ export const login = (currPAT: string) => {
               gistID: user.gistID,
               invalidPAT: false
             });
-            dispatch(storeUserInfo(user));
             dispatch(toHome());
+            dispatch(storeUserInfo(user));
           }
         } else {
           //if username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid
@@ -68,8 +69,8 @@ export const login = (currPAT: string) => {
               gistID: responseGist.user.gistID,
               invalidPAT: false
             });
-            dispatch(storeUserInfo(responseGist.user));
             dispatch(toHome());
+            dispatch(storeUserInfo(responseGist.user));
           }
         }
       });
@@ -84,8 +85,8 @@ export const login = (currPAT: string) => {
           };
           const response = await getQueryMapObj(user);
           if (response.queryMap) {
-            dispatch(storeUserInfo(user));
             dispatch(toHome());
+            dispatch(storeUserInfo(user));
             dispatch(updateMap(response.queryMap));
           }
         }
@@ -139,4 +140,12 @@ export const toHome = () => ({
 export const storeUserInfo = (user: IUserInfo) => ({
   type: "USER",
   user
+});
+
+export const isHomeLoadingTrue = () => ({
+  type: "HOME_LOADING_TRUE"
+});
+
+export const isHomeLoadingFalse = () => ({
+  type: "HOME_LOADING_FALSE"
 });
