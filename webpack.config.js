@@ -1,6 +1,6 @@
 const path = require("path");
 module.exports = {
-  entry: "./src/background/index.ts",
+  entry: ["babel-regenerator-runtime", "./src/background/index.ts"],
   mode: "production",
   devtool: "source-maps",
   optimization: {

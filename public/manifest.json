@@ -2,7 +2,7 @@
   "name": "Aquerium",
   "description": "Get things done with Aquerium, a GitHub query management tool.",
   "version": "1.0",
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "options_page": "options.html",
   "browser_action": {
     "default_popup": "index.html",
