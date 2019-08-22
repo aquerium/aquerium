@@ -1,6 +1,6 @@
 /* global chrome */
 import { IUserInfo, IState } from "../state.types";
-import { getQueryMapObj, createGist } from "../../api";
+import { getQueryMapObj, createGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT } from "../actions";
 

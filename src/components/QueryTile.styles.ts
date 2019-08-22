@@ -21,7 +21,7 @@ interface IQueryTile {
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
-    height: "274",
+    height: "100%",
     width: "100%",
     overflow: "auto",
     overflowY: "scroll"

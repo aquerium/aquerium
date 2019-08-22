@@ -78,7 +78,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 7, tasks: [] }
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 0, tasks: [] }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
@@ -193,7 +193,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             <Slider
               label="Last Updated"
               onChange={this._setLastUpdatedSelection}
-              min={1}
+              min={0}
               defaultValue={this.state.selections.lastUpdated}
               max={31}
             />
