@@ -21,11 +21,7 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
   const iconSize = { icon: { fontSize: 22 } };
 
   const tooltipId = getId("text-tooltip");
-  const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
-  const tooltipToggle = (isTooltipVisible: boolean): void => {
-    toggleTooltip(!isTooltipVisible);
-  };
   return (
     <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
       <ActionButton
@@ -33,19 +29,8 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
         styles={iconSize}
         //Add onClick functionality
       />
-      <TooltipHost
-        calloutProps={calloutGapSpace}
-        content={query.name}
-        overflowMode={TooltipOverflowMode.Parent}
-        onTooltipToggle={tooltipToggle}
-        id={tooltipId}
-      >
-        <Text
-          className={QueryTaskClassNames.queryTitle}
-          nowrap
-          block
-          aria-labelledby={isTooltipVisible ? tooltipId : undefined}
-        >
+      <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
+        <Text className={QueryTaskClassNames.queryTitle} nowrap block aria-labelledby={tooltipId}>
           {query.name}
         </Text>
       </TooltipHost>

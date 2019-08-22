@@ -58,16 +58,20 @@ export const QueryTaskClassNames = mergeStyleSets({
   },
   taskTitle: {
     fontSize: 15,
+    paddingTop: 3,
     color: "#1b3e74",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
     width: "100%",
     maxWidth: "200px",
-    height: "100%"
+    height: "100%",
+    selectors: {
+      "&:hover": { textDecorationLine: "none" }
+    }
   },
   basicInfo: {
     overflow: "hidden",
+    paddingTop: 5,
     textOverflow: "ellipsis",
     width: "100%",
     maxWidth: "200px",
@@ -76,5 +80,8 @@ export const QueryTaskClassNames = mergeStyleSets({
   },
   infoIcon: {
     padding: 3
+  },
+  nobull: {
+    listStyle: "none"
   }
 });
