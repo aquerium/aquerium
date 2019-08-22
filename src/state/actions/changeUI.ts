@@ -29,6 +29,8 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
 export const login = (currPAT: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     if (currPAT !== "") {
+      dispatch(setIsInvalidPAT(false));
+      dispatch(isLoginLoadingTrue());
       chrome.storage.sync.get(["username", "gistID"], async result => {
         if (result.username && result.gistID) {
           const user: IUserInfo = {
@@ -41,6 +43,7 @@ export const login = (currPAT: string) => {
           const responseMap = await getQueryMapObj(user);
           if (responseMap.queryMap === undefined) {
             //If queryMap is undefined, this this user has invalid credentials
+            dispatch(isLoginLoadingFalse());
             dispatch(setIsInvalidPAT(true));
           } else {
             //else, the user's querymap already exists
@@ -51,14 +54,16 @@ export const login = (currPAT: string) => {
               gistID: user.gistID,
               invalidPAT: false
             });
-            dispatch(toHome());
             dispatch(storeUserInfo(user));
+            dispatch(isLoginLoadingFalse());
+            dispatch(toHome());
           }
         } else {
           //if username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid
           const responseGist = await createGist(currPAT);
           if (responseGist.user === undefined) {
             //if the pat is invalid
+            dispatch(isLoginLoadingFalse());
             dispatch(setIsInvalidPAT(true));
           } else {
             //if the pat is valid, make a new user and save their userInfo to the gist
@@ -69,8 +74,9 @@ export const login = (currPAT: string) => {
               gistID: responseGist.user.gistID,
               invalidPAT: false
             });
-            dispatch(toHome());
             dispatch(storeUserInfo(responseGist.user));
+            dispatch(isLoginLoadingFalse());
+            dispatch(toHome());
           }
         }
       });
@@ -85,9 +91,10 @@ export const login = (currPAT: string) => {
           };
           const response = await getQueryMapObj(user);
           if (response.queryMap) {
-            dispatch(toHome());
             dispatch(storeUserInfo(user));
             dispatch(updateMap(response.queryMap));
+            dispatch(isLoginLoadingFalse());
+            dispatch(toHome());
           }
         }
       });
@@ -148,4 +155,12 @@ export const isHomeLoadingTrue = () => ({
 
 export const isHomeLoadingFalse = () => ({
   type: "HOME_LOADING_FALSE"
+});
+
+export const isLoginLoadingTrue = () => ({
+  type: "LOGIN_LOADING_TRUE"
+});
+
+export const isLoginLoadingFalse = () => ({
+  type: "LOGIN_LOADING_FALSE"
 });

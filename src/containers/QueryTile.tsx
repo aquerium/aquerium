@@ -7,7 +7,7 @@ import {
   getId,
   DefaultButton
 } from "office-ui-fabric-react";
-import { QueryTileClassNames } from "../components/QueryTile.styles";
+import { QueryTileClassNames } from "./QueryTile.styles";
 import { IQuery, toQueryList, IState } from "../state";
 import { connect } from "react-redux";
 

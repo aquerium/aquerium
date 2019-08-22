@@ -5,7 +5,8 @@ import { IState } from "../state.types";
 const DEFAULT_STATE: IState["changeUI"] = {
   currUI: "Login",
   currQuery: undefined,
-  isHomeLoading: false
+  isHomeLoading: false,
+  isLoginLoading: false
 };
 
 /**
@@ -29,7 +30,7 @@ export const changeUI = (
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
       return update(state, {
-        $set: { currUI: "QueryList", currQuery: query, isHomeLoading: false }
+        $set: { currUI: "QueryList", currQuery: query, isHomeLoading: false, isLoginLoading: false }
       });
     }
     case "HOME": {
@@ -40,6 +41,12 @@ export const changeUI = (
     }
     case "HOME_LOADING_FALSE": {
       return update(state, { isHomeLoading: { $set: false } });
+    }
+    case "LOGIN_LOADING_TRUE": {
+      return update(state, { isLoginLoading: { $set: true } });
+    }
+    case "LOGIN_LOADING_FALSE": {
+      return update(state, { isLoginLoading: { $set: false } });
     }
     default:
       return state;

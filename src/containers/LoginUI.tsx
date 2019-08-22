@@ -8,12 +8,14 @@ import {
   TextField,
   Link,
   PrimaryButton,
-  ITextFieldStyleProps
+  ITextFieldStyleProps,
+  Spinner,
+  SpinnerSize
 } from "office-ui-fabric-react";
 import { login, IState } from "../state";
-import { LoginUIClassNames } from "../components/LoginUI.styles";
+import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
-import { setIsInvalidPAT } from "../state/actions";
+import { setIsInvalidPAT, isLoginLoadingTrue, isLoginLoadingFalse } from "../state/actions";
 
 // Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
@@ -33,11 +35,14 @@ interface ILoginProps {
   setIsInvalidPAT: (isInvalid: boolean) => void;
   /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
   invalidPAT: boolean;
+  /** A boolean that stores whether the user is currently attempting to log in. */
+  isLoginLoading: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    invalidPAT: state.user.invalidPAT
+    invalidPAT: state.user.invalidPAT,
+    isLoginLoading: state.changeUI.isLoginLoading
   };
 };
 
@@ -83,6 +88,7 @@ function LoginUIComponent(props: ILoginProps) {
   };
 
   function onLogin() {
+    //check to see if they've updated the PAT
     props.login(currPAT);
   }
 
@@ -105,10 +111,22 @@ function LoginUIComponent(props: ILoginProps) {
           styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
-          errorMessage={props.invalidPAT ? "InvalidPAT" : ""}
+          errorMessage={!props.isLoginLoading ? (props.invalidPAT ? "InvalidPAT" : "") : ""}
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
+      {props.isLoginLoading ? (
+        <div>
+          <Spinner
+            label="Logging you in..."
+            ariaLive="assertive"
+            labelPosition="left"
+            size={SpinnerSize.small}
+          />
+        </div>
+      ) : (
+        <div />
+      )}
       <Link
         className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"

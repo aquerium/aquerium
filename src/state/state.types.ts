@@ -10,6 +10,7 @@ export interface IState {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
     currQuery?: IQuery;
     isHomeLoading: boolean;
+    isLoginLoading: boolean;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
