@@ -68,7 +68,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 7, tasks: [] }
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [], url: "" }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
