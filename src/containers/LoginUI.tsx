@@ -115,7 +115,7 @@ function LoginUIComponent(props: ILoginProps) {
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
-      {props.isLoginLoading ? (
+      {props.isLoginLoading && (
         <div>
           <Spinner
             label="Logging you in..."
@@ -124,8 +124,6 @@ function LoginUIComponent(props: ILoginProps) {
             size={SpinnerSize.small}
           />
         </div>
-      ) : (
-        <div />
       )}
       <Link
         className={LoginUIClassNames.patLink}

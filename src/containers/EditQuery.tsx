@@ -81,7 +81,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, lastUpdated: 0, tasks: [] }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
+  private _nameRegex = /^[:a-z0-9-_.\\/~+&#@]+( *[:a-z0-9-_.\\/+&#@]+ *)*$/i;
 
   public render = (): JSX.Element => {
     return (

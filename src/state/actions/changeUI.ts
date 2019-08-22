@@ -31,6 +31,7 @@ export const login = (currPAT: string) => {
     if (currPAT !== "") {
       dispatch(setIsInvalidPAT(false));
       dispatch(isLoginLoadingTrue());
+      console.log("login with gist");
       chrome.storage.sync.get(["username", "gistID"], async result => {
         if (result.username && result.gistID) {
           const user: IUserInfo = {
@@ -54,6 +55,7 @@ export const login = (currPAT: string) => {
               gistID: user.gistID,
               invalidPAT: false
             });
+            dispatch(updateMap(responseMap.queryMap));
             dispatch(storeUserInfo(user));
             dispatch(isLoginLoadingFalse());
             dispatch(toHome());
@@ -81,7 +83,9 @@ export const login = (currPAT: string) => {
         }
       });
     } else {
+      console.log("Logging in (if no pat is entered, called from did mount)");
       chrome.storage.sync.get(["token", "username", "gistID"], async result => {
+        console.log("in storage sync");
         if (result.token && result.username && result.gistID) {
           const user: IUserInfo = {
             token: result.token,
@@ -92,12 +96,17 @@ export const login = (currPAT: string) => {
           const response = await getQueryMapObj(user);
           if (response.queryMap) {
             dispatch(storeUserInfo(user));
+            console.log("querymap is is valid! Loading data...");
+            console.log(response.queryMap);
             dispatch(updateMap(response.queryMap));
             dispatch(isLoginLoadingFalse());
             dispatch(toHome());
+          } else {
           }
+        } else {
         }
       });
+      console.log("out of storage sync. did you see an In?");
     }
   };
 };
