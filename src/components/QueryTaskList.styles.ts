@@ -64,17 +64,19 @@ export const QueryTaskClassNames = mergeStyleSets({
     textOverflow: "ellipsis",
     width: "100%",
     maxWidth: "200px",
+    maxHeight: "23px",
     height: "100%",
     selectors: {
       "&:hover": { textDecorationLine: "none" }
     }
   },
   basicInfo: {
+    paddingTop: 8,
     overflow: "hidden",
-    paddingTop: 5,
     textOverflow: "ellipsis",
     width: "100%",
     maxWidth: "200px",
+    maxHeight: "20px",
     height: "100%",
     fontSize: 12
   },
