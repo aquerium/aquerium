@@ -27,7 +27,7 @@ function QueryListComponent(props: ITileListUIProps) {
         </div>
       ) : (
         <Spinner
-          label="Hang on, we're loading your stuff..."
+          label="Hang on, we're loading your data..."
           size={SpinnerSize.large}
           className={QueryTileClassNames.spinner}
         />
