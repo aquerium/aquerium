@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(() => {
     username: "",
     gistID: ""
   });
-  chrome.alarms.create("refresh", { periodInMinutes: 3 });
+  chrome.alarms.create("refresh", { periodInMinutes: 5 });
 });
 
 chrome.alarms.onAlarm.addListener(async alarm => {
@@ -23,7 +23,10 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       if (map) {
         for (let key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
-          if (responseItems.tasks) {
+          if (
+            responseItems.tasks &&
+            JSON.stringify(responseItems.tasks) !== JSON.stringify(map[key].tasks)
+          ) {
             const newMap = { ...map };
             newMap[key].tasks = responseItems.tasks;
             await updateGist(user, newMap);
