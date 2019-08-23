@@ -2,6 +2,7 @@ import React from "react";
 import update from "immutability-helper";
 import {
   Stack,
+  Text,
   TextField,
   ActionButton,
   Slider,
@@ -9,7 +10,9 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption
+  IDropdownOption,
+  Separator,
+  Icon
 } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { IQuery } from "../state";
@@ -19,7 +22,8 @@ import {
   rootTokenGap,
   actionIcons,
   typeOptions,
-  reviewStatusOptions
+  reviewStatusOptions,
+  separatorStyles
 } from "./EditQueryUI.styles";
 
 enum InputStatuses {
@@ -52,6 +56,10 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
+  /**
+   * An array that keeps track of the fields a user wishes to view on the task list tile.
+   */
+  customViews: any[];
 }
 
 interface IEditQueryUIProps {
@@ -68,7 +76,8 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [], url: "" }
+      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [], url: "" },
+    customViews: []
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
@@ -99,6 +108,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               onClick={this._setMessageBarRemove}
             />
           </Stack>
+          <Text className="ms-fontSize-20">Query Settings</Text>
           <TextField
             label="Your query title"
             placeholder="Please enter a title"
@@ -211,6 +221,32 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
             />
             {description([
               "The number of days after which a Pull Request will be considered stale."
+            ])()}
+          </Stack>
+          <Separator styles={separatorStyles}>
+            <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
+          </Separator>
+          <Text className="ms-fontSize-20">Customize Task Tile Fields</Text>
+          <Stack horizontal horizontalAlign="center">
+            <Dropdown
+              label="Info Fields"
+              multiSelect
+              selectedKeys={this.state.customViews}
+              options={[
+                { key: "type", text: "Type of tasks" },
+                { key: "repo", text: "Repo" },
+                { key: "assignee", text: "Assignee" },
+                { key: "author", text: "Author" },
+                { key: "mentions", text: "Mentions" },
+                { key: "reviewStatus", text: "Review Status" },
+                { key: "labels", text: "Labels" },
+                { key: "lastUpdated", text: "Last Updated" }
+              ]}
+              // onChange={this._setLabelsSelection}
+              // items={this.state.selections.labels || []}
+            />
+            {description([
+              "Select the fields you wish to prioritize while viewing the task list. "
             ])()}
           </Stack>
         </Stack>

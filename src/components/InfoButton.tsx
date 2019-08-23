@@ -4,6 +4,7 @@ import {
   getId,
   Callout,
   IconButton,
+  Text,
   mergeStyleSets
 } from "office-ui-fabric-react";
 
@@ -75,10 +76,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
           >
             <div id={this._descriptionId}>
               {this.props.calloutText.map(text => (
-                <span>
-                  {text}
-                  <br />
-                </span>
+                <Text block>{text}</Text>
               ))}
             </div>
           </Callout>

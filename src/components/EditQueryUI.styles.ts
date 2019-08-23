@@ -19,6 +19,10 @@ export const actionIcons = {
   }
 };
 
+export const separatorStyles = {
+  content: { background: "transparent", width: 250 }
+};
+
 export const EditQueryUIClassNames = mergeStyleSets({
   root: {
     padding: "2px 0px 2px 5px",
@@ -26,7 +30,8 @@ export const EditQueryUIClassNames = mergeStyleSets({
     height: "100%",
     overflow: "hidden",
     overflowY: "scroll"
-  }
+  },
+  separatorIcon: { fontSize: "26px", background: "rgba(240,240,240,1)" }
 });
 
 export const typeOptions = [
