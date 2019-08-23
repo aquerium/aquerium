@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import update from "immutability-helper";
 import {
   Stack,
@@ -12,7 +12,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, queryListType } from "../state";
+import { IQuery, toHome, editQuery, removeQuery, IState, queryListType } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -22,6 +22,7 @@ import {
   reviewStatusOptions
 } from "./EditQueryUI.styles";
 import { connect } from "react-redux";
+import { createUid } from "../util/uIDGenerator";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
@@ -61,12 +62,19 @@ interface IEditQueryUIProps {
   /** The list of queries stored in redux. */
   queryList: queryListType;
   /** Action that sends the user back to the HomeUI */
-  //toHome: () => void;
+  toHome: () => void;
   /** Action that tells redux and the Gist to modify the current query */
-  //editQuery: (query: IQuery) => void;
+  editQuery: (query: IQuery) => void;
   /** Action that tells redux and the Gist to remove the current query */
   removeQuery: (id: string) => void;
 }
+
+const mapStateToProps = (state: IState) => {
+  return {
+    queryList: state.queryList,
+    currQuery: state.changeUI.currQuery //when we leave this UI we need to be sure to undefine this
+  };
+};
 
 export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
@@ -77,10 +85,18 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     enableReviewStatusField: true,
     selections: this.props.currQuery
       ? this.props.currQuery
-      : { id: "", name: "", stalenessIssue: 4, stalenessPull: 4, tasks: [], url: "" }
+      : {
+          id: "",
+          name: "",
+          stalenessIssue: 4,
+          stalenessPull: 4,
+          lastUpdated: 0,
+          tasks: [],
+          url: ""
+        }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@]+( *[a-z0-9-_.\\/+&#@]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
 
   public render = (): JSX.Element => {
     return (
@@ -241,8 +257,26 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         ),
         renderMessageBar: true
       });
+    } else {
+      let query: IQuery = this.state.selections;
+      if (query.id === "") {
+        //in thise case, we need to generate a unique ID for this query
+        let newID: string = createUid();
+        while (!this._isValidID(newID)) {
+          newID = createUid();
+        }
+        const newQuery = update(this.state.selections, { id: { $set: newID } });
+        this.props.editQuery(newQuery);
+      } else this.props.editQuery(query); //if not, the ID already exists in the map, so just update it
+      this.props.toHome();
     }
-    //Else go back to home screen.
+  };
+  private _isValidID = (id: string): boolean => {
+    const map: queryListType = this.props.queryList;
+    for (const key in map) {
+      if (id === key) return false;
+    }
+    return true;
   };
 
   private _setMessageBarSave = (): void => {
@@ -432,11 +466,12 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
 }
 
 const action = {
-  ///toHome,
-  ///editQuery,
-  /// removeQuery
+  toHome,
+  editQuery,
+  removeQuery
 };
 
-export const EditQuery = connect()(EditQueryUI);
-//mapStateToProps,
-// action
+export const EditQuery = connect(
+  mapStateToProps,
+  action
+)(EditQueryUI);
