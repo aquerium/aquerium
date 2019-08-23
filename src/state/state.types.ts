@@ -8,7 +8,7 @@ export interface IState {
   /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
-    currQuery?: IQuery;
+    currQuery?: IQuery; //STUB to be used in queryTaskList in the next PR
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
