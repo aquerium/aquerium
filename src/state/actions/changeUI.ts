@@ -1,8 +1,8 @@
 /* global chrome */
-import { IUserInfo, IState } from "../state.types";
+import { IUserInfo, IState, queryListType } from "../state.types";
 import { getQueryMapObj, createGist } from "../../util/api";
 import { Dispatch } from "redux";
-import { setIsInvalidPAT, storeUserInfo } from "../actions";
+import { setIsInvalidPAT, storeUserInfo, updateMap } from "../actions";
 
 /**
  * The action type for changing UI.
@@ -42,6 +42,7 @@ function loginOnApplicationMount(dispatch: Dispatch) {
       const response = await getQueryMapObj(user);
       if (response.queryMap) {
         dispatch(storeUserInfo(user));
+        dispatch(updateMap(response.queryMap));
         dispatch(toHome());
       }
     }
@@ -60,7 +61,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       } else {
         // Else, the user's querymap already exists
         const user = createIUserInfo(PAT, result.username, result.gistID);
-        loginQueryMapExists(user, dispatch);
+        loginQueryMapExists(user, dispatch, responseMap.queryMap);
       }
     } else {
       // If username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid.
@@ -70,7 +71,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
         dispatch(setIsInvalidPAT(true));
       } else {
         // Store this user's info in local storage and in redux.
-        loginQueryMapExists(responseGist.user, dispatch);
+        loginQueryMapExists(responseGist.user, dispatch, {});
       }
     }
   });
@@ -87,9 +88,10 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
 }
 
 // Helper function that stores a user's information and goes to the HomeUI.
-function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch) {
+function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
+  dispatch(updateMap(map));
   dispatch(toHome());
 }
 
