@@ -4,7 +4,7 @@ import { QueryTaskTile } from "./QueryTaskTile";
 import { ITask, IQuery } from "../state";
 
 interface IQueryTaskListProps {
-  /** The array of tasks that will be rendered. */
+  /** The query whose tasks will be rendered. */
   query: IQuery;
 }
 
