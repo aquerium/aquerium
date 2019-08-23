@@ -82,8 +82,5 @@ export const QueryTaskClassNames = mergeStyleSets({
   },
   infoIcon: {
     padding: 3
-  },
-  nobull: {
-    listStyle: "none"
   }
 });
