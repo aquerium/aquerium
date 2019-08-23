@@ -15,6 +15,9 @@ import { login } from "../state";
 import { connect } from "react-redux";
 import { IState, IUserInfo } from "../state/state.types";
 
+/** @constant
+    @type {number} value corresponding to enter key 
+*/
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
@@ -33,6 +36,36 @@ interface ILoginProps {
 const mapStateToProps = (state: IState) => {
   return {
     user: state.user
+  };
+};
+
+const getTextFieldStyles = (renderError: boolean) => {
+  return (props: ITextFieldStyleProps) => {
+    const { required } = props;
+    return {
+      fieldGroup: [
+        { width: 180 },
+        required && {
+          borderColor: !renderError
+            ? props.theme.semanticColors.inputBorder
+            : props.theme.semanticColors.errorText
+        }
+      ]
+    };
+  };
+};
+
+const stackTokens = {
+  childrenGap: "5%",
+  padding: "20px"
+};
+
+const onKeyDown = (checkPasswordValidity: () => void) => {
+  return (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!event) return;
+    if (event.which === ENTER_KEYCODE) {
+      checkPasswordValidity();
+    }
   };
 };
 
@@ -66,32 +99,6 @@ function LoginUIComponent(props: ILoginProps) {
     if (currPAT === "") setRenderError(false);
   };
 
-  const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (!event) return;
-    if (event.which === ENTER_KEYCODE) {
-      checkPasswordValidity();
-    }
-  };
-
-  const getTextFieldStyles = (props: ITextFieldStyleProps) => {
-    const { required } = props;
-    return {
-      fieldGroup: [
-        { width: 180 },
-        required && {
-          borderColor: !renderError
-            ? props.theme.semanticColors.inputBorder
-            : props.theme.semanticColors.errorText
-        }
-      ]
-    };
-  };
-
-  const stackTokens = {
-    childrenGap: "5%",
-    padding: "20px"
-  };
-
   return (
     <Stack
       horizontalAlign="center"
@@ -99,18 +106,18 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} />
+      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
-      <Stack horizontal>
+      <Stack horizontal className={LoginUIClassNames.loginFields}>
         <TextField
           placeholder="Enter your GitHub PAT"
           required
-          styles={getTextFieldStyles}
+          styles={getTextFieldStyles(renderError)}
           onChange={updateCurrPAT}
-          onKeyDown={ensureEnter}
+          onKeyDown={onKeyDown(checkPasswordValidity)}
           errorMessage={renderError ? "InvalidPAT" : ""}
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={checkPasswordValidity} />

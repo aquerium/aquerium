@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
+import { Image, Stack, Link, CommandBarButton, Text, ActionButton } from "office-ui-fabric-react";
 import { logout } from "../state";
 import { connect } from "react-redux";
 import {
@@ -7,7 +7,9 @@ import {
   TopBarIconsUIClassNames,
   getMenuIconName,
   menuIconSize,
-  imageProps
+  imageProps,
+  refreshIcon,
+  refreshIconStyles
 } from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
@@ -38,6 +40,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 
   return (
     <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={topBarItemGap}>
+      <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
       <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
         <Image {...imageProps as any} title="My GitHub Home" />
       </Link>
