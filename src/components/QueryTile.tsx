@@ -9,6 +9,7 @@ import {
 } from "office-ui-fabric-react";
 import { QueryTileClassNames } from "./QueryTile.styles";
 import { IQuery } from "../state";
+import { queryList } from "../state/reducers/queryList";
 
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
@@ -27,30 +28,42 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
     toggleTooltip(!isTooltipVisible);
   };
   return (
-    <DefaultButton className={QueryTileClassNames.queryTile}>
-      <div className={QueryTileClassNames.queryFront}>
-        <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
-          <TooltipHost
-            calloutProps={calloutGapSpace}
-            content={props.query.name}
-            overflowMode={TooltipOverflowMode.Parent}
-            onTooltipToggle={tooltipToggle}
-          >
-            <Text
-              className={QueryTileClassNames.queryName}
-              nowrap
-              block
-              aria-labelledby={isTooltipVisible ? tooltipId : undefined}
+    <div className={QueryTileClassNames.tileContainer}>
+      <DefaultButton className={QueryTileClassNames.queryTile}>
+        <div className={QueryTileClassNames.queryFront}>
+          <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
+            <TooltipHost
+              calloutProps={calloutGapSpace}
+              content={props.query.name}
+              overflowMode={TooltipOverflowMode.Parent}
+              onTooltipToggle={tooltipToggle}
             >
-              {props.query.name}
+              <Text
+                className={QueryTileClassNames.queryName}
+                nowrap
+                block
+                aria-labelledby={isTooltipVisible ? tooltipId : undefined}
+              >
+                {props.query.name}
+              </Text>
+            </TooltipHost>
+            <Text className={QueryTileClassNames.queryTaskCount}>
+              {props.query.tasks.length.toString()}
             </Text>
-          </TooltipHost>
-          <Text className={QueryTileClassNames.queryTaskCount}>
-            {props.query.tasks.length.toString()}
-          </Text>
-        </Stack>
-      </div>
-      <div className={QueryTileClassNames.queryBack}> Hello World </div>
-    </DefaultButton>
+          </Stack>
+        </div>
+        <div className={QueryTileClassNames.queryBack}>
+          {Object.keys(props.query).map(
+            key =>
+              key !== "id" &&
+              key !== "name" && (
+                <Text className={QueryTileClassNames.basicInfo} block key={key}>
+                  {key}
+                </Text>
+              )
+          )}
+        </div>
+      </DefaultButton>
+    </div>
   );
 };

@@ -13,9 +13,23 @@ function QueryListComponent(props: ITileListUIProps) {
   return (
     <div className={QueryTileClassNames.root}>
       <div className={QueryTileClassNames.listContainer}>
-        {Object.keys(props.queryList).map(key => (
+        {/* {Object.keys(props.queryList).map(key => (
           <QueryTile query={props.queryList[key]} key={key} />
-        ))}
+        ))} */}
+        <QueryTile
+          query={{
+            id: "asd",
+            name: "Woohoo",
+            type: "issue",
+            repo: "OfficeDev/office-ui-fabric-react",
+            assignee: "kkjeer",
+            url: "www.github.com",
+            labels: ["Component: Overlay"],
+            stalenessIssue: 10,
+            stalenessPull: 10,
+            tasks: []
+          }}
+        />
       </div>
     </div>
   );
