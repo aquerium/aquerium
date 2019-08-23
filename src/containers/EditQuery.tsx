@@ -252,7 +252,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
           <div>
             <MessageBarButton text="Save" onClick={this._setMessageBarSave} />
             {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="Discard" />
+            <MessageBarButton text="Discard" onClick={this.props.toHome} />
           </div>
         ),
         renderMessageBar: true
@@ -309,13 +309,22 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       actions: (
         <div>
           {/* Insert query delete Redux and go back to home screen */}
-          <MessageBarButton text="Remove" />
+          <MessageBarButton text="Remove" onClick={this._onRemove} />
           {/* Cancel and continue editing */}
           <MessageBarButton text="Cancel" onClick={this._onDismissMessageBar} />
         </div>
       ),
       renderMessageBar: true
     });
+  };
+
+  private _onRemove = (): void => {
+    const queryID: string = this.state.selections.id;
+    if (queryID !== "") {
+      //if the ID exists, this is a real query we should remove
+      this.props.removeQuery(queryID);
+    }
+    this.props.toHome();
   };
 
   private _onDismissMessageBar = (): void => {

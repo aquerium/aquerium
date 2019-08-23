@@ -1,5 +1,5 @@
 import * as React from "react";
-import { clearTokenLogout } from "../state";
+import { clearTokenLogout, toEditQuery } from "../state";
 import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
@@ -24,6 +24,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         iconProps: {
           iconName: "Add"
         }
+        //onClick: props.toEditQuery()
       },
       {
         key: "sign out",
