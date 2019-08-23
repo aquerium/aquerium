@@ -72,7 +72,7 @@ interface IEditQueryUIProps {
 const mapStateToProps = (state: IState) => {
   return {
     queryList: state.queryList,
-    currQuery: state.changeUI.currQuery //when we leave this UI we need to be sure to undefine this
+    currQuery: state.changeUI.currQuery
   };
 };
 
@@ -260,14 +260,14 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     } else {
       let query: IQuery = this.state.selections;
       if (query.id === "") {
-        //in thise case, we need to generate a unique ID for this query
+        //In thise case, we need to generate a unique ID for this query
         let newID: string = createUid();
         while (!this._isValidID(newID)) {
           newID = createUid();
         }
         const newQuery = update(this.state.selections, { id: { $set: newID } });
         this.props.editQuery(newQuery);
-      } else this.props.editQuery(query); //if not, the ID already exists in the map, so just update it
+      } else this.props.editQuery(query); //If not, the ID already exists in the map, so just update it
       this.props.toHome();
     }
   };
@@ -321,7 +321,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   private _onRemove = (): void => {
     const queryID: string = this.state.selections.id;
     if (queryID !== "") {
-      //if the ID exists, this is a real query we should remove
+      //If the ID exists, this is a real query we should remove
       this.props.removeQuery(queryID);
     }
     this.props.toHome();
