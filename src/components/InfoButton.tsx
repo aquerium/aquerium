@@ -13,22 +13,25 @@ interface IInfoButtonState {
 }
 
 interface IInfoButtonProps extends ITextFieldProps {
-  /** The text to be rendered by the info button. */
-  calloutText: string;
+  calloutText: string[];
 }
 
 const InfoButtonStyles = mergeStyleSets({
   icon: {
-    bottom: -15,
-    left: 10,
     selectors: {
       "&:hover": { background: "transparent" }
     },
-    borderRadius: 3,
-    transitionDelay: "0.05s"
+    background: "transparent",
+    borderRadius: 25
   },
   callout: {
-    padding: 5
+    padding: 5,
+    maxWidth: 150
+  },
+  calloutText: {
+    maxWidth: "150px",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   }
 });
 
@@ -62,15 +65,22 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
         />
         {this.state.isCalloutVisible && (
           <Callout
+            className={InfoButtonStyles.callout}
             target={"#" + this._iconButtonId}
             setInitialFocus={true}
             onDismiss={this._onDismiss}
             title={this.props.label}
             ariaDescribedBy={this._descriptionId}
             role="alertdialog"
-            className={InfoButtonStyles.callout}
           >
-            <span id={this._descriptionId}>{this.props.calloutText}</span>
+            <div id={this._descriptionId}>
+              {this.props.calloutText.map(text => (
+                <span>
+                  {text}
+                  <br />
+                </span>
+              ))}
+            </div>
           </Callout>
         )}
       </>
@@ -78,7 +88,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   }
 }
 
-export const description = (description: string) => {
+export const description = (description: string[]) => {
   return (props?: ITextFieldProps): JSX.Element => {
     return <InfoButton {...props} calloutText={description} />;
   };

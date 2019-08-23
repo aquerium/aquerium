@@ -2,7 +2,7 @@ import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShading.styles";
 
 /**
- * Interface for grid styling
+ * Interface for grid styling.
  *
  * @interface
  */
