@@ -21,7 +21,7 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
  * If they are logging in on the login screen, the action creator will check to see that their PAT is valid, as well as if they're a new or returning user.
  */
 export const login = (currPAT: string) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function(dispatch: Dispatch) {
     if (currPAT !== "") {
       //Called when the user is logging in from LoginUI with a PAT
       loginViaPAT(dispatch, currPAT);
