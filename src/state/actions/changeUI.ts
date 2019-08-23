@@ -99,7 +99,7 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryList
  * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return function(dispatch: Dispatch) {
     chrome.storage.sync.set({ token: "" });
     dispatch(logout());
   };
