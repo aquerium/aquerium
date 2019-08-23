@@ -1,3 +1,5 @@
+import { IUserInfo } from "../state.types";
+
 /**
  * The action type for setting PAT validity.
  */
@@ -10,4 +12,12 @@ export type setValidPATAction = { type: string; isInvalid: boolean };
 export const setIsInvalidPAT = (isInvalid: boolean) => ({
   type: "SET_VALID_PAT",
   isInvalid
+});
+
+/**
+ * Action creator to store UserInfo in state
+ */
+export const storeUserInfo = (user: IUserInfo) => ({
+  type: "USER",
+  user
 });

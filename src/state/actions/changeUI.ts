@@ -2,7 +2,7 @@
 import { IUserInfo, IState } from "../state.types";
 import { getQueryMapObj, createGist } from "../../util/api";
 import { Dispatch } from "redux";
-import { setIsInvalidPAT } from "../actions";
+import { setIsInvalidPAT, storeUserInfo } from "../actions";
 
 /**
  * The action type for changing UI.
@@ -20,7 +20,6 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
  * If they are signing in on opening, the currPAT field will be blank, and this action will check to see if the user has valid credentials in local storage.
  * If they are logging in on the login screen, the action creator will check to see that their PAT is valid, as well as if they're a new or returning user.
  */
-
 export const login = (currPAT: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     if (currPAT !== "") {
@@ -130,12 +129,4 @@ export const toQueryList = () => ({
  */
 export const toHome = () => ({
   type: "HOME"
-});
-
-/**
- * Action creator to store UserInfo in state
- */
-export const storeUserInfo = (user: IUserInfo) => ({
-  type: "USER",
-  user
 });
