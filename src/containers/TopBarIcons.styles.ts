@@ -19,6 +19,12 @@ export const menuIconSize = {
   }
 };
 
+export const refreshIcon = {
+  iconName: "Refresh"
+};
+
+export const refreshIconStyles = { icon: { fontSize: 22 } };
+
 export const topBarItemGap = { childrenGap: 20 };
 
 export const TopBarIconsUIClassNames = mergeStyleSets({
@@ -31,7 +37,6 @@ export const TopBarIconsUIClassNames = mergeStyleSets({
     color: "#1b3e74"
   },
   menu: {
-    top: 5,
     right: 10,
     backgroundColor: "rgba(240, 240, 240, 0.7)"
   }

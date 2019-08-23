@@ -6,17 +6,31 @@ export const LoginUIClassNames = mergeStyleSets({
   },
   aqueriumTitle: {
     textAlign: "center",
+    position: "absolute",
     color: "#1b3e74",
     padding: 10,
-    fontSize: 20
+    fontSize: 20,
+    top: 120
   },
   aqueriumInfo: {
     textAlign: "center",
+    position: "absolute",
     fontSize: 12,
     color: "#1b3e74",
-    transform: "translateY(-60%)"
+    transform: "translateY(-60%)",
+    top: 200
   },
   patLink: {
-    fontSize: "11px"
+    fontSize: "11px",
+    position: "absolute",
+    bottom: 13
+  },
+  loginFields: {
+    position: "absolute",
+    top: 250
+  },
+  logo: {
+    position: "absolute",
+    top: 40
   }
 });
