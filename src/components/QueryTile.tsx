@@ -28,26 +28,29 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
   };
   return (
     <DefaultButton className={QueryTileClassNames.queryTile}>
-      <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
-        <TooltipHost
-          calloutProps={calloutGapSpace}
-          content={props.query.name}
-          overflowMode={TooltipOverflowMode.Parent}
-          onTooltipToggle={tooltipToggle}
-        >
-          <Text
-            className={QueryTileClassNames.queryName}
-            nowrap
-            block
-            aria-labelledby={isTooltipVisible ? tooltipId : undefined}
+      <div className={QueryTileClassNames.queryFront}>
+        <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
+          <TooltipHost
+            calloutProps={calloutGapSpace}
+            content={props.query.name}
+            overflowMode={TooltipOverflowMode.Parent}
+            onTooltipToggle={tooltipToggle}
           >
-            {props.query.name}
+            <Text
+              className={QueryTileClassNames.queryName}
+              nowrap
+              block
+              aria-labelledby={isTooltipVisible ? tooltipId : undefined}
+            >
+              {props.query.name}
+            </Text>
+          </TooltipHost>
+          <Text className={QueryTileClassNames.queryTaskCount}>
+            {props.query.tasks.length.toString()}
           </Text>
-        </TooltipHost>
-        <Text className={QueryTileClassNames.queryTaskCount}>
-          {props.query.tasks.length.toString()}
-        </Text>
-      </Stack>
+        </Stack>
+      </div>
+      <div className={QueryTileClassNames.queryBack}> Hello World </div>
     </DefaultButton>
   );
 };

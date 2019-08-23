@@ -17,6 +17,8 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  queryFront: string;
+  queryBack: string;
 }
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
@@ -44,9 +46,14 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       outline: "none",
       float: "center",
       border: "none",
-      background: "#f8f8f8"
+      background: "#f8f8f8",
+      selectors: {
+        "&:hover": {}
+      }
     }
   ],
+  queryFront: {},
+  queryBack: {},
   queryName: {
     color: "#323130",
     overflow: "hidden",

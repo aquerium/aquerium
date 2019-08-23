@@ -105,12 +105,12 @@ class AppView extends React.Component<IAppViewProps> {
 
   private _renderUI = () => {
     switch (this.props.UI) {
-      case "Login": {
-        return <LoginUI />;
-      }
-      case "Home": {
-        return <HomeUI />;
-      }
+      // case "Login": {
+      //   return <LoginUI />;
+      // }
+      // case "Home": {
+      //   return <HomeUI />;
+      // }
       default: {
         return <HomeUI />;
       }
