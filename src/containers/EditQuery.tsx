@@ -11,9 +11,9 @@ import {
   Dropdown,
   IDropdownOption
 } from "office-ui-fabric-react";
-import { description } from "./InfoButton";
+import { description } from "../components/InfoButton";
 import { IQuery } from "../state";
-import { MultiSelect } from "./MultiSelect";
+import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
