@@ -30,6 +30,8 @@ export interface ITask {
   createdAt: string;
   /** Time stamp for last update. */
   updatedAt: string;
+  /** The HTML URL for this task. */
+  url: string;
 }
 
 /**
@@ -69,6 +71,7 @@ export interface IQuery {
   lastUpdated?: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
+  url: string;
 }
 
 /**
