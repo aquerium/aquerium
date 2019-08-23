@@ -24,6 +24,8 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
+  /** The repo the task is a member of. */
+  repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** State of a task only be "open" or "closed". */
