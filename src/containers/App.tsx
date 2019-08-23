@@ -80,7 +80,7 @@ interface IAppViewProps {
   /** The UI that will be displayed.  */
   UI: string;
   /** The login function attempts to authenticate the user upon opening. */
-  login: (currPAT: string) => void;
+  login: (currPAT?: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
@@ -91,7 +91,7 @@ const mapStateToProps = (state: IState) => {
 
 class AppView extends React.Component<IAppViewProps> {
   public componentDidMount(): void {
-    this.props.login("");
+    this.props.login();
   }
 
   public render(): JSX.Element {
