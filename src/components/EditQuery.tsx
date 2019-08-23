@@ -248,7 +248,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         actions: undefined,
         renderMessageBar: true
       });
-      //Use Redux to save query selections
+      //Use Redux to save query selections.
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -265,9 +265,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       message: "Are you sure you wish to delete this query?",
       actions: (
         <div>
-          {/* Insert query delete Redux and go back to home screen */}
+          {/* Insert query delete Redux and go back to home screen. */}
           <MessageBarButton text="Remove" />
-          {/* Cancel and continue editing */}
+          {/* Cancel and continue editing. */}
           <MessageBarButton text="Cancel" onClick={this._onDismissMessageBar} />
         </div>
       ),

@@ -5,7 +5,7 @@ import { changeUILoginAction, changeUIAction, setValidPATAction } from "../actio
 const DEFAULT_STATE: IUserInfo = { token: "", username: "", gistID: "", invalidPAT: false };
 
 /**
- * This reducer deals with receiving the actions that modify the user property of the state
+ * This reducer deals with receiving the actions that modify the user property of the state.
  */
 export const user = (
   state: IUserInfo = DEFAULT_STATE,

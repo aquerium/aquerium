@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 
 interface ITileListUIProps {
-  /** The queryList map that is passed in, element at a time, to be rendered by TaskTile */
+  /** The queryList map that is passed in, element at a time, to be rendered by TaskTile. */
   queryList: queryListType;
 }
 

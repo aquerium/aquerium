@@ -24,17 +24,17 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
 export const login = (currPAT?: string) => {
   return async function(dispatch: Dispatch) {
     if (currPAT) {
-      //Called when the user is logging in from LoginUI with a PAT
+      // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
     } else {
-      //Called when the user opens the application
+      // Called when the user opens the application.
       loginOnApplicationMount(dispatch);
     }
   };
 };
 
-//Helper function to attempt to log a user in when the extension is first opened.
-//Checks for valid credentials and loads the appropriate map if they are approved.
+// Helper function to attempt to log a user in when the extension is first opened.
+// Checks for valid credentials and loads the appropriate map if they are approved.
 function loginOnApplicationMount(dispatch: Dispatch) {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
     if (result.token && result.username && result.gistID) {
@@ -48,35 +48,35 @@ function loginOnApplicationMount(dispatch: Dispatch) {
   });
 }
 
-//Helper function to attempt to log a user in via their PAT
+// Helper function to attempt to log a user in via their PAT.
 function loginViaPAT(dispatch: Dispatch, PAT: string) {
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
       const responseMap = await getQueryMapObj(user);
       if (responseMap.queryMap === undefined) {
-        //If queryMap is undefined, this this user has invalid credentials
+        // If queryMap is undefined, this this user has invalid credentials.
         dispatch(setIsInvalidPAT(true));
       } else {
-        //else, the user's querymap already exists
+        // Else, the user's querymap already exists
         const user = createIUserInfo(PAT, result.username, result.gistID);
         loginQueryMapExists(user, dispatch);
       }
     } else {
-      //if username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid
+      // If username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid.
       const responseGist = await createGist(PAT);
       if (responseGist.user === undefined) {
-        //if the response from createGIST is invalid
+        // If the response from createGIST is invalid.
         dispatch(setIsInvalidPAT(true));
       } else {
-        //Store this user's info in local storage and in redux
+        // Store this user's info in local storage and in redux.
         loginQueryMapExists(responseGist.user, dispatch);
       }
     }
   });
 }
 
-//helper function that creates an IUserInfo
+// Helper function that creates an IUserInfo.
 function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
   return {
     token: newPAT,
@@ -86,7 +86,7 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
   };
 }
 
-//helper function that stores a user's information and goes to the homeUI
+// Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
@@ -94,7 +94,7 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch) {
 }
 
 /**
- * Action creator to clear a user's stored token and then logout
+ * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
   return async function(dispatch: Dispatch, getState: () => IState) {

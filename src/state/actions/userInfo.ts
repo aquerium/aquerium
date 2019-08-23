@@ -15,7 +15,7 @@ export const setIsInvalidPAT = (isInvalid: boolean) => ({
 });
 
 /**
- * Action creator to store UserInfo in state
+ * Action creator to store UserInfo in state.
  */
 export const storeUserInfo = (user: IUserInfo) => ({
   type: "USER",

@@ -5,7 +5,7 @@ import update from "immutability-helper";
 const DEFAULT_STATE: queryListType = {};
 
 /**
- * Our reducer responds to the actions regarding updating the queryList
+ * This reducer responds to the actions regarding updating the queryList.
  */
 export const queryList = (state: queryListType = DEFAULT_STATE, action: updateQueryListAction) => {
   switch (action.type) {

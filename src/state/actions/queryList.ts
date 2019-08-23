@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
 
 /**
- * @type { type: string } this type defines an action that updates the queryList
+ * @type { type: string } this type defines an action that updates the queryList.
  */
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
@@ -58,7 +58,7 @@ export const removeQuery = (queryID: string) => {
 };
 
 /**
- * Action creator to replace the current queryList with the attatched queryList
+ * Action creator to replace the current queryList with the attatched queryList.
  */
 export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
