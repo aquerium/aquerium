@@ -13,6 +13,8 @@ import {
 interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
+  /** A function linked with the action creator to send the user to the EditQueryUI */
+  toEditQuery: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -23,8 +25,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         name: "Add Query",
         iconProps: {
           iconName: "Add"
-        }
-        //onClick: props.toEditQuery()
+        },
+        onClick: props.toEditQuery
       },
       {
         key: "sign out",
@@ -56,7 +58,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  clearTokenLogout
+  clearTokenLogout,
+  toEditQuery
 };
 
 export const TopBarIcons = connect(

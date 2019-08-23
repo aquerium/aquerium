@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
+import { EditQuery } from "../containers/EditQuery";
 
 initializeIcons();
 
@@ -106,8 +107,11 @@ class AppView extends React.Component<IAppViewProps> {
       case "Home": {
         return <HomeUI />;
       }
+      case "EditQuery": {
+        return <EditQuery />;
+      }
       default: {
-        return <HomeUI />;
+        return <LoginUI />;
       }
     }
   };

@@ -57,7 +57,7 @@ interface IEditQueryUIState {
 }
 
 interface IEditQueryUIProps {
-  /** Current query whose properties are edited. */
+  /** Current query whose properties are being edited. */
   currQuery?: IQuery;
   /** The list of queries stored in redux. */
   queryList: queryListType;

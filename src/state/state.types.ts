@@ -5,7 +5,7 @@
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
-  /** Stores a string containing the current UI. */
+  /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
     currQuery?: IQuery;
