@@ -14,15 +14,6 @@ export type changeUIAction = { type: string };
  */
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
-function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
-  return {
-    token: newPAT,
-    username: newUsername,
-    gistID: newGistID,
-    invalidPAT: false
-  };
-}
-
 /**
  * Action creator to send the user from login UI to Home UI.
  * This action creator takes in a string that determines whether a user is attempting a login from opening the extension or signing in on the login page.
@@ -85,6 +76,17 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
   });
 }
 
+//helper function that creates an IUserInfo
+function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
+  return {
+    token: newPAT,
+    username: newUsername,
+    gistID: newGistID,
+    invalidPAT: false
+  };
+}
+
+//helper function that stores a user's information and goes to the homeUI
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch) {
   dispatch(setIsInvalidPAT(false));
   chrome.storage.sync.set(user);
