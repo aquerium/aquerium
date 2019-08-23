@@ -57,7 +57,7 @@ const getTextFieldStyles = (renderError: boolean) => {
 
 const stackTokens = {
   childrenGap: "5%",
-  padding: "20 px"
+  padding: "20px"
 };
 
 const onKeyDown = (checkPasswordValidity: () => void) => {
@@ -106,12 +106,12 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} />
+      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
-      <Stack horizontal>
+      <Stack horizontal className={LoginUIClassNames.loginFields}>
         <TextField
           placeholder="Enter your GitHub PAT"
           required
