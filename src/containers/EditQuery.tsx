@@ -12,7 +12,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery } from "../state";
+import { IQuery, queryListType } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -21,6 +21,7 @@ import {
   typeOptions,
   reviewStatusOptions
 } from "./EditQueryUI.styles";
+import { connect } from "react-redux";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
@@ -57,6 +58,14 @@ interface IEditQueryUIState {
 interface IEditQueryUIProps {
   /** Current query whose properties are edited. */
   currQuery?: IQuery;
+  /** The list of queries stored in redux. */
+  queryList: queryListType;
+  /** Action that sends the user back to the HomeUI */
+  //toHome: () => void;
+  /** Action that tells redux and the Gist to modify the current query */
+  //editQuery: (query: IQuery) => void;
+  /** Action that tells redux and the Gist to remove the current query */
+  removeQuery: (id: string) => void;
 }
 
 export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
@@ -422,4 +431,12 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   };
 }
 
-export default EditQueryUI;
+const action = {
+  ///toHome,
+  ///editQuery,
+  /// removeQuery
+};
+
+export const EditQuery = connect()(EditQueryUI);
+//mapStateToProps,
+// action
