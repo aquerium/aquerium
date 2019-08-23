@@ -12,7 +12,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, editQuery, removeQuery, IState, queryListType } from "../state";
+import { IQuery, toHome, addOrEditQuery, removeQuery, IState, queryListType } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -64,7 +64,7 @@ interface IEditQueryUIProps {
   /** Action that sends the user back to the HomeUI */
   toHome: () => void;
   /** Action that tells redux and the Gist to modify the current query */
-  editQuery: (query: IQuery) => void;
+  addOrEditQuery: (query: IQuery) => void;
   /** Action that tells redux and the Gist to remove the current query */
   removeQuery: (id: string) => void;
 }
@@ -260,17 +260,20 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     } else {
       let query: IQuery = this.state.selections;
       if (query.id === "") {
-        //In thise case, we need to generate a unique ID for this query
+        // In thise case, we need to generate a unique ID for this query.
         let newID: string = createUid();
         while (!this._isValidID(newID)) {
           newID = createUid();
         }
         const newQuery = update(this.state.selections, { id: { $set: newID } });
-        this.props.editQuery(newQuery);
-      } else this.props.editQuery(query); //If not, the ID already exists in the map, so just update it
+        this.props.addOrEditQuery(newQuery);
+      } else {
+        this.props.addOrEditQuery(query);
+      } // If not, the ID already exists in the map, so just update it.
       this.props.toHome();
     }
   };
+
   private _isValidID = (id: string): boolean => {
     const map: queryListType = this.props.queryList;
     for (const key in map) {
@@ -291,7 +294,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
         actions: undefined,
         renderMessageBar: true
       });
-      //Use Redux to save query selections
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -308,9 +310,9 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
       message: "Are you sure you wish to delete this query?",
       actions: (
         <div>
-          {/* Insert query delete Redux and go back to home screen */}
+          {/* Insert query delete Redux and go back to home screen. */}
           <MessageBarButton text="Remove" onClick={this._onRemove} />
-          {/* Cancel and continue editing */}
+          {/* Cancel and continue editing. */}
           <MessageBarButton text="Cancel" onClick={this._onDismissMessageBar} />
         </div>
       ),
@@ -321,7 +323,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   private _onRemove = (): void => {
     const queryID: string = this.state.selections.id;
     if (queryID !== "") {
-      //If the ID exists, this is a real query we should remove
+      //.If the ID exists, this is a real query we should remove.
       this.props.removeQuery(queryID);
     }
     this.props.toHome();
@@ -476,7 +478,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
 
 const action = {
   toHome,
-  editQuery,
+  addOrEditQuery,
   removeQuery
 };
 

@@ -7,7 +7,7 @@ import { rootReducer } from "./state";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 
-// Inject some global styles
+// Inject some global styles/
 mergeStyles({
   selectors: {
     ":global(body), :global(html), :global(#app)": {

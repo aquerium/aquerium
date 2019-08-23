@@ -5,7 +5,7 @@ import { changeUILoginAction, changeUIAction, setValidPATAction } from "../actio
 const DEFAULT_STATE: IUserInfo = { token: "", username: "", gistID: "", invalidPAT: false };
 
 /**
- * This reducer deals with receiving the actions that modify the user property of the state
+ * This reducer deals with receiving the actions that modify the user property of the state.
  */
 export const user = (
   state: IUserInfo = DEFAULT_STATE,
@@ -19,9 +19,9 @@ export const user = (
     case "LOGOUT": {
       return update(state, { $set: { token: "", username: "", gistID: "", invalidPAT: false } });
     }
-    case "SET_VALID_PAT": {
-      const validity: boolean = (action as setValidPATAction).isInvalid;
-      return update(state, { invalidPAT: { $set: validity } });
+    case "SET_INVALID_PAT": {
+      const invalidity: boolean = (action as setValidPATAction).isInvalid;
+      return update(state, { invalidPAT: { $set: invalidity } });
     }
     default:
       return state;
