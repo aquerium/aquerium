@@ -1,5 +1,4 @@
-import { getQueryMapObj, updateGist } from "../util";
-import { getQueryTasks, getQueryURLEndpoint } from "../util";
+import { getQueryMapObj, updateGist, getQueryTasks, getQueryURLEndpoint } from "../util";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
@@ -23,7 +22,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       if (map) {
         const newMap = { ...map };
         let numTasks = 0;
-        for (let key in map) {
+        for (const key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
           if (
             responseItems.tasks &&
