@@ -21,6 +21,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       const response = await getQueryMapObj(user);
       const map = response.queryMap;
       if (map) {
+        const newMap = { ...map };
         let numTasks = 0;
         for (let key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
@@ -28,12 +29,11 @@ chrome.alarms.onAlarm.addListener(async alarm => {
             responseItems.tasks &&
             JSON.stringify(responseItems.tasks) !== JSON.stringify(map[key].tasks)
           ) {
-            const newMap = { ...map };
             newMap[key].tasks = responseItems.tasks;
-            await updateGist(user, newMap);
           }
           numTasks += responseItems.tasks.length;
         }
+        await updateGist(user, newMap);
         chrome.browserAction.setBadgeText({ text: numTasks.toString() });
       }
     }
