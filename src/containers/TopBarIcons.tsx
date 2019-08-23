@@ -1,6 +1,6 @@
 import * as React from "react";
+import { clearTokenLogout } from "../state";
 import { Image, Stack, Link, CommandBarButton, Text, ActionButton } from "office-ui-fabric-react";
-import { logout } from "../state";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
@@ -13,8 +13,8 @@ import {
 } from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
-  /** Function called when user wishes to logout. */
-  logout: () => void;
+  /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
+  clearTokenLogout: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -33,7 +33,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         iconProps: {
           iconName: "SignOut"
         },
-        onClick: props.logout
+        onClick: props.clearTokenLogout
       }
     ]
   };
@@ -58,7 +58,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  logout
+  clearTokenLogout
 };
 
 export const TopBarIcons = connect(
