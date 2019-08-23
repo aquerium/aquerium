@@ -106,7 +106,7 @@ function LoginUIComponent(props: ILoginProps) {
           styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
-          errorMessage={props.invalidPAT ? "Invalid PAT" : ""}
+          errorMessage={props.invalidPAT ? "This PAT is invalid or expired." : ""}
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
