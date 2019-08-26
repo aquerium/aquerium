@@ -15,7 +15,7 @@ import {
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
-
+import { getLoginLoadingPhrase } from "../misc/loadingPhrases";
 /** @constant
     @type {number} value corresponding to enter key 
 */
@@ -118,7 +118,7 @@ function LoginUIComponent(props: ILoginProps) {
       {props.isLoginLoading && (
         <div>
           <Spinner
-            label="Logging you in..."
+            label={getLoginLoadingPhrase()}
             ariaLive="assertive"
             labelPosition="left"
             size={SpinnerSize.small}

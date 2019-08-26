@@ -4,6 +4,7 @@ import { QueryTileClassNames } from "./QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
+import { getHomeLoadingPhrase } from "../misc/loadingPhrases";
 
 interface ITileListUIProps {
   /** The queryList map that is passed in, element at a time, to be rendered by TaskTile. */
@@ -22,7 +23,7 @@ function QueryListComponent(props: ITileListUIProps) {
         </div>
       ) : (
         <Spinner
-          label="Hang on, we're loading your data..."
+          label={getHomeLoadingPhrase()}
           size={SpinnerSize.large}
           className={QueryTileClassNames.spinner}
         />
