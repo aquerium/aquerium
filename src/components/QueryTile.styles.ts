@@ -48,10 +48,7 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   queryTile: {
     position: "relative",
     width: "125px",
-    height: "125px",
-    outline: "none",
-    float: "center",
-    border: "none"
+    height: "125px"
   },
   queryFront: [
     hoveringAndShading,
@@ -75,24 +72,36 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       position: "absolute",
       width: "100%",
       height: "100%",
+      outline: "none",
+      float: "center",
+      border: "none",
       background: "#f8f8f8",
       backfaceVisibility: "hidden",
       overflow: "hidden",
       opacity: 0,
+      cursor: "pointer",
       selectors: {
         "&:hover": {
           animation: "fadeinout linear forwards",
-          opacity: 1
+          opacity: 1,
+          background: "#f8f8f8"
+        },
+        "&:active": {
+          transition: "0.05s",
+          border: "2px solid #005ba1"
         }
       },
       transition: "0.5s ease-in-out"
     }
   ],
   infoList: {
+    position: "absolute",
     overflowY: "scroll",
-    width: "128",
-    height: "120",
-    padding: 3,
+    width: "125px",
+    height: "115px",
+    top: 0,
+    padding: 7,
+    right: -10,
     textAlign: "center"
   },
   queryName: {

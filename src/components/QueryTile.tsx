@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Text, Separator, Link } from "office-ui-fabric-react";
+import { Stack, Text, Separator, Link, DefaultButton, Button } from "office-ui-fabric-react";
 import { QueryTileClassNames } from "./QueryTile.styles";
 import { IQuery } from "../state";
 
@@ -13,7 +13,7 @@ const gridStackStyle = {
 };
 
 const separatorStyles = {
-  root: { background: "transparent", width: 120, horizontalAlign: "center" }
+  root: { background: "transparent", width: 120, horizontalAlign: "center", fontSize: 10 }
 };
 
 export const QueryTile = (props: IRenderTileProps): JSX.Element => {
@@ -24,20 +24,20 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
       <div className={QueryTileClassNames.queryFront}>
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text className={QueryTileClassNames.queryName} nowrap block>
-            {props.query.name}
+            {query.name}
           </Text>
           <Text className={QueryTileClassNames.queryTaskCount}>
-            {props.query.tasks.length.toString()}
+            {query.tasks.length.toString()}
           </Text>
         </Stack>
       </div>
-      <div className={QueryTileClassNames.queryBack}>
+      <button className={QueryTileClassNames.queryBack}>
         <div className={QueryTileClassNames.infoList}>
           <Link href={query.url} className={QueryTileClassNames.basicInfoQueryLink}>
             {query.name}
             <br />
           </Link>
-          <Separator styles={separatorStyles}>{props.query.tasks.length.toString()}</Separator>
+          <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>
             {query.type
@@ -98,7 +98,7 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
             </Text>
           )}
         </div>
-      </div>
+      </button>
     </div>
   );
 };
