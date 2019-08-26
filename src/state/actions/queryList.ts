@@ -64,3 +64,16 @@ export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
   updatedList
 });
+
+export const refreshMap = () => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    const { user, queryList } = getState();
+    for (const key in queryList) {
+      const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
+      if (responseItems.tasks)
+        const newQuery = update(queryList[key], {
+          tasks: { $set: responseItems.tasks }
+        });
+    }
+  };
+};
