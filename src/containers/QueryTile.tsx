@@ -7,19 +7,22 @@ import {
   getId,
   DefaultButton
 } from "office-ui-fabric-react";
-import { QueryTileClassNames } from "./QueryTile.styles";
-import { IQuery } from "../state";
+import { QueryTileClassNames } from "../containers/QueryTile.styles";
+import { IQuery, toQueryList } from "../state";
+import { connect } from "react-redux";
 
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
+  /** Action creator that sends user to queryListUI */
+  toQueryList: (query: IQuery) => void;
 }
 
 const gridStackStyle = {
   root: { maxWidth: "100%" }
 };
 
-export const QueryTile = (props: IRenderTileProps): JSX.Element => {
+export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
@@ -51,3 +54,12 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
     </DefaultButton>
   );
 };
+
+const action = {
+  toQueryList
+};
+
+export const QueryTile = connect(
+  undefined,
+  action
+)(QueryTileView);

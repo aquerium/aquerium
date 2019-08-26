@@ -1,6 +1,6 @@
 import React from "react";
-import { QueryTile } from "../components/QueryTile";
-import { QueryTileClassNames } from "../components/QueryTile.styles";
+import { QueryTile } from "./QueryTile";
+import { QueryTileClassNames } from "./QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 
