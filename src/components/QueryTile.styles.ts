@@ -17,10 +17,16 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  /** The styles for the front of the query tile. */
   queryFront: string;
+  /** The styles for the back of the query tile (i.e. query details). */
   queryBack: string;
-  tileContainer: string;
+  /** The styles for the list of query details (allows for scrolling without having a scroll bar). */
+  infoList: string;
+  /** The font size for the query details. */
   basicInfo: string;
+  /** The styles for the query name on the back of the query tile. */
+  basicInfoQueryLink: string;
 }
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
@@ -39,11 +45,10 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     boxSizing: "border-box",
     padding: 8
   },
-  tileContainer: { position: "relative", width: 125, height: 125 },
   queryTile: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
+    position: "relative",
+    width: "125px",
+    height: "125px",
     outline: "none",
     float: "center",
     border: "none"
@@ -54,17 +59,12 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       position: "absolute",
       width: "100%",
       height: "100%",
-      maxWidth: 125,
-      maxHeight: 125,
       background: "#f8f8f8",
       backfaceVisibility: "hidden",
       textAlign: "center",
-      opacity: 1,
       selectors: {
         "&:hover": {
-          transition: "0.5s ease-in-out",
-          animation: "fadeinout linear forwards",
-          opacity: 0
+          animation: "fadeinout linear forwards"
         }
       }
     }
@@ -75,24 +75,26 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       position: "absolute",
       width: "100%",
       height: "100%",
-      maxWidth: "125px",
-      maxHeight: "125px",
       background: "#f8f8f8",
       backfaceVisibility: "hidden",
+      overflow: "hidden",
       opacity: 0,
       selectors: {
         "&:hover": {
-          transition: "0.5s ease-in-out",
           animation: "fadeinout linear forwards",
           opacity: 1
         }
       },
-      transition: "0.5s ease-in-out",
-      textAlign: "left",
-      paddingLeft: 4,
-      paddingBottom: 20
+      transition: "0.5s ease-in-out"
     }
   ],
+  infoList: {
+    overflowY: "scroll",
+    width: "128",
+    height: "120",
+    padding: 3,
+    textAlign: "center"
+  },
   queryName: {
     padding: "20px 0 0 0",
     color: "#323130",
@@ -110,12 +112,19 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     color: "#605e5c"
   },
   basicInfo: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    fontSize: 9
+  },
+  basicInfoQueryLink: {
+    textAlign: "center",
+    padding: 3,
     width: "100%",
-    maxWidth: 200,
-    maxHeight: "20px",
-    height: "100%",
-    fontSize: 10
+    maxWidth: 290,
+    overflow: "hidden",
+    fontSize: 10,
+    paddingTop: 3,
+    textDecoration: "none",
+    selectors: {
+      "&:hover": { textDecorationLine: "none" }
+    }
   }
 });
