@@ -9,6 +9,8 @@ export interface IState {
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
     currQuery?: IQuery;
+    isHomeLoading: boolean;
+    isLoginLoading: boolean;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;

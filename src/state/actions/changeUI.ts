@@ -1,5 +1,5 @@
 /* global chrome */
-import { IUserInfo, IState, IQuery, queryListType } from "../state.types";
+import { IUserInfo, IQuery, queryListType } from "../state.types";
 import { getQueryMapObj, createGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
@@ -134,8 +134,36 @@ export const toQueryList = (query: IQuery) => ({
 });
 
 /**
- * Action creator to send the user to Home UI
+ * Action creator to send the user to Home UI.
  */
 export const toHome = () => ({
   type: "HOME"
+});
+
+/**
+ * Action creator to toggle the isHomeLoading setting to true.
+ */
+export const isHomeLoadingTrue = () => ({
+  type: "HOME_LOADING_TRUE"
+});
+
+/**
+ * Action creator to toggle the isHomeLoading setting to false.
+ */
+export const isHomeLoadingFalse = () => ({
+  type: "HOME_LOADING_FALSE"
+});
+
+/**
+ * Action creator to toggle the isLoginLoading setting to true.
+ */
+export const isLoginLoadingTrue = () => ({
+  type: "LOGIN_LOADING_TRUE"
+});
+
+/**
+ * Action creator to toggle the isLoginLoading setting to false.
+ */
+export const isLoginLoadingFalse = () => ({
+  type: "LOGIN_LOADING_FALSE"
 });

@@ -30,7 +30,7 @@ export const changeUI = (
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
       return update(state, {
-        $set: { currUI: "QueryList", currQuery: query }
+        $set: { currUI: "QueryList", currQuery: query, isHomeLoading: false, isLoginLoading: false }
       });
     }
     case "HOME": {
