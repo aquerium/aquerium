@@ -24,7 +24,7 @@ export interface ITask {
   /** The title of the given task. */
   title: string;
   /** Person who opened this task. */
-  author?: string;
+  author: string;
   /** The repo the task is a member of. */
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
