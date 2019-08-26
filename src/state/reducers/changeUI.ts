@@ -2,7 +2,7 @@ import update from "immutability-helper";
 import { changeUIAction, changeUIQueryTaskListAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
-const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login", currQuery: undefined };
+const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
 
 /**
  * This reducer deals with changing the UI. When receiving an action, currUI is updated to reflect the UI that
@@ -21,9 +21,6 @@ export const changeUI = (
     }
     case "EDIT": {
       return update(state, { currUI: { $set: "EditQuery" } });
-    }
-    case "HOME": {
-      return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     default:
       return state;

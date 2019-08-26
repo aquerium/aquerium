@@ -8,7 +8,7 @@ export interface IState {
   /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
-    currQuery?: IQuery; //STUB to be used in queryTaskList in the next PR
+    currQuery?: IQuery;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
@@ -94,7 +94,5 @@ export interface IUserInfo {
   invalidPAT: boolean;
 }
 
-/**
- * @type { [id: string]: IQuery } This type defines the queryList, a map from query ID's to queries.
- */
+// This type defines the queryList, a map from query ID's to queries.
 export type queryListType = { [id: string]: IQuery };

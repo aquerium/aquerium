@@ -20,7 +20,7 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "./EditQueryUI.styles";
+} from "./EditQuery.styles";
 import { connect } from "react-redux";
 import { createUid } from "../util/uIDGenerator";
 
