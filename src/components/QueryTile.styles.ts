@@ -44,11 +44,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     position: "absolute",
     width: "100%",
     height: "100%",
-    transformStyle: "preserve-3d",
-    transition: "all 0.5s ease",
-    selectors: {
-      "&:hover": { transform: "rotateY(180deg)" }
-    },
     outline: "none",
     float: "center",
     border: "none"
@@ -59,9 +54,19 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       position: "absolute",
       width: "100%",
       height: "100%",
+      maxWidth: 125,
+      maxHeight: 125,
       background: "#f8f8f8",
       backfaceVisibility: "hidden",
-      textAlign: "center"
+      textAlign: "center",
+      opacity: 1,
+      selectors: {
+        "&:hover": {
+          transition: "0.5s ease-in-out",
+          animation: "fadeinout linear forwards",
+          opacity: 0
+        }
+      }
     }
   ],
   queryBack: [
@@ -70,9 +75,19 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       position: "absolute",
       width: "100%",
       height: "100%",
+      maxWidth: "125px",
+      maxHeight: "125px",
       background: "#f8f8f8",
       backfaceVisibility: "hidden",
-      transform: "rotateY(180deg)",
+      opacity: 0,
+      selectors: {
+        "&:hover": {
+          transition: "0.5s ease-in-out",
+          animation: "fadeinout linear forwards",
+          opacity: 1
+        }
+      },
+      transition: "0.5s ease-in-out",
       textAlign: "left",
       paddingLeft: 4,
       paddingBottom: 20

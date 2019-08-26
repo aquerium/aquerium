@@ -1,12 +1,15 @@
 import React from "react";
+import { Card } from "@uifabric/react-cards";
 import {
   Stack,
   Text,
   TooltipHost,
   TooltipOverflowMode,
   getId,
-  DefaultButton
+  DefaultButton,
+  ActionButton
 } from "office-ui-fabric-react";
+
 import { QueryTileClassNames } from "./QueryTile.styles";
 import { IQuery } from "../state";
 import { queryList } from "../state/reducers/queryList";
@@ -21,6 +24,7 @@ const gridStackStyle = {
 };
 
 export const QueryTile = (props: IRenderTileProps): JSX.Element => {
+  const { query } = props;
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
@@ -52,8 +56,16 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
             </Text>
           </Stack>
         </div>
-        <div className={QueryTileClassNames.queryBack}>
-          {Object.keys(props.query).map(
+        <Stack className={QueryTileClassNames.queryBack}>
+          {/* <Stack.Item> */}
+          <Text className={QueryTileClassNames.basicInfo}>
+            Types: {query.type ? query.type : "Issues and Pull Requests"}
+          </Text>
+          {/* </Card.Section> */}
+          {/* <Card.Section horizontal> */}
+          <ActionButton text={query.name} className={QueryTileClassNames.basicInfo} />
+          {/* </Card.Section> */}
+          {/* {Object.keys(props.query).map(
             key =>
               key !== "id" &&
               key !== "name" && (
@@ -61,8 +73,8 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
                   {key}
                 </Text>
               )
-          )}
-        </div>
+          )} */}
+        </Stack>
       </DefaultButton>
     </div>
   );
