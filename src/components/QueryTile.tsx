@@ -7,7 +7,8 @@ import {
   TooltipOverflowMode,
   getId,
   DefaultButton,
-  ActionButton
+  ActionButton,
+  Separator
 } from "office-ui-fabric-react";
 
 import { QueryTileClassNames } from "./QueryTile.styles";
@@ -22,6 +23,8 @@ interface IRenderTileProps {
 const gridStackStyle = {
   root: { maxWidth: "100%" }
 };
+
+const separatorStyles = {};
 
 export const QueryTile = (props: IRenderTileProps): JSX.Element => {
   const { query } = props;
@@ -63,6 +66,9 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
           </Text>
           {/* </Card.Section> */}
           {/* <Card.Section horizontal> */}
+          <Separator styles={separatorStyles}>
+            {/* <Icon className={EditQueryUIClassNames.separatorIcon} /> */}
+          </Separator>
           <ActionButton text={query.name} className={QueryTileClassNames.basicInfo} />
           {/* </Card.Section> */}
           {/* {Object.keys(props.query).map(
