@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { setHomeLoadingTrue, setHomeLoadingFalse } from "./changeUI";
 
 /**
  * @type { type: string } this type defines an action that updates the queryList.
@@ -15,11 +16,13 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  */
 export const addOrEditQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
+    dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     const userInfo: IUserInfo = user;
     const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
     let newQuery = null;
     if (resp.errorCode || !resp.tasks) {
+      dispatch(setHomeLoadingFalse());
       // TODO: add error response.
       return;
     }
@@ -33,9 +36,11 @@ export const addOrEditQuery = (query: IQuery) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
+      dispatch(setHomeLoadingFalse());
       return;
     } else {
       dispatch(updateMap(newList));
+      dispatch(setHomeLoadingFalse());
     }
   };
 };
@@ -45,15 +50,18 @@ export const addOrEditQuery = (query: IQuery) => {
  */
 export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
+    dispatch(setHomeLoadingTrue());
     const { queryList, user } = getState();
     let list: queryListType = queryList;
     const newList = update(list, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
+      dispatch(setHomeLoadingFalse());
       return;
     }
     dispatch(updateMap(newList));
+    dispatch(setHomeLoadingFalse());
   };
 };
 

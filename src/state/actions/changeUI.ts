@@ -29,6 +29,7 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
  */
 export const login = (currPAT?: string) => {
   return async function(dispatch: Dispatch) {
+    dispatch(setLoginLoadingTrue());
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
@@ -48,8 +49,11 @@ function loginOnApplicationMount(dispatch: Dispatch) {
       const response = await getQueryMapObj(user);
       if (response.queryMap) {
         dispatch(storeUserInfo(user));
-        dispatch(updateMap(response.queryMap));
+        dispatch(setLoginLoadingFalse());
         dispatch(toHome());
+        dispatch(setHomeLoadingTrue());
+        dispatch(updateMap(response.queryMap));
+        dispatch(setHomeLoadingFalse());
       }
     }
   });
@@ -63,6 +67,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       const responseMap = await getQueryMapObj(user);
       if (responseMap.queryMap === undefined) {
         // If queryMap is undefined, this this user has invalid credentials.
+        dispatch(setLoginLoadingFalse());
         dispatch(setIsInvalidPAT(true));
       } else {
         // Else, the user's querymap already exists
@@ -74,6 +79,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       const responseGist = await createGist(PAT);
       if (responseGist.user === undefined) {
         // If the response from createGIST is invalid.
+        dispatch(setLoginLoadingFalse());
         dispatch(setIsInvalidPAT(true));
       } else {
         // Store this user's info in local storage and in redux.
@@ -97,8 +103,11 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
-  dispatch(updateMap(map));
+  dispatch(setLoginLoadingFalse());
   dispatch(toHome());
+  dispatch(setHomeLoadingTrue());
+  dispatch(updateMap(map));
+  dispatch(setHomeLoadingFalse());
 }
 
 /**
@@ -143,27 +152,27 @@ export const toHome = () => ({
 /**
  * Action creator to toggle the isHomeLoading setting to true.
  */
-export const isHomeLoadingTrue = () => ({
+export const setHomeLoadingTrue = () => ({
   type: "HOME_LOADING_TRUE"
 });
 
 /**
  * Action creator to toggle the isHomeLoading setting to false.
  */
-export const isHomeLoadingFalse = () => ({
+export const setHomeLoadingFalse = () => ({
   type: "HOME_LOADING_FALSE"
 });
 
 /**
  * Action creator to toggle the isLoginLoading setting to true.
  */
-export const isLoginLoadingTrue = () => ({
+export const setLoginLoadingTrue = () => ({
   type: "LOGIN_LOADING_TRUE"
 });
 
 /**
  * Action creator to toggle the isLoginLoading setting to false.
  */
-export const isLoginLoadingFalse = () => ({
+export const setLoginLoadingFalse = () => ({
   type: "LOGIN_LOADING_FALSE"
 });
