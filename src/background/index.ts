@@ -20,20 +20,19 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       const response = await getQueryMapObj(user);
       const map = response.queryMap;
       if (map) {
-        const newMap = { ...map };
+        const newMap = JSON.parse(JSON.stringify(map));
         let numTasks = 0;
         for (const key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
-          if (
-            responseItems.tasks &&
-            JSON.stringify(responseItems.tasks) !== JSON.stringify(map[key].tasks)
-          ) {
+          if (responseItems.tasks) {
             newMap[key].tasks = responseItems.tasks;
           }
           numTasks += responseItems.tasks.length;
         }
-        await updateGist(user, newMap);
-        chrome.browserAction.setBadgeText({ text: numTasks.toString() });
+        if (JSON.stringify(map) !== JSON.stringify(newMap)) {
+          await updateGist(user, newMap);
+          chrome.browserAction.setBadgeText({ text: numTasks.toString() });
+        }
       }
     }
   });
