@@ -56,6 +56,7 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(setHomeLoadingFalse());
       }
     }
+    dispatch(setLoginLoadingFalse());
   });
 }
 
