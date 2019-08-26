@@ -7,6 +7,7 @@ export interface IIssue {
   title: string;
   created_at: string;
   updated_at: string;
+  repository_url: string;
 }
 
 /**
@@ -19,4 +20,5 @@ export interface IPull {
   created_at: string;
   updated_at: string;
   pull_request: {};
+  repository_url: string;
 }
