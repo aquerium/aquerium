@@ -5,9 +5,10 @@
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
-  /** Stores a string containing the current UI. */
+  /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+    currQuery?: IQuery; //STUB to be used in queryTaskList in the next PR
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
@@ -23,7 +24,7 @@ export interface ITask {
   /** The title of the given task. */
   title: string;
   /** Person who opened this task. */
-  author?: string;
+  author: string;
   /** The repo the task is a member of. */
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */

@@ -1,42 +1,36 @@
-import { IQuery, IUserInfo, queryListType, IState } from "../state.types";
+import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
 
-/**
- * @type { type: string } this type defines an action that updates the queryList.
- */
+// This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
 /**
  * Action creator to add/edit a query to the queryList.
- * This action creator gets the resulting tasks from the attached query and stores them in a new query before putting it in the queryMap.
+ * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
-export const editQuery = (query: IQuery) => {
+export const addOrEditQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    const userInfo: IUserInfo = getState().user;
-    const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
-    let newQuery = null;
+    const { user, queryList } = getState();
+    const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
-      alert("API request failed :(");
+      // TODO: add error response.
       return;
-    } else {
-      //we have a valid task array, and need to store it in our new query.
-      newQuery = update(query, {
-        tasks: { $set: resp.tasks }
-      });
     }
-    //once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
-    const list: queryListType = getState().queryList;
-    const newList = update(list, { [newQuery.id]: { $set: newQuery } });
-    const response = await updateGist(getState().user, newList);
+    // We have a valid task array, and need to store it in our new query.
+    let newQuery = update(query, {
+      tasks: { $set: resp.tasks }
+    });
+    // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
+    const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
+    const response = await updateGist(user, newList);
     if (response.errorCode) {
-      alert("API request failed :(");
+      // TODO: add error response.
       return;
-    } else {
-      dispatch(updateMap(newList));
     }
+    dispatch(updateMap(newList));
   };
 };
 
@@ -45,15 +39,14 @@ export const editQuery = (query: IQuery) => {
  */
 export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
-    let list: queryListType = getState().queryList;
-    const newList = update(list, { $unset: [queryID] });
-    const response = await updateGist(getState().user, newList);
+    const { queryList, user } = getState();
+    const newList = update(queryList, { $unset: [queryID] });
+    const response = await updateGist(user, newList);
     if (response.errorCode) {
-      alert("API request failed :(");
+      // TODO: add error response.
       return;
-    } else {
-      dispatch(updateMap(newList));
     }
+    dispatch(updateMap(newList));
   };
 };
 
