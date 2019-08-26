@@ -22,13 +22,6 @@ export const changeUI = (
     case "EDIT": {
       return update(state, { currUI: { $set: "EditQuery" } });
     }
-    case "QUERY": {
-      //STUB to be added in the next PR
-      const { query } = action as changeUIQueryTaskListAction;
-      return update(state, {
-        $set: { currUI: "QueryList", currQuery: query }
-      });
-    }
     case "HOME": {
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }

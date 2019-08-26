@@ -20,7 +20,7 @@ export const addOrEditQuery = (query: IQuery) => {
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    let newQuery = update(query, {
+    const newQuery = update(query, {
       tasks: { $set: resp.tasks }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
@@ -51,7 +51,7 @@ export const removeQuery = (queryID: string) => {
 };
 
 /**
- * Action creator to replace the current queryList with the attatched queryList.
+ * Action creator to replace the current queryList with the attached queryList.
  */
 export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
