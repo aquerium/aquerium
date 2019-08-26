@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IQuery } from "../state";
-import { QueryTaskListNavBar } from "./QueryTaskTileNavBar";
+import { QueryTaskListNavBar } from "../containers/QueryTaskTileNavBar";
 import { QueryTaskList } from "./QueryTaskList";
 
 interface IQueryTaskListUIProps {

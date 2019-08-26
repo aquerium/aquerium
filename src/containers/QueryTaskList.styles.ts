@@ -1,5 +1,5 @@
 import { mergeStyleSets } from "@uifabric/styling";
-import { hoveringAndShading } from "./HoveringAndShading.styles";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 
 /**
  * Defines styles for the various aspects of the QueryTaskList grid.
