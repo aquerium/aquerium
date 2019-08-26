@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
-  query: IQuery;
+  currQuery: IQuery;
   /** Action creator that sends user to queryListUI */
   toQueryList: (query: IQuery) => void;
 }
@@ -23,6 +23,9 @@ const gridStackStyle = {
 };
 
 export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
+  function toQueryTaskList() {
+    props.toQueryList(props.currQuery);
+  }
   const tooltipId = getId("text-tooltip");
   const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const calloutGapSpace = { gapSpace: 0 };
@@ -30,11 +33,11 @@ export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
     toggleTooltip(!isTooltipVisible);
   };
   return (
-    <DefaultButton className={QueryTileClassNames.queryTile}>
+    <DefaultButton className={QueryTileClassNames.queryTile} onClick={toQueryTaskList}>
       <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
         <TooltipHost
           calloutProps={calloutGapSpace}
-          content={props.query.name}
+          content={props.currQuery.name}
           overflowMode={TooltipOverflowMode.Parent}
           onTooltipToggle={tooltipToggle}
         >
@@ -44,11 +47,11 @@ export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
             block
             aria-labelledby={isTooltipVisible ? tooltipId : undefined}
           >
-            {props.query.name}
+            {props.currQuery.name}
           </Text>
         </TooltipHost>
         <Text className={QueryTileClassNames.queryTaskCount}>
-          {props.query.tasks.length.toString()}
+          {props.currQuery.tasks.length.toString()}
         </Text>
       </Stack>
     </DefaultButton>

@@ -14,7 +14,7 @@ function QueryListComponent(props: ITileListUIProps) {
     <div className={QueryTileClassNames.root}>
       <div className={QueryTileClassNames.listContainer}>
         {Object.keys(props.queryList).map(key => (
-          <QueryTile query={props.queryList[key]} key={key} />
+          <QueryTile currQuery={props.queryList[key]} key={key} />
         ))}
       </div>
     </div>
