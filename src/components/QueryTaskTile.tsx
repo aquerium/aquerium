@@ -17,9 +17,9 @@ const gridStackStyle = {
 
 export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task, labels } = props;
-  const hostId = getId("tooltipHost1");
+  const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0 };
-  let taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
+  const taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
 
   return (
     <Stack horizontal verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>

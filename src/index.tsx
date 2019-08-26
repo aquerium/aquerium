@@ -2,11 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./containers/App";
 import { mergeStyles } from "office-ui-fabric-react";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { rootReducer } from "./state";
 import { Provider } from "react-redux";
+import thunk from "redux-thunk";
 
-// Inject some global styles
+// Inject some global styles/
 mergeStyles({
   selectors: {
     ":global(body), :global(html), :global(#app)": {
@@ -18,7 +19,7 @@ mergeStyles({
   }
 });
 
-const store = createStore(rootReducer);
+export const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>

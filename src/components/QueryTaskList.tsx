@@ -1,22 +1,21 @@
 import React from "react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { QueryTaskTile } from "./QueryTaskTile";
-import { ITask } from "../state";
+import { ITask, IQuery } from "../state";
 
 interface IQueryTaskListProps {
-  /** The array of tasks that will be rendered. */
-  tasks: ITask[];
-  /** The labels, if any, associated with a certain query. */
-  labels?: string[];
+  /** The query whose tasks will be rendered. */
+  query: IQuery;
 }
 
 export const QueryTaskList = (props: IQueryTaskListProps): JSX.Element => {
-  const { tasks, labels } = props;
+  const { query } = props;
+  const { tasks, labels } = query;
   return (
     <div className={QueryTaskClassNames.root}>
       <div className={QueryTaskClassNames.listContainer}>
         {tasks.map(task => (
-          <QueryTaskTile task={task} labels={labels || []} />
+          <QueryTaskTile task={task} labels={labels || []} key={task.repo + task.num} />
         ))}
       </div>
     </div>

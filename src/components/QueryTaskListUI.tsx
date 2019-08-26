@@ -12,7 +12,7 @@ export const QueryTaskListUI = (props: IQueryTaskListUIProps): JSX.Element => {
   return (
     <>
       <QueryTaskListNavBar query={props.currQuery} />
-      <QueryTaskList tasks={props.currQuery.tasks} labels={props.currQuery.labels} />
+      <QueryTaskList query={props.currQuery} />
     </>
   );
 };

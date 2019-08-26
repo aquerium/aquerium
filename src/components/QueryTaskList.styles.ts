@@ -42,7 +42,7 @@ export const QueryTaskClassNames = mergeStyleSets({
       outline: "none",
       border: "none",
       background: "#f8f8f8",
-      height: "59px",
+      height: 59,
       paddingLeft: 10,
       paddingTop: 5
     }
@@ -53,7 +53,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: "200px",
+    maxWidth: 200,
     height: "100%"
   },
   taskTitle: {
@@ -63,8 +63,8 @@ export const QueryTaskClassNames = mergeStyleSets({
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: "200px",
-    maxHeight: "23px",
+    maxWidth: 200,
+    maxHeight: 23,
     height: "100%",
     selectors: {
       "&:hover": { textDecorationLine: "none" }
@@ -75,7 +75,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: "200px",
+    maxWidth: 200,
     maxHeight: "20px",
     height: "100%",
     fontSize: 12

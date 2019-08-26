@@ -27,7 +27,7 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
       <ActionButton
         iconProps={iconProps.back}
         styles={iconSize}
-        //Add onClick functionality
+        //TODO Add onClick functionality
       />
       <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
         <Text className={QueryTaskClassNames.queryTitle} nowrap block aria-labelledby={tooltipId}>
@@ -37,7 +37,7 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
       <ActionButton
         iconProps={iconProps.edit}
         styles={iconSize}
-        //Add onClick functionality
+        //TODO Add onClick functionality
       />
     </Stack>
   );
