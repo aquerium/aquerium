@@ -1,32 +1,17 @@
-import { addQueryAction, removeQueryAction } from "../actions/queryList";
-import { queryListType, IQuery } from "../state.types";
+import { updateQueryListAction } from "../actions";
+import { queryListType } from "../state.types";
 import update from "immutability-helper";
 
 const DEFAULT_STATE: queryListType = {};
 
 /**
- * Our reducer responds to the various actions regarding queryList
- * @param state the portion of the total state we are replacing
- * @param action the object of type addQueryAction or removeQueryAction
+ * This reducer responds to the actions regarding updating the queryList.
  */
-export const queryList = (
-  state: queryListType = DEFAULT_STATE,
-  action: addQueryAction | removeQueryAction
-) => {
-
+export const queryList = (state: queryListType = DEFAULT_STATE, action: updateQueryListAction) => {
   switch (action.type) {
-    case "ADD_QUERY": {
-      const actionQuery: IQuery = (action as addQueryAction).query;
-      return update(state, {
-        $set: {
-          ...state,
-          [actionQuery.id]: actionQuery
-        }
-      });
-    }
-    case "REMOVE_QUERY": {
-      const actionQueryID = (action as removeQueryAction).queryID;
-      return update(state, { $unset: [actionQueryID] });
+    case "UPDATE_LIST": {
+      const newList = (action as updateQueryListAction).updatedList;
+      return update(state, { $set: newList });
     }
     default:
       return state;

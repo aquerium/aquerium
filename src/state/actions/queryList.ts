@@ -1,30 +1,66 @@
-import { IQuery } from "../state.types";
+import { IQuery, IUserInfo, queryListType, IState } from "../state.types";
+import update from "immutability-helper";
+import { updateGist } from "../../util/api";
+import { Dispatch } from "redux";
+import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
 
 /**
- * @type { type: string; query: IQuery } this type defines an action that adds a query to the queryList
+ * @type { type: string } this type defines an action that updates the queryList.
  */
-export type addQueryAction = { type: string; query: IQuery };
+export type updateQueryListAction = { type: string; updatedList: queryListType };
 
 /**
- * @type { type: string; queryID: string } this type defines an action that removes a query from the queryList
+ * Action creator to add/edit a query to the queryList.
+ * This action creator gets the resulting tasks from the attached query and stores them in a new query before putting it in the queryMap.
  */
-export type removeQueryAction = { type: string; queryID: string };
+export const editQuery = (query: IQuery) => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    const userInfo: IUserInfo = getState().user;
+    const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
+    let newQuery = null;
+    if (resp.errorCode || !resp.tasks) {
+      alert("API request failed :(");
+      return;
+    } else {
+      //we have a valid task array, and need to store it in our new query.
+      newQuery = update(query, {
+        tasks: { $set: resp.tasks }
+      });
+    }
+    //once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
+    const list: queryListType = getState().queryList;
+    const newList = update(list, { [newQuery.id]: { $set: newQuery } });
+    const response = await updateGist(getState().user, newList);
+    if (response.errorCode) {
+      alert("API request failed :(");
+      return;
+    } else {
+      dispatch(updateMap(newList));
+    }
+  };
+};
 
 /**
- * Action creator to add a query to the queryList
- * @param { IQuery } query the particular query to be added
+ * Action creator to remove the specified query from queryList.
  */
-export const addQuery = (query: IQuery) => ({
-  type: "ADD_QUERY",
-  query
-});
+export const removeQuery = (queryID: string) => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    let list: queryListType = getState().queryList;
+    const newList = update(list, { $unset: [queryID] });
+    const response = await updateGist(getState().user, newList);
+    if (response.errorCode) {
+      alert("API request failed :(");
+      return;
+    } else {
+      dispatch(updateMap(newList));
+    }
+  };
+};
 
 /**
- * Action creator to specified query from queryList
- * @param {string} queryID
- * The id of the query to be removed
+ * Action creator to replace the current queryList with the attatched queryList.
  */
-export const removeQuery = (queryID: string) => ({
-  type: "REMOVE_QUERY",
-  queryID
+export const updateMap = (updatedList: queryListType) => ({
+  type: "UPDATE_LIST",
+  updatedList
 });

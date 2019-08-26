@@ -1,0 +1,129 @@
+import React from "react";
+import { HomeUI } from "../components/HomeUI";
+import { EditQueryUI } from "../components/EditQuery";
+import { initializeIcons } from "@uifabric/icons";
+import { LoginUI } from "./LoginUI";
+import { IState, login } from "../state";
+import { QueryTaskListUI } from "../components/QueryTaskListUI";
+import { connect } from "react-redux";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
+import { Customizer } from "@uifabric/utilities";
+import { loadTheme } from "@uifabric/styling";
+
+initializeIcons();
+
+loadTheme({
+  palette: {
+    themePrimary: "#b65b00",
+    themeLighterAlt: "#fcf7f2",
+    themeLighter: "#f3e0cc",
+    themeLight: "#e9c6a3",
+    themeTertiary: "#d39354",
+    themeSecondary: "#be6a17",
+    themeDarkAlt: "#a35100",
+    themeDark: "#8a4500",
+    themeDarker: "#653300",
+    neutralLighterAlt: "#e2e2e2",
+    neutralLighter: "#dedede",
+    neutralLight: "#d5d5d5",
+    neutralQuaternaryAlt: "#[ink",
+    neutralQuaternary: "#bebebe",
+    neutralTertiaryAlt: "#b6b6b6",
+    neutralTertiary: "#a4b7d5",
+    neutralSecondary: "#5c7bab",
+    neutralPrimaryAlt: "#2a4e84",
+    neutralPrimary: "#1b3e74",
+    neutralDark: "#142f57",
+    black: "#0f2340",
+    white: "#f8f8f8"
+  },
+  semanticColors: {
+    inputBorder: "transparent",
+    inputFocusBorderAlt: "transparent"
+  }
+});
+
+const fieldGroupStyles = [hoveringAndShading, { width: 200 }];
+
+const scopedSettings = {
+  TextField: {
+    styles: {
+      fieldGroup: fieldGroupStyles
+    }
+  },
+  DefaultButton: {
+    styles: {
+      root: {
+        boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
+      }
+    },
+    target: "_blank"
+  },
+  Dropdown: {
+    styles: {
+      dropdown: fieldGroupStyles
+    }
+  },
+  MessageBar: {
+    styles: {
+      root: [hoveringAndShading, { width: 265 }]
+    }
+  },
+  MessageBarButton: {
+    styles: {
+      root: { width: 95 }
+    }
+  },
+  Slider: {
+    styles: { container: { width: 200 } }
+  },
+  Link: {
+    target: "_blank"
+  }
+};
+
+interface IAppViewProps {
+  /** The UI that will be displayed.  */
+  UI: string;
+  /** The login function attempts to authenticate the user upon opening. */
+  login: (currPAT?: string) => void;
+}
+
+const mapStateToProps = (state: IState) => {
+  return {
+    UI: state.changeUI.currUI
+  };
+};
+
+class AppView extends React.Component<IAppViewProps> {
+  public componentDidMount(): void {
+    this.props.login();
+  }
+
+  public render(): JSX.Element {
+    return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
+  }
+
+  private _renderUI = () => {
+    switch (this.props.UI) {
+      case "Login": {
+        return <LoginUI />;
+      }
+      case "Home": {
+        return <HomeUI />;
+      }
+      default: {
+        return <HomeUI />;
+      }
+    }
+  };
+}
+
+const action = {
+  login
+};
+
+export const App = connect(
+  mapStateToProps,
+  action
+)(AppView);
