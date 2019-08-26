@@ -88,7 +88,7 @@ interface IAppViewProps {
   /** The login function attempts to authenticate the user upon opening. */
   login: (currPAT?: string) => void;
   /** The current query to be listed in queryTaskList. */
-  currQuery: IQuery;
+  currQuery?: IQuery;
 }
 
 const mapStateToProps = (state: IState) => {
@@ -119,7 +119,7 @@ class AppView extends React.Component<IAppViewProps> {
         return <EditQuery />;
       }
       case "QueryList": {
-        return <QueryTaskListUI currQuery />;
+        return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
       }
       default: {
         return <LoginUI />;
