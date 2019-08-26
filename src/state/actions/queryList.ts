@@ -18,18 +18,16 @@ export const addOrEditQuery = (query: IQuery) => {
     const { user, queryList } = getState();
     const userInfo: IUserInfo = user;
     const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
-    let newQuery = null;
     if (resp.errorCode || !resp.tasks) {
       // TODO: add error response.
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    newQuery = update(query, {
+    let newQuery = update(query, {
       tasks: { $set: resp.tasks }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
-    const list: queryListType = queryList;
-    const newList = update(list, { [newQuery.id]: { $set: newQuery } });
+    const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
@@ -46,8 +44,7 @@ export const addOrEditQuery = (query: IQuery) => {
 export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
-    let list: queryListType = queryList;
-    const newList = update(list, { $unset: [queryID] });
+    const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
