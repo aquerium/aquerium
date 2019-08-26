@@ -15,7 +15,7 @@ export const QueryTaskList = (props: IQueryTaskListProps): JSX.Element => {
     <div className={QueryTaskClassNames.root}>
       <div className={QueryTaskClassNames.listContainer}>
         {tasks.map(task => (
-          <QueryTaskTile task={task} labels={labels || []} key={/*task.repo +*/ task.num} />
+          <QueryTaskTile task={task} labels={labels || []} key={task.repo + task.num} />
         ))}
       </div>
     </div>
