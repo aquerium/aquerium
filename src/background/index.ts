@@ -1,9 +1,4 @@
-import {
-  getQueryMapObj,
-  updateGist,
-  getQueryTasks,
-  getQueryURLEndpoint
-} from "../util";
+import { getQueryMapObj, updateGist, getQueryTasks, getQueryURLEndpoint } from "../util";
 import { IUserInfo } from "../state";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -31,13 +26,11 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         const newMap = JSON.parse(JSON.stringify(map));
         let numTasks = 0;
         for (const key in map) {
-          const responseItems = await getQueryTasks(
-            getQueryURLEndpoint(user, map[key])
-          );
+          const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
           if (responseItems.tasks) {
             newMap[key].tasks = responseItems.tasks;
+            numTasks += responseItems.tasks.length;
           }
-          numTasks += responseItems.tasks.length;
         }
         if (JSON.stringify(map) !== JSON.stringify(newMap)) {
           await updateGist(user, newMap);
