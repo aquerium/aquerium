@@ -51,22 +51,31 @@ export const removeQuery = (queryID: string) => {
 };
 
 /**
+ * Action creator to reload all of the tasks from every query and re-render them in the home UI.
+ */
+export const refreshMap = () => {
+  return async function(dispatch: Dispatch, getState: () => IState) {
+    const { user, queryList } = getState();
+    for (const key in queryList) {
+      const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
+      if (responseItems.tasks) {
+        const newQuery = update(queryList[key], {
+          tasks: { $set: responseItems.tasks }
+        });
+        const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
+        dispatch(updateMap(newList));
+      } else {
+        //TODO add error handling
+        return;
+      }
+    }
+  };
+};
+
+/**
  * Action creator to replace the current queryList with the attatched queryList.
  */
 export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
   updatedList
 });
-
-export const refreshMap = () => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
-    const { user, queryList } = getState();
-    for (const key in queryList) {
-      const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
-      if (responseItems.tasks)
-        const newQuery = update(queryList[key], {
-          tasks: { $set: responseItems.tasks }
-        });
-    }
-  };
-};
