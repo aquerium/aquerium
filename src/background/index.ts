@@ -27,7 +27,10 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         let numTasks = 0;
         for (const key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
-          if (responseItems.tasks) {
+          if (
+            responseItems.tasks &&
+            JSON.stringify(responseItems.tasks) !== JSON.stringify(map[key].tasks)
+          ) {
             newMap[key].tasks = responseItems.tasks;
             numTasks += responseItems.tasks.length;
           }
