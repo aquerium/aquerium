@@ -1,12 +1,10 @@
-import { IQuery, IUserInfo, queryListType, IState } from "../state.types";
+import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
 
-/**
- * @type { type: string } this type defines an action that updates the queryList.
- */
+// This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
 /**
@@ -16,8 +14,7 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
 export const addOrEditQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
     const { user, queryList } = getState();
-    const userInfo: IUserInfo = user;
-    const resp = await getQueryTasks(getQueryURLEndpoint(userInfo, query));
+    const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
       // TODO: add error response.
       return;
@@ -32,9 +29,8 @@ export const addOrEditQuery = (query: IQuery) => {
     if (response.errorCode) {
       // TODO: add error response.
       return;
-    } else {
-      dispatch(updateMap(newList));
     }
+    dispatch(updateMap(newList));
   };
 };
 
