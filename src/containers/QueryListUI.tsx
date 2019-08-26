@@ -3,7 +3,7 @@ import { QueryTile } from "./QueryTile";
 import { QueryTileClassNames } from "./QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
-import { Spinner } from "office-ui-fabric-react";
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 
 interface ITileListUIProps {
   /** The queryList map that is passed in, element at a time, to be rendered by TaskTile. */
