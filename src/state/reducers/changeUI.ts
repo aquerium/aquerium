@@ -22,6 +22,9 @@ export const changeUI = (
     case "EDIT": {
       return update(state, { currUI: { $set: "EditQuery" } });
     }
+    case "HOME": {
+      return update(state, { currUI: { $set: "Home" } });
+    }
     default:
       return state;
   }
