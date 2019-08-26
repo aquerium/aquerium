@@ -10,11 +10,13 @@ import {
   PrimaryButton,
   ITextFieldStyleProps
 } from "office-ui-fabric-react";
+import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
-import { login } from "../state";
 import { connect } from "react-redux";
-import { IState, IUserInfo } from "../state/state.types";
 
+/** @constant
+    @type {number} value corresponding to enter key 
+*/
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
@@ -26,54 +28,22 @@ const imageProps: IImageProps = {
 };
 
 interface ILoginProps {
-  /** A function that calls the login action */
-  login: (user: IUserInfo) => void;
+  /** A function that calls the login action. */
+  login: (PAT: string) => void;
+  /** A function that sets the validity of the PAT for the UI to respond to. */
+  setIsInvalidPAT: (isInvalid: boolean) => void;
+  /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
+  invalidPAT: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    user: state.user
+    invalidPAT: state.user.invalidPAT
   };
 };
 
-function LoginUIComponent(props: ILoginProps) {
-  let currPAT: any = "";
-  const [renderError, setRenderError] = React.useState(false);
-
-  function onLogin(user: IUserInfo): void {
-    props.login(user);
-  }
-
-  const checkPasswordValidity = () => {
-    if (currPAT !== "correct") setRenderError(true);
-    else {
-      setRenderError(false);
-      const dummyData = {
-        //TODO This object is an IUser that will be replaced with actual data in Cathy's next PR
-        token: "fake token",
-        username: "fake username",
-        gistID: "fake gist"
-      };
-      onLogin(dummyData);
-    }
-  };
-
-  const updateCurrPAT = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    currPAT = newValue || "";
-    if (currPAT === "") setRenderError(false);
-  };
-
-  const ensureEnter = (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (!event) return;
-    if (event.which === ENTER_KEYCODE) {
-      checkPasswordValidity();
-    }
-  };
-
-  const getTextFieldStyles = (props: ITextFieldStyleProps) => {
+const getTextFieldStyles = (renderError: boolean) => {
+  return (props: ITextFieldStyleProps) => {
     const { required } = props;
     return {
       fieldGroup: [
@@ -86,11 +56,36 @@ function LoginUIComponent(props: ILoginProps) {
       ]
     };
   };
+};
 
-  const stackTokens = {
-    childrenGap: "5%",
-    padding: "20px"
+const stackTokens = {
+  childrenGap: "5%",
+  padding: "20px"
+};
+
+const onKeyDown = (checkPasswordValidity: () => void) => {
+  return (event?: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!event) return;
+    if (event.which === ENTER_KEYCODE) {
+      checkPasswordValidity();
+    }
   };
+};
+
+function LoginUIComponent(props: ILoginProps) {
+  let currPAT: string = "";
+
+  const updateCurrPAT = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    currPAT = newValue || "";
+    if (currPAT === "") setIsInvalidPAT(false);
+  };
+
+  function onLogin() {
+    props.login(currPAT);
+  }
 
   return (
     <Stack
@@ -99,21 +94,21 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} />
+      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
       </Text>
-      <Stack horizontal>
+      <Stack horizontal className={LoginUIClassNames.loginFields}>
         <TextField
           placeholder="Enter your GitHub PAT"
           required
-          styles={getTextFieldStyles}
+          styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
-          onKeyDown={ensureEnter}
-          errorMessage={renderError ? "InvalidPAT" : ""}
+          onKeyDown={onKeyDown(onLogin)}
+          errorMessage={props.invalidPAT ? "This PAT is invalid or expired." : ""}
         />
-        <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={checkPasswordValidity} />
+        <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
       <Link
         className={LoginUIClassNames.patLink}
@@ -127,7 +122,8 @@ function LoginUIComponent(props: ILoginProps) {
 }
 
 const action = {
-  login
+  login,
+  setIsInvalidPAT
 };
 
 export const LoginUI = connect(

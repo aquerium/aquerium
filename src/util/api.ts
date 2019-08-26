@@ -49,7 +49,8 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
       user: {
         token: token,
         username: responseJSON.owner.login,
-        gistID: responseJSON.id
+        gistID: responseJSON.id,
+        invalidPAT: false
       }
     };
   } catch (error) {

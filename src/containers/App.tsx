@@ -1,8 +1,10 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
+import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
-import { IState } from "../state";
+import { IState, login } from "../state";
+import { QueryTaskListUI } from "../components/QueryTaskListUI";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
@@ -54,7 +56,8 @@ const scopedSettings = {
       root: {
         boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
       }
-    }
+    },
+    target: "_blank"
   },
   Dropdown: {
     styles: {
@@ -73,14 +76,17 @@ const scopedSettings = {
   },
   Slider: {
     styles: { container: { width: 200 } }
+  },
+  Link: {
+    target: "_blank"
   }
 };
 
-/**
- * @property { string } UI The UI that will be displayed.
- */
 interface IAppViewProps {
+  /** The UI that will be displayed.  */
   UI: string;
+  /** The login function attempts to authenticate the user upon opening. */
+  login: (currPAT?: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
@@ -90,8 +96,9 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-  // TODO: This is currently a stub function to 1) initialize queryMap from gist and 2) determine which UI to show given token
-  public async componentDidMount(): Promise<void> {}
+  public componentDidMount(): void {
+    this.props.login();
+  }
 
   public render(): JSX.Element {
     return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
@@ -112,4 +119,11 @@ class AppView extends React.Component<IAppViewProps> {
   };
 }
 
-export const App = connect(mapStateToProps)(AppView);
+const action = {
+  login
+};
+
+export const App = connect(
+  mapStateToProps,
+  action
+)(AppView);

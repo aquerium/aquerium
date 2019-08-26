@@ -22,6 +22,10 @@ export interface ITask {
   num: number;
   /** The title of the given task. */
   title: string;
+  /** Person who opened this task. */
+  author?: string;
+  /** The repo the task is a member of. */
+  repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** State of a task only be "open" or "closed". */
@@ -79,12 +83,14 @@ export interface IQuery {
  * Contains relevant information for the authenticated user.
  */
 export interface IUserInfo {
-  /* User's GitHub personal access token. */
+  /** User's GitHub personal access token. */
   token: string;
-  /* User's GitHub username. */
+  /** User's GitHub username. */
   username: string;
-  /* ID of user's gist (for Aquerium). */
+  /** ID of user's gist (for Aquerium). */
   gistID: string;
+  /** Stores whether the user's PAT entered was invalid. */
+  invalidPAT: boolean;
 }
 
 /**
