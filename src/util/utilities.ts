@@ -23,8 +23,8 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
       state: "open",
       createdAt: item.created_at.substring(0, 10),
       updatedAt: item.updated_at.substring(0, 10),
-      url: item.html_url
-      //repo:
+      url: item.html_url,
+      repo: item.repository_url.split("https://api.github.com/repos/")[1]
     };
     tasks.push(task);
   });
