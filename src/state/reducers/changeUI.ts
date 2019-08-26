@@ -2,7 +2,12 @@ import update from "immutability-helper";
 import { changeUIAction, changeUIQueryTaskListAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
-const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login", currQuery: undefined };
+const DEFAULT_STATE: IState["changeUI"] = {
+  currUI: "Login",
+  currQuery: undefined,
+  isHomeLoading: false,
+  isLoginLoading: false
+};
 
 /**
  * This reducer deals with changing the UI. When receiving an action, currUI is updated to reflect the UI that
@@ -30,6 +35,18 @@ export const changeUI = (
     }
     case "HOME": {
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
+    }
+    case "HOME_LOADING_TRUE": {
+      return update(state, { isHomeLoading: { $set: true } });
+    }
+    case "HOME_LOADING_FALSE": {
+      return update(state, { isHomeLoading: { $set: false } });
+    }
+    case "LOGIN_LOADING_TRUE": {
+      return update(state, { isLoginLoading: { $set: true } });
+    }
+    case "LOGIN_LOADING_FALSE": {
+      return update(state, { isLoginLoading: { $set: false } });
     }
     default:
       return state;
