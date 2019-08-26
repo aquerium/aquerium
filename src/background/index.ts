@@ -1,10 +1,17 @@
-import { getQueryMapObj, updateGist, getQueryTasks, getQueryURLEndpoint } from "../util";
+import {
+  getQueryMapObj,
+  updateGist,
+  getQueryTasks,
+  getQueryURLEndpoint
+} from "../util";
+import { IUserInfo } from "../state";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
     token: "",
     username: "",
-    gistID: ""
+    gistID: "",
+    invalidPAT: false
   });
   chrome.alarms.create("refresh", { periodInMinutes: 5 });
 });
@@ -12,10 +19,11 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.alarms.onAlarm.addListener(async alarm => {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
     if (result.token !== "" && result.username != "" && result.gistID != "") {
-      const user = {
+      const user: IUserInfo = {
         token: result.token,
         username: result.username,
-        gistID: result.gistID
+        gistID: result.gistID,
+        invalidPAT: false
       };
       const response = await getQueryMapObj(user);
       const map = response.queryMap;
@@ -23,7 +31,9 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         const newMap = JSON.parse(JSON.stringify(map));
         let numTasks = 0;
         for (const key in map) {
-          const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
+          const responseItems = await getQueryTasks(
+            getQueryURLEndpoint(user, map[key])
+          );
           if (responseItems.tasks) {
             newMap[key].tasks = responseItems.tasks;
           }
