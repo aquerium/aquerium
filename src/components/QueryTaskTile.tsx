@@ -30,7 +30,12 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
           id={hostId}
           calloutProps={calloutGapSpace}
         >
-          <Link className={QueryTaskClassNames.taskTitle} aria-labelledby={hostId}>
+          <Link
+            href={props.task.url}
+            target="_blank"
+            targetclassName={QueryTaskClassNames.taskTitle}
+            aria-labelledby={hostId}
+          >
             <Text nowrap block>
               {task.title}
             </Text>
