@@ -27,9 +27,7 @@ enum InputStatuses {
   /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
   successfulEdit = 0,
   /** Value indicating that the current user input is not valid. */
-  invalidEdit,
-  /** Value indicating that that the user input has been saved to the current query edits. */
-  saved
+  invalidEdit
 }
 
 interface IEditQueryUIState {
@@ -267,10 +265,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
-    if (
-      (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) ||
-      this.state.inputStatus === InputStatuses.saved
-    ) {
+    if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
       this.props.addOrEditQuery(this.state.selections);
       this.props.toHome();
     } else {
