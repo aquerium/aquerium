@@ -76,6 +76,7 @@ export const removeQuery = (queryID: string) => {
  */
 export const refreshMap = () => {
   return async function(dispatch: Dispatch, getState: () => IState) {
+    dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     for (const key in queryList) {
       const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
@@ -87,11 +88,14 @@ export const refreshMap = () => {
         const response = await updateGist(user, newList);
         if (response.errorCode) {
           // TODO: add error response.
+          dispatch(setHomeLoadingFalse());
           return;
         }
+        dispatch(setHomeLoadingFalse());
         dispatch(updateMap(newList));
       } else {
         //TODO add error handling
+        dispatch(setHomeLoadingFalse());
         return;
       }
     }
