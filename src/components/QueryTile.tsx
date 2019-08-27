@@ -24,7 +24,7 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
         </Stack>
       </div>
       <button className={QueryTileClassNames.queryBack}>
-        <div className={QueryTileClassNames.infoList}>
+        <Stack verticalAlign="space-around">
           <Link href={query.url} className={QueryTileClassNames.basicInfoQueryLink}>
             {query.name}
             <br />
@@ -80,7 +80,7 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
               <br />
             </Text>
           )}
-        </div>
+        </Stack>
       </button>
     </div>
   );

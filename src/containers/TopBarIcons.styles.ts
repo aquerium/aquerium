@@ -28,11 +28,13 @@ export const refreshIconStyles = { icon: { fontSize: 22 } };
 export const topBarItemGap = { childrenGap: 20 };
 
 export const TopBarIconsUIClassNames = mergeStyleSets({
+  topBar: { height: "43px", transform: "translateY(10%)" },
   logo: {
+    transform: "translateX(60%)",
     padding: 5
   },
   aquerium: {
-    transform: "translateX(-21%)",
+    transform: "translateX(-62%)",
     fontSize: 20,
     color: "#1b3e74"
   },
