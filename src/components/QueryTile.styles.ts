@@ -132,7 +132,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     width: "100%",
     maxWidth: 290,
     fontSize: 22,
-    // paddingTop: 3,
     textDecoration: "none",
     selectors: {
       "&:hover": { textDecorationLine: "none" }
