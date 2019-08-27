@@ -1,5 +1,5 @@
 import { mergeStyleSets } from "@uifabric/styling";
-import { hoveringAndShading } from "./HoveringAndShading.styles";
+import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 
 /**
  * Interface for grid styling.
@@ -17,6 +17,8 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  /** The styles for the homeUI spinner. */
+  spinner: string;
 }
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
@@ -61,5 +63,9 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     fontSize: 48,
     fontFamily: "Segoe UI Light",
     color: "#605e5c"
+  },
+  spinner: {
+    textAlign: "center",
+    padding: "140px 0"
   }
 });

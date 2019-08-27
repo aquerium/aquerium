@@ -1,8 +1,8 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks, updateGist } from "../../util";
-import { createUid } from "../../util/uIDGenerator";
+import { getQueryURLEndpoint, getQueryTasks, updateGist, createUid } from "../../util";
+import { setHomeLoadingTrue, setHomeLoadingFalse } from "./changeUI";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
@@ -13,9 +13,11 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  */
 export const addOrEditQuery = (query: IQuery) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
+    dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
+      dispatch(setHomeLoadingFalse());
       // TODO: add error response.
       return;
     }
@@ -28,7 +30,11 @@ export const addOrEditQuery = (query: IQuery) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
+      dispatch(setHomeLoadingFalse());
       return;
+    } else {
+      dispatch(updateMap(newList));
+      dispatch(setHomeLoadingFalse());
     }
     dispatch(updateMap(newList));
   };
@@ -51,14 +57,17 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  */
 export const removeQuery = (queryID: string) => {
   return async function(dispatch: Dispatch, getState: () => IState) {
+    dispatch(setHomeLoadingTrue());
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       // TODO: add error response.
+      dispatch(setHomeLoadingFalse());
       return;
     }
     dispatch(updateMap(newList));
+    dispatch(setHomeLoadingFalse());
   };
 };
 

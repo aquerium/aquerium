@@ -8,12 +8,14 @@ import {
   TextField,
   Link,
   PrimaryButton,
-  ITextFieldStyleProps
+  ITextFieldStyleProps,
+  Spinner,
+  SpinnerSize
 } from "office-ui-fabric-react";
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
-
+import { getLoginLoadingPhrase } from "../misc/loadingPhrases";
 /** @constant
     @type {number} value corresponding to enter key 
 */
@@ -34,11 +36,14 @@ interface ILoginProps {
   setIsInvalidPAT: (isInvalid: boolean) => void;
   /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
   invalidPAT: boolean;
+  /** A boolean that stores whether the user is currently attempting to log in. */
+  isLoginLoading: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    invalidPAT: state.user.invalidPAT
+    invalidPAT: state.user.invalidPAT,
+    isLoginLoading: state.changeUI.isLoginLoading
   };
 };
 
@@ -94,7 +99,7 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
+      <Image {...(imageProps as any)} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
@@ -110,6 +115,16 @@ function LoginUIComponent(props: ILoginProps) {
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
+      {props.isLoginLoading && (
+        <div>
+          <Spinner
+            label={getLoginLoadingPhrase()}
+            ariaLive="assertive"
+            labelPosition="left"
+            size={SpinnerSize.small}
+          />
+        </div>
+      )}
       <Link
         className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"
