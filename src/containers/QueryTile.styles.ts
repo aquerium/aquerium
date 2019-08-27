@@ -17,55 +17,123 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
-  /** The styles for the homeUI spinner. */
-  spinner: string;
+  /** The styles for the front of the query tile. */
+  queryFront: string;
+  /** The styles for the back of the query tile (i.e. query details). */
+  queryBack: string;
+  /** The font size for the query details. */
+  basicInfo: string;
+  /** The styles for the query name on the back of the query tile. */
+  basicInfoQueryLink: string;
 }
+
+export const gridStackStyle = {
+  root: { maxWidth: "100%" }
+};
+
+export const separatorStyles = {
+  root: { background: "transparent", width: "100%", fontSize: 20 }
+};
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
-    height: "274",
+    height: "557px",
     width: "100%",
-    overflow: "auto",
-    overflowY: "scroll"
+    overflow: "hidden",
+    selectors: {
+      "&:hover": { overflowY: "auto" }
+    }
   },
   listContainer: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gridAutoRows: "1fr",
-    gridGap: "8px",
-    gridAutoColumns: "8px",
+    gridGap: "19px",
+    gridAutoColumns: "19px",
     boxSizing: "border-box",
-    padding: 8
+    padding: "19px"
   },
-  queryTile: [
+  queryTile: {
+    position: "relative",
+    width: "250px",
+    height: "250px"
+  },
+  queryFront: [
     hoveringAndShading,
     {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      background: "#f8f8f8",
+      backfaceVisibility: "hidden",
       textAlign: "center",
-      minHeight: "125px",
-      width: "125px",
+      selectors: {
+        "&:hover": {
+          animation: "fadeinout linear forwards"
+        }
+      }
+    }
+  ],
+  queryBack: [
+    hoveringAndShading,
+    {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
       outline: "none",
       float: "center",
+
       border: "none",
-      background: "#f8f8f8"
+      background: "#f8f8f8",
+      backfaceVisibility: "auto",
+      overflowY: "auto",
+      overflowX: "hidden",
+      opacity: 0,
+      cursor: "pointer",
+      selectors: {
+        "&:hover": {
+          animation: "fadeinout linear forwards",
+          opacity: 1,
+          background: "#f8f8f8"
+        },
+        "&:active": {
+          transition: "0.1s",
+          border: "2px solid #005ba1"
+        }
+      },
+      transition: "0.5s ease-in-out"
     }
   ],
   queryName: {
-    color: "#323130",
+    padding: "35px 0 0 0",
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: "110px",
+    maxWidth: "240px",
     height: "100%",
-    fontSize: 18,
-    fontFamily: "Segoe UI Light"
+    maxHeight: "100px",
+    fontSize: 24,
+    fontFamily: "Segoe UI Light",
+    color: "#794500"
   },
   queryTaskCount: {
-    fontSize: 48,
+    fontSize: 80,
     fontFamily: "Segoe UI Light",
-    color: "#605e5c"
+    color: "#004d7c"
   },
-  spinner: {
+  basicInfo: {
+    fontSize: 16,
+    paddingBottom: 10
+  },
+  basicInfoQueryLink: {
     textAlign: "center",
-    padding: "140px 0"
+    bottom: 10,
+    width: "100%",
+    maxWidth: 290,
+    fontSize: 22,
+    textDecoration: "none",
+    selectors: {
+      "&:hover": { textDecorationLine: "none" }
+    }
   }
 });
