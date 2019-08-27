@@ -1,8 +1,7 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
-import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { getQueryURLEndpoint, getQueryTasks, updateGist } from "../../util";
 import { createUid } from "../../util/uIDGenerator";
 
 // This type defines an action that updates the queryList with updatedList.
@@ -76,6 +75,11 @@ export const refreshMap = () => {
           tasks: { $set: responseItems.tasks }
         });
         const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
+        const response = await updateGist(user, newList);
+        if (response.errorCode) {
+          // TODO: add error response.
+          return;
+        }
         dispatch(updateMap(newList));
       } else {
         //TODO add error handling

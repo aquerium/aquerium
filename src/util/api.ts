@@ -120,7 +120,12 @@ export async function updateGist(
 async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
   try {
     const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
+      {
+        headers: new Headers({
+          "If-None-Match": ""
+        })
+      }
     );
     if (!response.ok) {
       return { errorCode: response.status };
