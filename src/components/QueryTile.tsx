@@ -1,20 +1,12 @@
 import React from "react";
-import { Stack, Text, Separator, Link, DefaultButton, Button } from "office-ui-fabric-react";
-import { QueryTileClassNames } from "./QueryTile.styles";
+import { Stack, Text, Separator, Link } from "office-ui-fabric-react";
+import { QueryTileClassNames, gridStackStyle, separatorStyles } from "./QueryTile.styles";
 import { IQuery } from "../state";
 
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
 }
-
-const gridStackStyle = {
-  root: { maxWidth: "100%" }
-};
-
-const separatorStyles = {
-  root: { background: "transparent", width: 120, horizontalAlign: "center", fontSize: 10 }
-};
 
 export const QueryTile = (props: IRenderTileProps): JSX.Element => {
   const { query } = props;

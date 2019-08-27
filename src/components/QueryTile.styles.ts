@@ -29,6 +29,14 @@ interface IQueryTile {
   basicInfoQueryLink: string;
 }
 
+export const gridStackStyle = {
+  root: { maxWidth: "100%" }
+};
+
+export const separatorStyles = {
+  root: { background: "transparent", width: 120, horizontalAlign: "center", fontSize: 10 }
+};
+
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
     height: "274",
