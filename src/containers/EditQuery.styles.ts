@@ -9,13 +9,17 @@ export const actionIcons = {
     name: { iconName: "Back" },
     styles: { root: { fontSize: 15 }, icon: { fontSize: 20, color: "black" } }
   },
-  save: {
-    name: { iconName: "CheckMark" },
+  add: {
+    name: { iconName: "Add" },
     styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
   },
   remove: {
     name: { iconName: "Trash" },
     styles: { root: { color: "red", fontSize: 15 }, icon: { fontSize: 17, color: "red" } }
+  },
+  update: {
+    name: { iconName: "Save" },
+    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
   }
 };
 

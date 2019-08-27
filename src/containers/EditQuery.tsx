@@ -104,14 +104,23 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               iconProps={actionIcons.back.name}
               styles={actionIcons.back.styles}
               text="Back"
-              onClick={this._setMessageBarCancel}
+              onClick={this.props.toHome}
             />
-            <ActionButton
-              iconProps={actionIcons.save.name}
-              styles={actionIcons.save.styles}
-              text="Save"
-              onClick={this._setMessageBarSave}
-            />
+            {this.state.selections.id === "" ? (
+              <ActionButton
+                iconProps={actionIcons.add.name}
+                styles={actionIcons.add.styles}
+                text="Add"
+                onClick={this._setMessageBaraddOrEdit}
+              />
+            ) : (
+              <ActionButton
+                iconProps={actionIcons.update.name}
+                styles={actionIcons.update.styles}
+                text="Update"
+                onClick={this._setMessageBaraddOrEdit}
+              />
+            )}
 
             <ActionButton
               iconProps={actionIcons.remove.name}
@@ -239,38 +248,31 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
-  private _setMessageBarCancel = (): void => {
-    if (this.state.inputStatus !== InputStatuses.saved) {
-      this.setState({
-        messageType: MessageBarType.warning,
-        message: "Do you wish to save your changes?",
-        actions: (
-          <div>
-            <MessageBarButton text="Save" onClick={this._setMessageBarSave} />
-            {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="Discard" onClick={this.props.toHome} />
-          </div>
-        ),
-        renderMessageBar: true
-      });
-    } else {
-      this.props.addOrEditQuery(this.state.selections);
-      this.props.toHome();
-    }
+  private _setMessageBaraddOrEdit = (): void => {
+    this.setState({
+      messageType: MessageBarType.warning,
+      message:
+        "Are you sure you want to " +
+        (this.state.selections.id === "" ? "add" : "update") +
+        " this query?",
+      actions: (
+        <div>
+          <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
+          {/* Else discard changes and go back to home screen. */}
+          <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
+        </div>
+      ),
+      renderMessageBar: true
+    });
   };
 
-  private _setMessageBarSave = (): void => {
+  private _addOrEditQuery = (): void => {
     if (
       (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) ||
       this.state.inputStatus === InputStatuses.saved
     ) {
-      this.setState({
-        inputStatus: InputStatuses.saved,
-        messageType: MessageBarType.success,
-        message: "Successfully saved query settings!",
-        actions: undefined,
-        renderMessageBar: true
-      });
+      this.props.addOrEditQuery(this.state.selections);
+      this.props.toHome();
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
