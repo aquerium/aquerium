@@ -122,6 +122,7 @@ function LoginUIComponent(props: ILoginProps) {
             ariaLive="assertive"
             labelPosition="left"
             size={SpinnerSize.small}
+            className={LoginUIClassNames.spinner}
           />
         </div>
       )}

@@ -17,6 +17,8 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  /** The styles for the homeUI spinner. */
+  spinner: string;
   /** The styles for the front of the query tile. */
   queryFront: string;
   /** The styles for the back of the query tile (i.e. query details). */
@@ -119,6 +121,11 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   queryTaskCount: {
     fontSize: 80,
     fontFamily: "Segoe UI Light",
+    color: "#605e5c"
+  },
+  spinner: {
+    textAlign: "center",
+    padding: "140px 0",
     color: "#004d7c"
   },
   basicInfo: {

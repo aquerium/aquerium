@@ -17,13 +17,17 @@ export const LoginUIClassNames = mergeStyleSets({
     position: "absolute",
     fontSize: 12,
     color: "#1b3e74",
-    transform: "translateY(-60%)",
     top: 200
   },
   patLink: {
     fontSize: "11px",
     position: "absolute",
     bottom: 13
+  },
+  spinner: {
+    textAlign: "center",
+    top: 400,
+    color: "#004d7c"
   },
   loginFields: {
     position: "absolute",
