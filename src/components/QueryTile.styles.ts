@@ -39,8 +39,7 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
     height: "557px",
     width: "100%",
-    overflowY: "hidden",
-    overflowX: "hidden",
+    overflow: "hidden",
     selectors: {
       "&:hover": { overflowY: "auto" }
     }
