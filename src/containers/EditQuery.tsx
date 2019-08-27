@@ -61,11 +61,11 @@ interface IEditQueryUIProps {
   currQuery?: IQuery;
   /** The list of queries stored in redux. */
   queryList: queryListType;
-  /** Action that sends the user back to the HomeUI */
+  /** Action that sends the user back to the HomeUI. */
   toHome: () => void;
-  /** Action that tells redux and the Gist to modify the current query */
+  /** Action that tells redux and the Gist to modify the current query. */
   addOrEditQuery: (query: IQuery) => void;
-  /** Action that tells redux and the Gist to remove the current query */
+  /** Action that tells redux and the Gist to remove the current query. */
   removeQuery: (id: string) => void;
 }
 
@@ -260,7 +260,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     } else {
       let query: IQuery = this.state.selections;
       if (query.id === "") {
-        // In thise case, we need to generate a unique ID for this query.
+        // In this case, we need to generate a unique ID for this query.
         let newID: string = createUid();
         while (!this._isValidID(newID)) {
           newID = createUid();
