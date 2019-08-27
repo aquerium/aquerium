@@ -1,10 +1,8 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
-import { EditQueryUI } from "../containers/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { IState, login } from "../state";
-import { QueryTaskListUI } from "../components/QueryTaskListUI";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";

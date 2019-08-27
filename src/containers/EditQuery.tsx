@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import update from "immutability-helper";
 import {
   Stack,
@@ -20,17 +20,14 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions
-} from "./EditQueryUI.styles";
+} from "./EditQuery.styles";
 import { connect } from "react-redux";
-import { createUid } from "../util/uIDGenerator";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
   successfulEdit = 0,
   /** Value indicating that the current user input is not valid. */
-  invalidEdit,
-  /** Value indicating that that the user input has been saved to the current query edits. */
-  saved
+  invalidEdit
 }
 
 interface IEditQueryUIState {
@@ -59,24 +56,21 @@ interface IEditQueryUIState {
 interface IEditQueryUIProps {
   /** Current query whose properties are being edited. */
   currQuery?: IQuery;
-  /** The list of queries stored in redux. */
-  queryList: queryListType;
-  /** Action that sends the user back to the HomeUI */
+  /** Action that sends the user back to the HomeUI. */
   toHome: () => void;
-  /** Action that tells redux and the Gist to modify the current query */
+  /** Action that tells redux and the Gist to modify the current query. */
   addOrEditQuery: (query: IQuery) => void;
-  /** Action that tells redux and the Gist to remove the current query */
+  /** Action that tells redux and the Gist to remove the current query. */
   removeQuery: (id: string) => void;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
-    queryList: state.queryList,
     currQuery: state.changeUI.currQuery
   };
 };
 
-export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
+class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
     inputStatus: InputStatuses.successfulEdit,
     messageType: MessageBarType.success,
@@ -108,14 +102,23 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
               iconProps={actionIcons.back.name}
               styles={actionIcons.back.styles}
               text="Back"
-              onClick={this._setMessageBarCancel}
+              onClick={this.props.toHome}
             />
-            <ActionButton
-              iconProps={actionIcons.save.name}
-              styles={actionIcons.save.styles}
-              text="Save"
-              onClick={this._setMessageBarSave}
-            />
+            {this.state.selections.id === "" ? (
+              <ActionButton
+                iconProps={actionIcons.add.name}
+                styles={actionIcons.add.styles}
+                text="Add"
+                onClick={this._setMessageBaraddOrEdit}
+              />
+            ) : (
+              <ActionButton
+                iconProps={actionIcons.update.name}
+                styles={actionIcons.update.styles}
+                text="Update"
+                onClick={this._setMessageBaraddOrEdit}
+              />
+            )}
 
             <ActionButton
               iconProps={actionIcons.remove.name}
@@ -243,57 +246,28 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
     );
   };
 
-  private _setMessageBarCancel = (): void => {
-    if (this.state.inputStatus !== InputStatuses.saved) {
-      this.setState({
-        messageType: MessageBarType.warning,
-        message: "Do you wish to save your changes?",
-        actions: (
-          <div>
-            <MessageBarButton text="Save" onClick={this._setMessageBarSave} />
-            {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="Discard" onClick={this.props.toHome} />
-          </div>
-        ),
-        renderMessageBar: true
-      });
-    } else {
-      let query: IQuery = this.state.selections;
-      if (query.id === "") {
-        // In thise case, we need to generate a unique ID for this query.
-        let newID: string = createUid();
-        while (!this._isValidID(newID)) {
-          newID = createUid();
-        }
-        const newQuery = update(this.state.selections, { id: { $set: newID } });
-        this.props.addOrEditQuery(newQuery);
-      } else {
-        this.props.addOrEditQuery(query);
-      } // If not, the ID already exists in the map, so just update it.
+  private _setMessageBaraddOrEdit = (): void => {
+    this.setState({
+      messageType: MessageBarType.warning,
+      message:
+        "Are you sure you want to " +
+        (this.state.selections.id === "" ? "add" : "update") +
+        " this query?",
+      actions: (
+        <div>
+          <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
+          {/* Else discard changes and go back to home screen. */}
+          <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
+        </div>
+      ),
+      renderMessageBar: true
+    });
+  };
+
+  private _addOrEditQuery = (): void => {
+    if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
+      this.props.addOrEditQuery(this.state.selections);
       this.props.toHome();
-    }
-  };
-
-  private _isValidID = (id: string): boolean => {
-    const map: queryListType = this.props.queryList;
-    for (const key in map) {
-      if (id === key) return false;
-    }
-    return true;
-  };
-
-  private _setMessageBarSave = (): void => {
-    if (
-      (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) ||
-      this.state.inputStatus === InputStatuses.saved
-    ) {
-      this.setState({
-        inputStatus: InputStatuses.saved,
-        messageType: MessageBarType.success,
-        message: "Successfully saved query settings!",
-        actions: undefined,
-        renderMessageBar: true
-      });
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -323,7 +297,7 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
   private _onRemove = (): void => {
     const queryID: string = this.state.selections.id;
     if (queryID !== "") {
-      //.If the ID exists, this is a real query we should remove.
+      // If the ID exists, this is a real query we should remove.
       this.props.removeQuery(queryID);
     }
     this.props.toHome();

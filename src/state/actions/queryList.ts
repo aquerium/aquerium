@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { createUid } from "../../util/uIDGenerator";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
@@ -20,7 +21,7 @@ export const addOrEditQuery = (query: IQuery) => {
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    let newQuery = update(query, {
+    const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
@@ -33,6 +34,18 @@ export const addOrEditQuery = (query: IQuery) => {
     dispatch(updateMap(newList));
   };
 };
+
+/**
+ * This helper function returns the query it was given with a unique ID number.
+ */
+function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
+  let newID: string = createUid();
+  while (queryList.hasOwnProperty(newID)) {
+    newID = createUid();
+  }
+  const newQuery = update(query, { id: { $set: newID } });
+  return newQuery;
+}
 
 /**
  * Action creator to remove the specified query from queryList.
