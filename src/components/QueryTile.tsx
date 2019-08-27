@@ -79,16 +79,7 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
           )}
           {query.labels && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Labels:</b> [
-              {query.labels.map(label => {
-                return (
-                  <span key={label}>
-                    {label}
-                    {query.labels && label === query.labels[query.labels.length - 1] ? "" : ", "}
-                  </span>
-                );
-              })}
-              ]<br />
+              <b>Labels:</b> [{query.labels.join(", ")}]<br />
             </Text>
           )}
           {query.lastUpdated && (
