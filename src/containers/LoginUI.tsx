@@ -15,7 +15,7 @@ import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
 
 /** @constant
-    @type {number} value corresponding to enter key 
+    @type {number} value corresponding to enter key.
 */
 const ENTER_KEYCODE = 13;
 
@@ -94,7 +94,7 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
+      <Image {...(imageProps as any)} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
