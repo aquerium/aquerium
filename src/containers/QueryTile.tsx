@@ -7,7 +7,7 @@ import { QueryTileClassNames, gridStackStyle, separatorStyles } from "./QueryTil
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
   currQuery: IQuery;
-  /** Action creator that sends user to queryListUI */
+  /** Action creator that sends user to queryListUI. */
   toQueryList: (query: IQuery) => void;
 }
 
