@@ -1,11 +1,13 @@
 import React from "react";
 import { Stack, Text, Icon, ActionButton } from "office-ui-fabric-react";
 import { connect } from "react-redux";
-import { IState, toError } from "../state";
+import { IState, toHome } from "../state";
 
 interface IErrorPageProps {
   /** The error message to be rendered. */
   errorMessage?: string;
+  /** This function calls an action that takes the user to the Home UI. */
+  toHome: () => void;
 }
 
 const mapStateToProps = (state: IState) => ({
@@ -32,9 +34,21 @@ function ErrorPageView(props: IErrorPageProps) {
       <Icon iconName="Error" styles={errorIconStyles.styles} />
       <Text styles={oopsStyles}>Oops!</Text>
       <Text styles={errorStyles}>{errorMessage}</Text>
-      <ActionButton iconProps={iconProps} text="Return to Home" styles={homeIconStyles} />
+      <ActionButton
+        iconProps={iconProps}
+        text="Return to Home"
+        styles={homeIconStyles}
+        onClick={props.toHome}
+      />
     </Stack>
   );
 }
 
-export const ErrorPage = connect(mapStateToProps)(ErrorPageView);
+const action = {
+  toHome
+};
+
+export const ErrorPage = connect(
+  mapStateToProps,
+  action
+)(ErrorPageView);

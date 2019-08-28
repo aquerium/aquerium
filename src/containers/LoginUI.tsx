@@ -94,7 +94,7 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
+      <Image {...(imageProps as any)} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
@@ -121,12 +121,12 @@ function LoginUIComponent(props: ILoginProps) {
   );
 }
 
-const action = {
+const actions = {
   login,
   setIsInvalidPAT
 };
 
 export const LoginUI = connect(
   mapStateToProps,
-  action
+  actions
 )(LoginUIComponent);
