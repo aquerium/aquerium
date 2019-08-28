@@ -12,7 +12,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, addOrEditQuery, removeQuery, IState, queryListType } from "../state";
+import { IQuery, toHome, addOrEditQuery, removeQuery, IState } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
