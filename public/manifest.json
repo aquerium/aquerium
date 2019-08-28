@@ -6,14 +6,14 @@
   "options_page": "options.html",
   "browser_action": {
     "default_popup": "index.html",
-    "default_icon": "GlitterboxLogo2.png"
+    "default_icon": "logo.png"
   },
   "background": {
     "scripts": ["./dist/background.js"],
     "persistent": false
   },
   "icons": {
-    "131": "GlitterboxLogo2.png"
+    "128": "logo.png"
   },
   "manifest_version": 2,
   "commands": {
