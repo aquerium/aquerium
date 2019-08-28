@@ -15,7 +15,7 @@ const updateGistErrorMessage =
 
 // The error message sent if updateGist returns
 const getQueryTasksErrorMessage =
-  "It looks like we couldn't get your queries. Maybe the API is down or your PAT is invalid?";
+  "It looks like we couldn't get your queries. Maybe the API is down?";
 
 /**
  * Action creator to add/edit a query to the queryList.
