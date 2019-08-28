@@ -5,7 +5,7 @@
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
-  /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
+  /** Stores information pertaining to the UI being displayed */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
     currQuery?: IQuery;
@@ -24,7 +24,7 @@ export interface ITask {
   /** The title of the given task. */
   title: string;
   /** Person who opened this task. */
-  author?: string;
+  author: string;
   /** The repo the task is a member of. */
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
@@ -76,6 +76,7 @@ export interface IQuery {
   lastUpdated?: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
+  /** the URL for the github page containing this query */
   url: string;
 }
 
@@ -94,7 +95,5 @@ export interface IUserInfo {
   invalidPAT: boolean;
 }
 
-/**
- * @type { [id: string]: IQuery } This type defines the queryList, a map from query ID's to queries.
- */
+// This type defines the queryList, a map from query ID's to queries.
 export type queryListType = { [id: string]: IQuery };

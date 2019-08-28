@@ -16,7 +16,7 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
- * The action type for a login action.
+ * The action type for changing to the QueryTaskList UI.
  */
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
 
@@ -123,14 +123,6 @@ export const logout = () => ({
  */
 export const toEditQuery = () => ({
   type: "EDIT"
-});
-
-/**
- * Action creator to send the user to QueryList UI.
- */
-export const toQueryList = (query: IQuery) => ({
-  type: "QUERY",
-  query
 });
 
 /**

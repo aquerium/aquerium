@@ -8,6 +8,9 @@ export interface IIssue {
   created_at: string;
   updated_at: string;
   repository_url: string;
+  user: {
+    login: string;
+  };
 }
 
 /**
@@ -21,4 +24,7 @@ export interface IPull {
   updated_at: string;
   pull_request: {};
   repository_url: string;
+  user: {
+    login: string;
+  };
 }
