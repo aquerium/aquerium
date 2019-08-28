@@ -1,14 +1,13 @@
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
-import { EditQueryUI } from "../components/EditQuery";
 import { initializeIcons } from "@uifabric/icons";
 import { LoginUI } from "./LoginUI";
 import { IState, login } from "../state";
-import { QueryTaskListUI } from "../components/QueryTaskListUI";
 import { connect } from "react-redux";
 import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
+import { EditQuery } from "../containers/EditQuery";
 
 initializeIcons();
 
@@ -110,8 +109,11 @@ class AppView extends React.Component<IAppViewProps> {
       case "Home": {
         return <HomeUI />;
       }
+      case "EditQuery": {
+        return <EditQuery />;
+      }
       default: {
-        return <HomeUI />;
+        return <LoginUI />;
       }
     }
   };

@@ -16,6 +16,14 @@ export const actionIcons = {
   remove: {
     name: { iconName: "Trash" },
     styles: { root: { color: "red", fontSize: 20 }, icon: { fontSize: 25, color: "red" } }
+  },
+  add: {
+    name: { iconName: "Add" },
+    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
+  },
+  update: {
+    name: { iconName: "Save" },
+    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
   }
 };
 
