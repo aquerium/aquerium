@@ -43,7 +43,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 200 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 450, height: 35 }];
 
 const scopedSettings = {
   TextField: {
@@ -53,20 +53,18 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      root: {
-        boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
-      }
+      dropdown: [hoveringAndShading, { height: 35 }]
     },
     target: "_blank"
   },
   Dropdown: {
     styles: {
-      dropdown: fieldGroupStyles
+      title: [fieldGroupStyles, { padding: "2px" }]
     }
   },
   MessageBar: {
     styles: {
-      root: [hoveringAndShading, { width: 265 }]
+      root: [hoveringAndShading]
     }
   },
   MessageBarButton: {
@@ -75,7 +73,7 @@ const scopedSettings = {
     }
   },
   Slider: {
-    styles: { container: { width: 200 } }
+    styles: { container: { width: 450 } }
   },
   Link: {
     target: "_blank"
@@ -83,7 +81,7 @@ const scopedSettings = {
 };
 
 interface IAppViewProps {
-  /** The UI that will be displayed.  */
+  /** The UI that will be displayed. */
   UI: string;
   /** The login function attempts to authenticate the user upon opening. */
   login: (currPAT?: string) => void;
@@ -107,7 +105,7 @@ class AppView extends React.Component<IAppViewProps> {
   private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
-        return <LoginUI />;
+        return <QueryTaskListUI />;
       }
       case "Home": {
         return <HomeUI />;

@@ -25,13 +25,11 @@ const InfoButtonStyles = mergeStyleSets({
     borderRadius: 25
   },
   callout: {
-    padding: 5,
+    padding: 10,
     maxWidth: 150
   },
-  calloutText: {
-    maxWidth: "150px",
-    overflow: "hidden",
-    textOverflow: "ellipsis"
+  textDiv: {
+    textAlign: "center"
   }
 });
 
@@ -73,7 +71,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             ariaDescribedBy={this._descriptionId}
             role="alertdialog"
           >
-            <div id={this._descriptionId}>
+            <div id={this._descriptionId} className={InfoButtonStyles.textDiv}>
               {this.props.calloutText.map(text => (
                 <span>
                   {text}

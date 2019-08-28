@@ -75,146 +75,181 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
 
   public render = (): JSX.Element => {
     return (
-      <div className={EditQueryUIClassNames.root}>
-        <Stack horizontalAlign="start" verticalAlign="space-evenly" tokens={rootTokenGap}>
-          {this.state.renderMessageBar && this._renderMessageBar()}
-          <Stack horizontal horizontalAlign="start">
-            <ActionButton
-              iconProps={actionIcons.back.name}
-              styles={actionIcons.back.styles}
-              text="Back"
-              onClick={this._setMessageBarCancel}
-            />
-            <ActionButton
-              iconProps={actionIcons.save.name}
-              styles={actionIcons.save.styles}
-              text="Save"
-              onClick={this._setMessageBarSave}
-            />
+      <>
+        <Stack verticalAlign="space-evenly">
+          {this.state.renderMessageBar ? (
+            this._renderMessageBar()
+          ) : (
+            <Stack
+              horizontal
+              horizontalAlign="space-evenly"
+              className={EditQueryUIClassNames.topBar}
+            >
+              <ActionButton
+                iconProps={actionIcons.back.name}
+                styles={actionIcons.back.styles}
+                text="Back"
+                onClick={this._setMessageBarCancel}
+              />
+              <ActionButton
+                iconProps={actionIcons.save.name}
+                styles={actionIcons.save.styles}
+                text="Save"
+                onClick={this._setMessageBarSave}
+              />
 
-            <ActionButton
-              iconProps={actionIcons.remove.name}
-              styles={actionIcons.remove.styles}
-              text="Remove"
-              onClick={this._setMessageBarRemove}
-            />
-          </Stack>
-          <TextField
-            label="Your query title"
-            placeholder="Please enter a title"
-            defaultValue={this.state.selections.name}
-            validateOnFocusIn
-            validateOnFocusOut
-            onGetErrorMessage={this._checkNameSelection}
-            required
-          />
-          <Stack horizontal horizontalAlign="center">
-            <Dropdown
+              <ActionButton
+                iconProps={actionIcons.remove.name}
+                styles={actionIcons.remove.styles}
+                text="Remove"
+                onClick={this._setMessageBarRemove}
+              />
+            </Stack>
+          )}
+
+          <Stack
+            horizontalAlign="start"
+            className={EditQueryUIClassNames.fieldsRoot}
+            tokens={rootTokenGap}
+          >
+            <TextField
+              label="Your query title"
+              placeholder="Please enter a title"
+              defaultValue={this.state.selections.name}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this._checkNameSelection}
               required
-              onChange={this._setTypeSelection}
-              label="Type of tasks"
-              selectedKey={this.state.selections.type || "issues and pr"}
-              options={typeOptions}
             />
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <TextField
-              label="Repo"
-              defaultValue={this.state.selections.repo}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkRepoSelection}
-            />
-            {description(["List a repository from which to track Issues and/or Pull Requests."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <TextField
-              label="Assignee"
-              defaultValue={this.state.selections.assignee}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkAssigneeSelection}
-            />
-            {description(["Track Issues and/or Pull Requests assigned to a specific user."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <TextField
-              label="Author"
-              defaultValue={this.state.selections.author}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkAuthorSelection}
-            />
-            {description(["Track Issues and/or Pull Requests opened by a specific user."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <TextField
-              label="Mention"
-              defaultValue={this.state.selections.mentions}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkMentionSelection}
-            />
-            {description(["Track Issues and/or Pull Requests that mention a specific user."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <Dropdown
-              disabled={!this.state.enableReviewStatusField}
-              onChange={this._setReviewStatusSelection}
-              label="Review Status"
-              selectedKey={
-                this.state.selections.reviewStatus && this.state.enableReviewStatusField
-                  ? this.state.selections.reviewStatus
-                  : ""
-              }
-              options={reviewStatusOptions}
-            />
-            {description(["Track Pull Requests with the single selected review requirement."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <MultiSelect
-              label="Repo Labels"
-              onChange={this._setLabelsSelection}
-              items={this.state.selections.labels || []}
-            />
-            {description(["The GitHub labels assigned to particular tasks."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <Slider
-              label="Last Updated"
-              onChange={this._setLastUpdatedSelection}
-              min={1}
-              defaultValue={this.state.selections.lastUpdated}
-              max={31}
-            />
-            {description([
-              "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
-            ])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <Slider
-              label="Staleness for Issues"
-              onChange={this._setstalenessIssueSelection}
-              min={1}
-              defaultValue={this.state.selections.stalenessIssue}
-              max={7}
-            />
-            {description(["The number of days after which an Issue will be considered stale."])()}
-          </Stack>
-          <Stack horizontal horizontalAlign="center">
-            <Slider
-              label="Staleness for Pull Requests"
-              onChange={this._setStalenessPullSelection}
-              min={1}
-              defaultValue={this.state.selections.stalenessPull}
-              max={7}
-            />
-            {description([
-              "The number of days after which a Pull Request will be considered stale."
-            ])()}
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                required
+                onChange={this._setTypeSelection}
+                label="Type of tasks"
+                selectedKey={this.state.selections.type || "issues and pr"}
+                options={typeOptions}
+              />
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Repo"
+                defaultValue={this.state.selections.repo}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkRepoSelection}
+              />
+              {description([
+                "List a repository from which to track Issues and/or Pull Requests."
+              ])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Assignee"
+                defaultValue={this.state.selections.assignee}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkAssigneeSelection}
+              />
+              {description(["Track Issues and/or Pull Requests assigned to a specific user."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Author"
+                defaultValue={this.state.selections.author}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkAuthorSelection}
+              />
+              {description(["Track Issues and/or Pull Requests opened by a specific user."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Mention"
+                defaultValue={this.state.selections.mentions}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkMentionSelection}
+              />
+              {description(["Track Issues and/or Pull Requests that mention a specific user."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                disabled={!this.state.enableReviewStatusField}
+                onChange={this._setReviewStatusSelection}
+                label="Review Status"
+                selectedKey={
+                  this.state.selections.reviewStatus && this.state.enableReviewStatusField
+                    ? this.state.selections.reviewStatus
+                    : ""
+                }
+                options={reviewStatusOptions}
+              />
+              {description(["Track Pull Requests with the single selected review requirement."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <MultiSelect
+                label="Repo Labels"
+                onChange={this._setLabelsSelection}
+                items={this.state.selections.labels || []}
+              />
+              {description(["The GitHub labels assigned to particular tasks."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Slider
+                label="Last Updated"
+                onChange={this._setLastUpdatedSelection}
+                min={1}
+                defaultValue={this.state.selections.lastUpdated}
+                max={31}
+              />
+              {description([
+                "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
+              ])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Slider
+                label="Staleness for Issues"
+                onChange={this._setstalenessIssueSelection}
+                min={1}
+                defaultValue={this.state.selections.stalenessIssue}
+                max={7}
+              />
+              {description(["The number of days after which an Issue will be considered stale."])()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Slider
+                label="Staleness for Pull Requests"
+                onChange={this._setStalenessPullSelection}
+                min={1}
+                defaultValue={this.state.selections.stalenessPull}
+                max={7}
+              />
+              {description([
+                "The number of days after which a Pull Request will be considered stale."
+              ])()}
+            </Stack>
           </Stack>
         </Stack>
-      </div>
+      </>
+    );
+  };
+
+  private _renderMessageBar = (): JSX.Element => {
+    return (
+      <Stack
+        horizontalAlign="center"
+        verticalAlign="space-around"
+        className={EditQueryUIClassNames.messageBar}
+      >
+        <MessageBar
+          isMultiline={false}
+          messageBarType={this.state.messageType}
+          onDismiss={this._onDismissMessageBar}
+          actions={this.state.actions}
+        >
+          {this.state.message}
+        </MessageBar>
+      </Stack>
     );
   };
 
@@ -277,18 +312,6 @@ export class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUI
 
   private _onDismissMessageBar = (): void => {
     this.setState({ renderMessageBar: false });
-  };
-
-  private _renderMessageBar = (): JSX.Element => {
-    return (
-      <MessageBar
-        messageBarType={this.state.messageType}
-        onDismiss={this._onDismissMessageBar}
-        actions={this.state.actions}
-      >
-        {this.state.message}
-      </MessageBar>
-    );
   };
 
   private _checkNameSelection = (

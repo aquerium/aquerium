@@ -21,7 +21,7 @@ export const LoginUIClassNames = mergeStyleSets({
     padding: 10
   },
   patLink: {
-    fontSize: "20px",
+    fontSize: "16px",
     position: "absolute",
     bottom: 30
   },

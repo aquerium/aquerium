@@ -1,32 +1,37 @@
-import { mergeStyleSets, mergeStyles } from "@uifabric/styling";
+import { mergeStyleSets } from "@uifabric/styling";
 
 export const rootTokenGap = {
-  childrenGap: 5
+  childrenGap: 14
 };
 
 export const actionIcons = {
   back: {
     name: { iconName: "Back" },
-    styles: { root: { fontSize: 15 }, icon: { fontSize: 20, color: "black" } }
+    styles: { root: { fontSize: 20 }, icon: { fontSize: 25, color: "black" } }
   },
   save: {
     name: { iconName: "CheckMark" },
-    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
+    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 32, color: "green" } }
   },
   remove: {
     name: { iconName: "Trash" },
-    styles: { root: { color: "red", fontSize: 15 }, icon: { fontSize: 17, color: "red" } }
+    styles: { root: { color: "red", fontSize: 20 }, icon: { fontSize: 25, color: "red" } }
   }
 };
 
 export const EditQueryUIClassNames = mergeStyleSets({
-  root: {
-    padding: "2px 0px 2px 5px",
+  fieldsRoot: {
+    padding: "0px 0px 10px 40px",
     color: "#1b3e74",
-    height: "100%",
-    overflow: "hidden",
-    overflowY: "scroll"
-  }
+    height: "550px",
+    width: "100%",
+    overflowY: "hidden",
+    selectors: {
+      "&:hover": { overflowY: "auto" }
+    }
+  },
+  messageBar: { width: "100%", height: "50px", textAlign: "center" },
+  topBar: { height: "50px" }
 });
 
 export const typeOptions = [
