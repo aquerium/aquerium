@@ -76,7 +76,7 @@ export interface IQuery {
   lastUpdated?: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
-  /** the URL for the github page containing this query */
+  /** The URL for the github page containing this query. */
   url: string;
 }
 

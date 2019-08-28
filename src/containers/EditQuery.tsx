@@ -12,7 +12,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, addOrEditQuery, removeQuery, IState, queryListType } from "../state";
+import { IQuery, toHome, addOrEditQuery, removeQuery, IState } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -24,7 +24,7 @@ import {
 import { connect } from "react-redux";
 
 enum InputStatuses {
-  /** Value indicating that the input has been validated and successfully updated to the new (or existing) query. */
+  /** Value indicating that the input has been validated. */
   successfulEdit = 0,
   /** Value indicating that the current user input is not valid. */
   invalidEdit
@@ -109,14 +109,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 iconProps={actionIcons.add.name}
                 styles={actionIcons.add.styles}
                 text="Add"
-                onClick={this._setMessageBaraddOrEdit}
+                onClick={this._setMessageBarAddOrEdit}
               />
             ) : (
               <ActionButton
                 iconProps={actionIcons.update.name}
                 styles={actionIcons.update.styles}
                 text="Update"
-                onClick={this._setMessageBaraddOrEdit}
+                onClick={this._setMessageBarAddOrEdit}
               />
             )}
 
@@ -246,7 +246,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
-  private _setMessageBaraddOrEdit = (): void => {
+  private _setMessageBarAddOrEdit = (): void => {
     this.setState({
       messageType: MessageBarType.warning,
       message:
