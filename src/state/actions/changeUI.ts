@@ -20,12 +20,19 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
  */
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
 
+/** The action type for changing to the error message UI. */
+export type changeUIErrorAction = { type: string; message: string };
+
+// The error message sent if the creation of a gist via the given PAT is invalid.
+const createGistErrorMessage =
+  "It looks like your PAT didn't successfully create a Gist. How about making a new one?";
+
 /**
  * Action creator to send the user from login UI to Home UI.
  * This action creator takes in a string that determines whether a user is attempting a login from opening the extension or signing in on the login page.
  * If they are signing in on opening, the currPAT field will be blank, and this action will check to see if the user has valid credentials in local storage.
  * If they are logging in on the login screen, the action creator will check to see that their PAT is valid, as well as if they're a new or returning user.
- * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty
+ * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
   return async function(dispatch: Dispatch) {
@@ -51,6 +58,9 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(updateMap(response.queryMap));
         dispatch(toHome());
       }
+    } else {
+      console.log("to error");
+      dispatch(toError(createGistErrorMessage));
     }
   });
 }
@@ -75,6 +85,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       if (responseGist.user === undefined) {
         // If the response from createGIST is invalid.
         dispatch(setIsInvalidPAT(true));
+        dispatch(toError(createGistErrorMessage));
       } else {
         // Store this user's info in local storage and in redux.
         loginQueryMapExists(responseGist.user, dispatch, {});
@@ -126,8 +137,16 @@ export const toEditQuery = () => ({
 });
 
 /**
- * Action creator to send the user to Home UI
+ * Action creator to send the user to Home UI.
  */
 export const toHome = () => ({
   type: "HOME"
+});
+
+/**
+ * Action creator to send the user to the Error UI.
+ */
+export const toError = (message: string) => ({
+  type: "ERROR",
+  message
 });

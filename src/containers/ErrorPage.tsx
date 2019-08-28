@@ -1,14 +1,22 @@
 import React from "react";
 import { Stack, Text, Icon, ActionButton } from "office-ui-fabric-react";
+import { connect } from "react-redux";
+import { IState, toError } from "../state";
 
 interface IErrorPageProps {
   /** The error message to be rendered. */
-  errorMessage: string;
+  errorMessage?: string;
 }
+
+const mapStateToProps = (state: IState) => ({
+  errorMessage: state.changeUI.errorMessage
+});
 
 const errorIconStyles = { styles: { root: { fontSize: 50, color: "#8f191b" } } };
 const oopsStyles = { root: { color: "#00395c", fontSize: 48 } };
-const errorStyles = { root: { color: "#00395c", fontSize: 30 } };
+const errorStyles = {
+  root: { color: "#00395c", fontSize: 25, textAlign: "center", padding: "10px" }
+};
 const stackStyles = { root: { height: "100%" } };
 const iconProps = { iconName: "Home" };
 const homeIconStyles = {
@@ -16,7 +24,7 @@ const homeIconStyles = {
   icon: { fontSize: 80 }
 };
 
-export const ErrorPage = (props: IErrorPageProps): JSX.Element => {
+function ErrorPageView(props: IErrorPageProps) {
   const { errorMessage } = props;
 
   return (
@@ -27,4 +35,6 @@ export const ErrorPage = (props: IErrorPageProps): JSX.Element => {
       <ActionButton iconProps={iconProps} text="Return to Home" styles={homeIconStyles} />
     </Stack>
   );
-};
+}
+
+export const ErrorPage = connect(mapStateToProps)(ErrorPageView);

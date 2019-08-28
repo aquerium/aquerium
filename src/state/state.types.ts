@@ -7,8 +7,9 @@ export interface IState {
   queryList: queryListType;
   /** Stores a string containing the current UI and the current query if in EditQuery/QueryList. */
   changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList" | "ErrorPage";
     currQuery?: IQuery;
+    errorMessage?: string;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
