@@ -29,7 +29,7 @@ export const changeUI = (
       });
     }
     case "HOME": {
-      return update(state, { currUI: { $set: "Home" } });
+      return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     default:
       return state;
