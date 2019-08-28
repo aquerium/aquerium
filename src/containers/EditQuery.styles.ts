@@ -19,11 +19,11 @@ export const actionIcons = {
   },
   add: {
     name: { iconName: "Add" },
-    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
+    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
   },
   update: {
     name: { iconName: "Save" },
-    styles: { root: { color: "green", fontSize: 15 }, icon: { fontSize: 25, color: "green" } }
+    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
   }
 };
 

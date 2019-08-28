@@ -8,6 +8,7 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
+import { QueryTaskListUI } from "../components/QueryTaskListUI";
 
 initializeIcons();
 
@@ -52,7 +53,7 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      dropdown: [hoveringAndShading, { height: 35 }]
+      root: [hoveringAndShading, { height: 35 }]
     },
     target: "_blank"
   },
@@ -104,7 +105,7 @@ class AppView extends React.Component<IAppViewProps> {
   private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
-        return <QueryTaskListUI />;
+        return <LoginUI />;
       }
       case "Home": {
         return <HomeUI />;

@@ -281,27 +281,22 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    this.setState({
-      messageType: MessageBarType.warning,
-      message:
-        "Are you sure you want to " +
-        (this.state.selections.id === "" ? "add" : "update") +
-        " this query?",
-      actions: (
-        <div>
-          <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
-          {/* Else discard changes and go back to home screen. */}
-          <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
-        </div>
-      ),
-      renderMessageBar: true
-    });
-  };
-
-  private _addOrEditQuery = (): void => {
     if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
-      this.props.addOrEditQuery(this.state.selections);
-      this.props.toHome();
+      this.setState({
+        messageType: MessageBarType.warning,
+        message:
+          "Are you sure you want to " +
+          (this.state.selections.id === "" ? "add" : "update") +
+          " this query?",
+        actions: (
+          <div>
+            <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
+            {/* Else discard changes and go back to home screen. */}
+            <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
+          </div>
+        ),
+        renderMessageBar: true
+      });
     } else {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -310,6 +305,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         renderMessageBar: true
       });
     }
+  };
+
+  private _addOrEditQuery = (): void => {
+    this.props.addOrEditQuery(this.state.selections);
+    this.props.toHome();
   };
 
   private _setMessageBarRemove = (): void => {

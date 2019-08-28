@@ -5,6 +5,7 @@ import {
   ActionButton,
   Text,
   TooltipHost,
+  Link,
   TooltipOverflowMode
 } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
@@ -19,20 +20,36 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
   const { query } = props;
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
-
+  const [isTooltipVisible, toggleTooltip] = React.useState(false);
   const tooltipId = getId("text-tooltip");
   const calloutGapSpace = { gapSpace: 0 };
   return (
-    <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+    <Stack
+      horizontal
+      horizontalAlign="space-around"
+      verticalAlign="center"
+      className={QueryTaskClassNames.topBar}
+    >
       <ActionButton
         iconProps={iconProps.back}
         styles={iconSize}
         //TODO Add onClick functionality
       />
-      <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
-        <Text className={QueryTaskClassNames.queryTitle} nowrap block aria-labelledby={tooltipId}>
+      <TooltipHost
+        calloutProps={calloutGapSpace}
+        content={query.name}
+        id={tooltipId}
+        overflowMode={TooltipOverflowMode.Parent}
+        onTooltipToggle={(isTooltipVisible: boolean) => toggleTooltip(!isTooltipVisible)}
+      >
+        <a
+          href={query.url}
+          target="_blank"
+          className={QueryTaskClassNames.queryTitle}
+          aria-labelledby={isTooltipVisible ? tooltipId : undefined}
+        >
           {query.name}
-        </Text>
+        </a>
       </TooltipHost>
       <ActionButton
         iconProps={iconProps.edit}

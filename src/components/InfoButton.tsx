@@ -29,7 +29,8 @@ const InfoButtonStyles = mergeStyleSets({
     maxWidth: 150
   },
   textDiv: {
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: 16
   }
 });
 

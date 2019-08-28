@@ -1,14 +1,12 @@
 import React from "react";
 import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { Stack, Text, Link, TooltipHost, getId } from "office-ui-fabric-react";
+import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
   task: ITask;
-  /** A list of labels to be listed. */
-  labels: string[];
 }
 
 const gridStackStyle = {
@@ -16,25 +14,23 @@ const gridStackStyle = {
 };
 
 export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
-  const { task, labels } = props;
+  const { task } = props;
   const hostId = getId("titleTooltipHost");
-  const calloutGapSpace = { gapSpace: 0 };
+  const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
   const taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
 
   return (
     <Stack horizontal verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>
       <Stack horizontalAlign="start" styles={gridStackStyle}>
-        <TooltipHost
-          content={task.title}
-          styles={{ root: { display: "inline-block" } }}
-          id={hostId}
-          calloutProps={calloutGapSpace}
-        >
-          <Link className={QueryTaskClassNames.taskTitle} aria-labelledby={hostId}>
-            <Text nowrap block>
-              {task.title}
-            </Text>
-          </Link>
+        <TooltipHost content={task.title} id={hostId} calloutProps={calloutGapSpace}>
+          <a
+            href={task.url}
+            target="_blank"
+            className={QueryTaskClassNames.taskTitle}
+            aria-labelledby={hostId}
+          >
+            {task.title}
+          </a>
         </TooltipHost>
         <Text className={QueryTaskClassNames.basicInfo} nowrap block>
           #{task.num} opened {task.createdAt} by {task.author}

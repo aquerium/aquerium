@@ -1,5 +1,6 @@
 import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShading.styles";
+import { blockStatement } from "@babel/types";
 
 /**
  * Defines styles for the various aspects of the QueryTaskList grid.
@@ -21,64 +22,75 @@ interface QueryTaskClassNames {
 
 export const QueryTaskClassNames = mergeStyleSets({
   root: {
-    height: "100%",
+    height: "557px",
     width: "100%",
-    overflow: "auto",
-    overflowY: "scroll"
+    overflowY: "hidden",
+    selectors: {
+      "&:hover": { overflowY: "auto" }
+    }
   },
+  topBar: { height: "43px" },
   listContainer: {
     display: "grid",
     gridTemplateColumns: "1fr",
     gridAutoRows: "1fr",
-    gridGap: "8px",
-    gridAutoColumns: "8px",
+    gridGap: "14px",
+    textAlign: "center",
     boxSizing: "border-box",
-    padding: 8
+    padding: "12px 18px 18px 20px"
   },
   taskTile: [
     hoveringAndShading,
     {
+      width: "517px",
       textAlign: "left",
       outline: "none",
       border: "none",
       background: "#f8f8f8",
-      height: 59,
+      height: 64,
       paddingLeft: 10,
       paddingTop: 5
     }
   ],
   queryTitle: {
-    fontSize: 17,
+    fontSize: 24,
     color: "#1b3e74",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    display: "block",
+    textDecorationLine: "none",
+    transform: "translateY(15%)",
+    selectors: {
+      "&:hover": { color: "#b64e00" },
+      "&:active": { color: "8a3c00" }
+    },
     width: "100%",
-    maxWidth: 200,
+    maxWidth: 420,
     height: "100%"
   },
   taskTitle: {
-    fontSize: 15,
-    paddingTop: 3,
+    fontSize: 20,
     color: "#1b3e74",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    display: "block",
+    textDecorationLine: "none",
     width: "100%",
-    maxWidth: 200,
-    maxHeight: 23,
-    height: "100%",
+    maxWidth: 465,
     selectors: {
-      "&:hover": { textDecorationLine: "none" }
+      "&:hover": { color: "#b64e00" },
+      "&:active": { color: "8a3c00" }
     }
   },
   basicInfo: {
-    paddingTop: 8,
+    paddingTop: 5,
     overflow: "hidden",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: 200,
-    maxHeight: "20px",
-    height: "100%",
-    fontSize: 12
+    maxWidth: 465,
+    fontSize: 14
   },
   infoIcon: {
     padding: 3
