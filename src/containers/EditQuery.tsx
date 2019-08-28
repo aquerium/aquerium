@@ -9,7 +9,9 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption
+  IDropdownOption,
+  Separator,
+  Icon
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -22,6 +24,7 @@ import {
   reviewStatusOptions
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
+import { separatorStyles } from "../components/QueryTile.styles";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated. */
@@ -253,6 +256,32 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description([
                 "The number of days after which a Pull Request will be considered stale."
+              ])()}
+            </Stack>
+            <Separator styles={separatorStyles}>
+              <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
+            </Separator>
+            <Text className="ms-fontSize-20">Customize Task Tile Fields</Text>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                label="Info Fields"
+                multiSelect
+                selectedKeys={this.state.customViews}
+                options={[
+                  { key: "type", text: "Type of tasks" },
+                  { key: "repo", text: "Repo" },
+                  { key: "assignee", text: "Assignee" },
+                  { key: "author", text: "Author" },
+                  { key: "mentions", text: "Mentions" },
+                  { key: "reviewStatus", text: "Review Status" },
+                  { key: "labels", text: "Labels" },
+                  { key: "lastUpdated", text: "Last Updated" }
+                ]}
+                // onChange={this._setLabelsSelection}
+                // items={this.state.selections.labels || []}
+              />
+              {description([
+                "Select the fields you wish to prioritize while viewing the task list. "
               ])()}
             </Stack>
           </Stack>
