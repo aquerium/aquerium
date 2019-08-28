@@ -1,5 +1,5 @@
 import * as React from "react";
-import { clearTokenLogout } from "../state";
+import { clearTokenLogout, toEditQuery } from "../state";
 import { Image, Stack, Link, CommandBarButton, Text, ActionButton } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
@@ -15,6 +15,8 @@ import {
 interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
+  /** A function linked with the action creator to send the user to the EditQueryUI. */
+  toEditQuery: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -25,7 +27,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         name: "Add Query",
         iconProps: {
           iconName: "Add"
-        }
+        },
+        onClick: props.toEditQuery
       },
       {
         key: "sign out",
@@ -39,10 +42,16 @@ function TopBarIconsView(props: ITopBarIconsProps) {
   };
 
   return (
-    <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={topBarItemGap}>
+    <Stack
+      horizontal
+      horizontalAlign="space-around"
+      verticalAlign="center"
+      tokens={topBarItemGap}
+      className={TopBarIconsUIClassNames.topBar}
+    >
       <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
       <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
-        <Image {...imageProps as any} title="My GitHub Home" />
+        <Image {...(imageProps as any)} title="My GitHub Home" />
       </Link>
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
@@ -58,7 +67,8 @@ function TopBarIconsView(props: ITopBarIconsProps) {
 }
 
 const action = {
-  clearTokenLogout
+  clearTokenLogout,
+  toEditQuery
 };
 
 export const TopBarIcons = connect(
