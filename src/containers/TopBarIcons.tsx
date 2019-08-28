@@ -42,7 +42,13 @@ function TopBarIconsView(props: ITopBarIconsProps) {
   };
 
   return (
-    <Stack horizontal horizontalAlign="center" verticalAlign="center" tokens={topBarItemGap}>
+    <Stack
+      horizontal
+      horizontalAlign="space-around"
+      verticalAlign="center"
+      tokens={topBarItemGap}
+      className={TopBarIconsUIClassNames.topBar}
+    >
       <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
       <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
         <Image {...imageProps as any} title="My GitHub Home" />
