@@ -4,9 +4,18 @@ import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
 import { createUid } from "../../util/uIDGenerator";
+import { toError } from "../actions";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
+
+// The error message sent if updateGist returns
+const updateGistErrorMessage =
+  "It looks like the gist could not be updated. Perhaps try signing out and in again?";
+
+// The error message sent if updateGist returns
+const getQueryTasksErrorMessage =
+  "It looks like we couldn't get your queries. Maybe the API is down or your PAT is invalid?";
 
 /**
  * Action creator to add/edit a query to the queryList.
@@ -17,18 +26,18 @@ export const addOrEditQuery = (query: IQuery) => {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
-      // TODO: add error response.
+      dispatch(toError(getQueryTasksErrorMessage));
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
+    const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      // TODO: add error response.
+      dispatch(toError(updateGistErrorMessage));
       return;
     }
     dispatch(updateMap(newList));
@@ -56,7 +65,7 @@ export const removeQuery = (queryID: string) => {
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      // TODO: add error response.
+      dispatch(toError(updateGistErrorMessage));
       return;
     }
     dispatch(updateMap(newList));

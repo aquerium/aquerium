@@ -1,5 +1,5 @@
 /* global chrome */
-import { IUserInfo, IState, IQuery, queryListType } from "../state.types";
+import { IUserInfo, IQuery, queryListType } from "../state.types";
 import { getQueryMapObj, createGist } from "../../util/api";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
@@ -22,10 +22,6 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
 
 /** The action type for changing to the error message UI. */
 export type changeUIErrorAction = { type: string; message: string };
-
-// The error message sent if the creation of a gist via the given PAT is invalid.
-const createGistErrorMessage =
-  "It looks like your PAT didn't successfully create a Gist. How about making a new one?";
 
 /**
  * Action creator to send the user from login UI to Home UI.
@@ -58,9 +54,6 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(updateMap(response.queryMap));
         dispatch(toHome());
       }
-    } else {
-      console.log("to error");
-      dispatch(toError(createGistErrorMessage));
     }
   });
 }
@@ -85,7 +78,6 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       if (responseGist.user === undefined) {
         // If the response from createGIST is invalid.
         dispatch(setIsInvalidPAT(true));
-        dispatch(toError(createGistErrorMessage));
       } else {
         // Store this user's info in local storage and in redux.
         loginQueryMapExists(responseGist.user, dispatch, {});
