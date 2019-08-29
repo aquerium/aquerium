@@ -1,22 +1,22 @@
 /**
- * @interface
  * This interface defines the state object.
  */
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
-  /** Stores a string containing the current UI and the current query if in EditQuery/QueryList. */
   changeUI: {
+    /** Stores the various possible UI's that can be displayed. */
     currUI: "Home" | "Login" | "EditQuery" | "QueryList" | "ErrorPage";
+    /** The current query to display if the user is on a UI that needs query info. */
     currQuery?: IQuery;
-    errorMessage?: string;
+    /** An error code that will be sent to the error UI to determine which features will be displayed. */
+    errorCode?: number;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
 }
 
 /**
- * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -41,7 +41,6 @@ export interface ITask {
 }
 
 /**
- *
  * This interface represents a single query.
  */
 export interface IQuery {
@@ -82,7 +81,6 @@ export interface IQuery {
 }
 
 /**
- * @interface
  * Contains relevant information for the authenticated user.
  */
 export interface IUserInfo {

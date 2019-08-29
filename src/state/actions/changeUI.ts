@@ -16,12 +16,9 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
- * The action type for changing to the QueryTaskList UI.
+ * The action type for changing to the error UI.
  */
-export type changeUIQueryTaskListAction = { type: string; query: IQuery };
-
-/** The action type for changing to the error message UI. */
-export type changeUIErrorAction = { type: string; message: string };
+export type changeUIErrorAction = { type: string; errorCode?: number };
 
 /**
  * Action creator to send the user from login UI to Home UI.
@@ -68,7 +65,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
         // If queryMap is undefined, this this user has invalid credentials.
         dispatch(setIsInvalidPAT(true));
       } else {
-        // Else, the user's querymap already exists
+        // Else, the user's querymap already exists.
         const user = createIUserInfo(PAT, result.username, result.gistID);
         loginQueryMapExists(user, dispatch, responseMap.queryMap);
       }
@@ -138,7 +135,7 @@ export const toHome = () => ({
 /**
  * Action creator to send the user to the Error UI.
  */
-export const toError = (message: string) => ({
+export const toError = (errorCode?: number) => ({
   type: "ERROR",
-  message
+  errorCode
 });

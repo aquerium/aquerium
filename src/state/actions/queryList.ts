@@ -9,14 +9,6 @@ import { toError } from "../actions";
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
-// The error message sent if updateGist returns
-const updateGistErrorMessage =
-  "It looks like the gist could not be updated. Perhaps try signing out and in again?";
-
-// The error message sent if updateGist returns
-const getQueryTasksErrorMessage =
-  "It looks like we couldn't get your queries. Maybe the API is down?";
-
 /**
  * Action creator to add/edit a query to the queryList.
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
@@ -26,7 +18,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
-      dispatch(toError(getQueryTasksErrorMessage));
+      dispatch(toError(resp.errorCode));
       return;
     }
     // We have a valid task array, and need to store it in our new query.
@@ -37,7 +29,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      dispatch(toError(updateGistErrorMessage));
+      dispatch(toError(resp.errorCode));
       return;
     }
     dispatch(updateMap(newList));
@@ -65,7 +57,7 @@ export const removeQuery = (queryID: string) => {
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      dispatch(toError(updateGistErrorMessage));
+      dispatch(toError(response.errorCode));
       return;
     }
     dispatch(updateMap(newList));
