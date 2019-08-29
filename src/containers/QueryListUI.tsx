@@ -4,12 +4,12 @@ import { QueryTileClassNames } from "../components/QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 
-interface ITileListUIProps {
+interface IQueryListUIProps {
   /** The queryList map that is passed in, element at a time, to be rendered by QueryTile. */
   queryList: queryListType;
 }
 
-function QueryListComponent(props: ITileListUIProps) {
+function QueryListComponent(props: IQueryListUIProps) {
   return (
     <div className={QueryTileClassNames.root}>
       <div className={QueryTileClassNames.listContainer}>

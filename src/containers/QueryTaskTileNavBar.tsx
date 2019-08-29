@@ -16,7 +16,6 @@ interface IQueryTaskListNavBarProps {
 
 function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
   const { query } = props;
-  console.log(query.url);
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
 
