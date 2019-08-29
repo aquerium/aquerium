@@ -1,6 +1,6 @@
 /* global chrome */
-import { IUserInfo, IQuery, queryListType } from "../state.types";
-import { getQueryMapObj, createGist } from "../../util/api";
+import { IUserInfo, queryListType } from "../state.types";
+import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
 import { updateMap } from "./queryList";
@@ -62,24 +62,21 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
-      const responseMap = await getQueryMapObj(user);
-      if (!responseMap.queryMap || responseMap.errorCode) {
-        dispatch(toError(responseMap.errorCode));
-        dispatch(setIsInvalidPAT(true));
-      } else {
-        // Else, the user's querymap already exists.
-        const user = createIUserInfo(PAT, result.username, result.gistID);
-        loginQueryMapExists(user, dispatch, responseMap.queryMap);
-      }
+      await loginExistingUser(dispatch, user);
     } else {
-      // If username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid.
-      const responseGist = await createGist(PAT);
-      if (!responseGist.user || responseGist.errorCode) {
-        dispatch(toError(responseGist.errorCode));
-        dispatch(setIsInvalidPAT(true));
+      const response = await checkForGist(PAT);
+      // If there already is a gist for this account, then update local storage.
+      if (response.gist && response.gist.owner && response.gist.id) {
+        const user = createIUserInfo(PAT, response.gist.owner.login, response.gist.id);
+        await loginExistingUser(dispatch, user);
       } else {
-        // Store this user's info in local storage and in redux.
-        loginQueryMapExists(responseGist.user, dispatch, {});
+        // Then this is a new user! We need to see if their PAT is valid.
+        const responseGist = await createGist(PAT);
+        if (responseGist.user) {
+          loginQueryMapExists(responseGist.user, dispatch, {});
+        } else {
+          dispatch(setIsInvalidPAT(true));
+        }
       }
     }
   });
@@ -93,6 +90,16 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
     gistID: newGistID,
     invalidPAT: false
   };
+}
+
+// Helper function that logs in an existing user.
+async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
+  const responseMap = await getQueryMapObj(user);
+  if (responseMap.queryMap) {
+    loginQueryMapExists(user, dispatch, responseMap.queryMap);
+  } else {
+    dispatch(setIsInvalidPAT(true));
+  }
 }
 
 // Helper function that stores a user's information and goes to the HomeUI.
