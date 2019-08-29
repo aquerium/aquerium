@@ -51,7 +51,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       tokens={topBarItemGap}
       className={TopBarIconsUIClassNames.topBar}
     >
-      <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
+      <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} onClick={props.refreshMap} />
       <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
         <Image {...(imageProps as any)} title="My GitHub Home" />
       </Link>

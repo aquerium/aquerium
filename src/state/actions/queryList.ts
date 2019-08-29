@@ -91,14 +91,18 @@ export const refreshMap = () => {
           dispatch(setHomeLoadingFalse());
           return;
         }
-        dispatch(setHomeLoadingFalse());
-        dispatch(updateMap(newList));
+        const delayInMilliseconds = 700;
+        setTimeout(function() {
+          dispatch(setHomeLoadingFalse());
+          dispatch(updateMap(newList));
+        }, delayInMilliseconds);
       } else {
         //TODO add error handling
         dispatch(setHomeLoadingFalse());
         return;
       }
     }
+    dispatch(setHomeLoadingFalse());
   };
 };
 
