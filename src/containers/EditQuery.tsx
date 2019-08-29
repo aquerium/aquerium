@@ -82,9 +82,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       : {
           id: "",
           name: "",
-          stalenessIssue: 4,
-          stalenessPull: 4,
           lastUpdated: 0,
+          reasonableCount: 0,
           tasks: [],
           url: ""
         }
@@ -219,7 +218,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
             ])()}
           </Stack>
-          <Stack horizontal horizontalAlign="center">
+          {/* <Stack horizontal horizontalAlign="center">
             <Slider
               label="Staleness for Issues"
               onChange={this._setstalenessIssueSelection}
@@ -240,7 +239,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             {description([
               "The number of days after which a Pull Request will be considered stale."
             ])()}
-          </Stack>
+          </Stack> */}
         </Stack>
       </div>
     );
@@ -420,13 +419,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private _setstalenessIssueSelection = (input?: number | undefined): void => {
-    if (!input) {
-      return;
-    }
-    const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
+  // private _setstalenessIssueSelection = (input?: number | undefined): void => {
+  //   if (!input) {
+  //     return;
+  //   }
+  //   const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
+  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  // };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
     if (!input) {
@@ -436,13 +435,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private _setStalenessPullSelection = (input?: number | undefined): void => {
-    if (!input) {
-      return;
-    }
-    const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
+  // private _setStalenessPullSelection = (input?: number | undefined): void => {
+  //   if (!input) {
+  //     return;
+  //   }
+  //   const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
+  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  // };
 
   private _setLabelsSelection = (items: string[]): void => {
     const updatedSelections = update(this.state.selections, { labels: { $set: items } });
