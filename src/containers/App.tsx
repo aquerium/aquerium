@@ -42,7 +42,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 200 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 35 }];
 
 const scopedSettings = {
   TextField: {
@@ -52,29 +52,28 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      root: {
-        boxShadow: "0 1.6px 3.6px 0 rgba(0,0,0,.2)"
-      }
+      root: [hoveringAndShading, { height: 35 }]
     },
     target: "_blank"
   },
   Dropdown: {
     styles: {
-      dropdown: fieldGroupStyles
+      title: [fieldGroupStyles, { padding: "2px" }]
     }
   },
   MessageBar: {
     styles: {
-      root: [hoveringAndShading, { width: 265 }]
+      root: [hoveringAndShading, { width: 465, height: 45 }],
+      innerText: { display: "block", whiteSpace: "normal", height: "40px" }
     }
   },
   MessageBarButton: {
     styles: {
-      root: { width: 95 }
+      root: { width: 95, fontSize: 14 }
     }
   },
   Slider: {
-    styles: { container: { width: 200 } }
+    styles: { container: { width: 450 } }
   },
   Link: {
     target: "_blank"
@@ -82,7 +81,7 @@ const scopedSettings = {
 };
 
 interface IAppViewProps {
-  /** The UI that will be displayed.  */
+  /** The UI that will be displayed. */
   UI: string;
   /** The login function attempts to authenticate the user upon opening. */
   login: (currPAT?: string) => void;
