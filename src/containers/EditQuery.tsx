@@ -101,6 +101,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           ) : (
             <Stack
               horizontal
+              verticalAlign="center"
               horizontalAlign="space-evenly"
               className={EditQueryUIClassNames.topBar}
             >

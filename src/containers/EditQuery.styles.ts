@@ -38,7 +38,12 @@ export const EditQueryUIClassNames = mergeStyleSets({
       "&:hover": { overflowY: "auto" }
     }
   },
-  messageBar: { width: "100%", height: "50px", textAlign: "center" },
+  messageBar: {
+    width: "100%",
+    height: "50px",
+    textAlign: "center",
+    transform: "translateX(-6px)"
+  },
   topBar: { height: "50px" }
 });
 
