@@ -1,4 +1,5 @@
-import { mergeStyleSets } from "@uifabric/styling";
+import { mergeStyleSets, IStyle } from "@uifabric/styling";
+import { IStyleBaseArray } from "@uifabric/merge-styles";
 
 export const rootTokenGap = {
   childrenGap: 14
@@ -29,7 +30,7 @@ export const actionIcons = {
 
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
-    padding: "0px 0px 10px 40px",
+    padding: "0px 0px 20px 40px",
     color: "#1b3e74",
     height: "550px",
     width: "100%",
@@ -38,9 +39,21 @@ export const EditQueryUIClassNames = mergeStyleSets({
       "&:hover": { overflowY: "auto" }
     }
   },
-  messageBar: { width: "100%", height: "50px", textAlign: "center" },
-  topBar: { height: "50px" }
+  messageBar: {
+    width: "100%",
+    height: "50px",
+    textAlign: "center",
+    transform: "translateX(-6px)"
+  },
+  topBar: { height: "50px" },
+
+  separatorIcon: { fontSize: "26px", background: "rgba(240,240,240,1)" },
+  separator: { width: "482px" }
 });
+
+export const separatorContentStyles = {
+  content: { background: "rgba(240,240,240,1)" }
+};
 
 export const typeOptions = [
   { key: "issue", text: "Only Issues" },

@@ -21,10 +21,10 @@ import {
   rootTokenGap,
   actionIcons,
   typeOptions,
-  reviewStatusOptions
+  reviewStatusOptions,
+  separatorContentStyles
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
-import { separatorStyles } from "../components/QueryTile.styles";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated. */
@@ -54,6 +54,10 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
+  /**
+   * An array that keeps track of the fields a user wishes to view on the task list tile.
+   */
+  customViews: any[];
 }
 
 interface IEditQueryUIProps {
@@ -90,7 +94,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           lastUpdated: 0,
           tasks: [],
           url: ""
-        }
+        },
+    customViews: []
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
@@ -104,6 +109,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           ) : (
             <Stack
               horizontal
+              verticalAlign="center"
               horizontalAlign="space-evenly"
               className={EditQueryUIClassNames.topBar}
             >
@@ -258,13 +264,12 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 "The number of days after which a Pull Request will be considered stale."
               ])()}
             </Stack>
-            <Separator styles={separatorStyles}>
+            <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
               <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
             </Separator>
-            <Text className="ms-fontSize-20">Customize Task Tile Fields</Text>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
-                label="Info Fields"
+                label="Customize Task Tile Fields"
                 multiSelect
                 selectedKeys={this.state.customViews}
                 options={[
@@ -277,8 +282,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                   { key: "labels", text: "Labels" },
                   { key: "lastUpdated", text: "Last Updated" }
                 ]}
-                // onChange={this._setLabelsSelection}
-                // items={this.state.selections.labels || []}
+                onChange={this._setCustomViews}
               />
               {description([
                 "Select the fields you wish to prioritize while viewing the task list. "
@@ -288,6 +292,29 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         </Stack>
       </>
     );
+  };
+  //TODOOOOOOOOOOOOOOOOOOOOOOOOO
+  private _setCustomViews = (
+    event: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+    index?: number
+  ): void => {
+    if (!item) {
+      return;
+    }
+    const newKey = item.key === "issues and pr" ? undefined : item.key;
+    const enableReviewField = newKey !== "issues";
+    const updatedSelections = update(this.state.selections, {
+      type: {
+        $set: newKey as IQuery["type"]
+      },
+      reviewStatus: {
+        $set: enableReviewField
+          ? this.state.selections.reviewStatus
+          : (undefined as IQuery["reviewStatus"])
+      }
+    });
+    this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
   };
 
   private _renderMessageBar = (): JSX.Element => {
