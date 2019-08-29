@@ -1,38 +1,22 @@
 import { getId } from "@uifabric/utilities";
 import React from "react";
-import {
-  Stack,
-  ActionButton,
-  Text,
-  TooltipHost,
-  TooltipOverflowMode,
-  Link
-} from "office-ui-fabric-react";
+import { Stack, ActionButton, TooltipHost, Link } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { IQuery, toEditQuery, toHome, IUserInfo, IState } from "../state";
+import { IQuery, toEditQuery, toHome } from "../state";
 import { connect } from "react-redux";
-import { getQueryURLHTML } from "../util/utilities";
 
 interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
+  /** A function that calls the action to go to the Edit Query UI. */
   toEditQuery: () => void;
+  /** A function that calls the action to go to the Home UI. */
   toHome: () => void;
-  user: IUserInfo;
 }
 
-const mapStateToProps = (state: IState) => {
-  return {
-    user: state.user
-  };
-};
-
-export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.Element => {
-  function returnQueryURL(): string {
-    const str = getQueryURLHTML(props.user, props.query);
-    return str;
-  }
+function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
   const { query } = props;
+  console.log(query.url);
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
 
@@ -43,7 +27,7 @@ export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.E
       <ActionButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
       <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
         <Link
-          href={returnQueryURL()}
+          href={query.url}
           target="_blank"
           className={QueryTaskClassNames.queryTitle}
           nowrap
@@ -56,7 +40,7 @@ export const QueryTaskListNavBarView = (props: IQueryTaskListNavBarProps): JSX.E
       <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={props.toEditQuery} />
     </Stack>
   );
-};
+}
 
 const action = {
   toEditQuery,
@@ -64,6 +48,6 @@ const action = {
 };
 
 export const QueryTaskListNavBar = connect(
-  mapStateToProps,
+  undefined,
   action
 )(QueryTaskListNavBarView);
