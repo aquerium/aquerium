@@ -61,18 +61,6 @@ export const reviewStatusDropdown = {
   subComponentStyles: { label: {}, panel: { root: { height: "262px" } } }
 };
 
-export const customViewsOptions = [
-  { key: "type", text: "Type of tasks" },
-  { key: "repo", text: "Repo" },
-  { key: "assignee", text: "Assignee" },
-  { key: "author", text: "Author" },
-  { key: "mentions", text: "Mentions" },
-  { key: "reviewStatus", text: "Review Status" },
-  { key: "labels", text: "Labels" },
-  { key: "lastUpdated", text: "Date Last Updated" },
-  { key: "createdAt", text: "Date Created" }
-];
-
 export const separatorContentStyles = {
   content: { background: "rgba(240,240,240,1)" }
 };

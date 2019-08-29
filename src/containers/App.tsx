@@ -58,19 +58,10 @@ const scopedSettings = {
   },
   Dropdown: {
     styles: {
-      title: [fieldGroupStyles, { padding: "2px" }],
-      subComponentStyles: {
-        label: {},
-        panel: {
-          root: {
-            width: "340px",
-            transform: "translate(217px)"
-          },
-          contentInner: { padding: 0 },
-          content: { padding: "5px" },
-          closeButton: { iconName: "Close" }
-        }
-      }
+      title: [
+        fieldGroupStyles,
+        { paddingRight: "20px", whiteSpace: "nowrap", textOverflow: "ellipsis" }
+      ]
     }
   },
   MessageBar: {

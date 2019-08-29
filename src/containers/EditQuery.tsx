@@ -11,7 +11,8 @@ import {
   Dropdown,
   IDropdownOption,
   Separator,
-  Icon
+  Icon,
+  ResponsiveMode
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery, ITask } from "../state";
@@ -25,8 +26,7 @@ import {
   separatorContentStyles,
   customizeViewDropdown,
   typeDropdown,
-  reviewStatusDropdown,
-  customViewsOptions
+  reviewStatusDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -100,6 +100,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
 
+  private customViewsOptions = [
+    { key: "type", text: "Type of tasks" },
+    { key: "repo", text: "Repo" },
+    { key: "assignee", text: "Assignee" },
+    { key: "author", text: "Author" },
+    { key: "mentions", text: "Mentions" },
+    { key: "reviewStatus", text: "Review Status", disabled: !this.state.enableReviewStatusField },
+    { key: "labels", text: "Labels" },
+    { key: "lastUpdated", text: "Date Last Updated" },
+    { key: "createdAt", text: "Date Created" }
+  ];
+
   public render = (): JSX.Element => {
     return (
       <>
@@ -160,6 +172,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <Dropdown
                 styles={typeDropdown}
+                responsiveMode={ResponsiveMode.large}
                 required
                 onChange={this._setTypeSelection}
                 label="Type of tasks"
@@ -212,6 +225,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <Dropdown
                 styles={reviewStatusDropdown}
+                responsiveMode={ResponsiveMode.large}
                 disabled={!this.state.enableReviewStatusField}
                 onChange={this._setReviewStatusSelection}
                 label="Review Status"
@@ -272,10 +286,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <Dropdown
                 styles={customizeViewDropdown}
+                responsiveMode={ResponsiveMode.large}
                 label="Customize Task Tile Fields"
                 multiSelect
                 selectedKeys={this.state.selections.customViews}
-                options={customViewsOptions}
+                options={this.customViewsOptions}
                 onChange={this._setCustomViews}
               />
               {description([
@@ -286,27 +301,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         </Stack>
       </>
     );
-  };
-
-  private _setCustomViews = (
-    event: React.FormEvent<HTMLDivElement>,
-    item?: IDropdownOption,
-    index?: number
-  ): void => {
-    if (!item) {
-      return;
-    }
-    const newSelections = [...this.state.selections.customViews];
-    if (item.selected) {
-      newSelections.push(item.key as string);
-    } else {
-      const currIndex = newSelections.indexOf(item.key as string);
-      if (currIndex > -1) {
-        newSelections.splice(currIndex, 1);
-      }
-    }
-    const newQuery = update(this.state.selections, { customViews: { $set: newSelections } });
-    this.setState({ selections: newQuery });
   };
 
   private _renderMessageBar = (): JSX.Element => {
@@ -517,6 +511,27 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _setLabelsSelection = (items: string[]): void => {
     const updatedSelections = update(this.state.selections, { labels: { $set: items } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  };
+
+  private _setCustomViews = (
+    event: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+    index?: number
+  ): void => {
+    if (!item) {
+      return;
+    }
+    const newSelections = [...this.state.selections.customViews];
+    if (item.selected) {
+      newSelections.push(item.key as string);
+    } else {
+      const currIndex = newSelections.indexOf(item.key as string);
+      if (currIndex > -1) {
+        newSelections.splice(currIndex, 1);
+      }
+    }
+    const newQuery = update(this.state.selections, { customViews: { $set: newSelections } });
+    this.setState({ selections: newQuery });
   };
 }
 
