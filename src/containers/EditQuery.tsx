@@ -57,10 +57,6 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
-  /**
-   * An array that keeps track of the fields a user wishes to view on the task list tile.
-   */
-  customViews: any[];
 }
 
 interface IEditQueryUIProps {
@@ -96,9 +92,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           stalenessPull: 4,
           lastUpdated: 0,
           tasks: [],
-          url: ""
-        },
-    customViews: ["author", "createdAt"]
+          url: "",
+          customViews: ["author", "createdAt"]
+        }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
@@ -277,7 +273,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 styles={customizeViewDropdown}
                 label="Customize Task Tile Fields"
                 multiSelect
-                selectedKeys={this.state.customViews}
+                selectedKeys={this.state.selections.customViews}
                 options={[
                   { key: "type", text: "Type of tasks" },
                   { key: "repo", text: "Repo" },
@@ -300,7 +296,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       </>
     );
   };
-  //TODOOOOOOOOOOOOOOOOOOOOOOOOO
+
   private _setCustomViews = (
     event: React.FormEvent<HTMLDivElement>,
     item?: IDropdownOption,
@@ -309,7 +305,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (!item) {
       return;
     }
-    const newSelections = [...this.state.customViews];
+    const newSelections = [...this.state.selections.customViews];
     if (item.selected) {
       newSelections.push(item.key as string);
     } else {
@@ -318,8 +314,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         newSelections.splice(currIndex, 1);
       }
     }
-    this.setState({ customViews: newSelections });
-    console.log(this.state.customViews);
+    const newQuery = update(this.state.selections, { customViews: { $set: newSelections } });
+    this.setState({ selections: newQuery });
   };
 
   private _renderMessageBar = (): JSX.Element => {
