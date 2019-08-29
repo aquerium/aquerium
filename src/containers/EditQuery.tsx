@@ -211,7 +211,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Slider
               label="Last Updated"
               onChange={this._setLastUpdatedSelection}
-              min={1}
+              min={0}
               defaultValue={this.state.selections.lastUpdated}
               max={31}
             />
