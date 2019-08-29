@@ -1,7 +1,7 @@
 import React from "react";
 import { IQuery, toQueryList } from "../state";
 import { connect } from "react-redux";
-import { Stack, Text, Separator, Link } from "office-ui-fabric-react";
+import { Stack, Text, Separator } from "office-ui-fabric-react";
 import {
   QueryTileClassNames,
   gridStackStyle,
@@ -35,10 +35,7 @@ export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
       </div>
       <button className={QueryTileClassNames.queryBack}>
         <Stack verticalAlign="space-around">
-          <Link href={query.url} className={QueryTileClassNames.basicInfoQueryLink}>
-            {query.name}
-            <br />
-          </Link>
+          <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>
