@@ -57,6 +57,10 @@ export const customizeViewDropdown = {
   subComponentStyles: { label: {}, panel: { root: { height: "334px" } } }
 };
 
+export const reviewStatusDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "252px" } } }
+};
+
 export const separatorContentStyles = {
   content: { background: "rgba(240,240,240,1)" }
 };

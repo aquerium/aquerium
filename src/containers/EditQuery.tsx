@@ -24,7 +24,8 @@ import {
   reviewStatusOptions,
   separatorContentStyles,
   customizeViewDropdown,
-  typeDropdown
+  typeDropdown,
+  reviewStatusDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -213,6 +214,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
+                styles={reviewStatusDropdown}
                 disabled={!this.state.enableReviewStatusField}
                 onChange={this._setReviewStatusSelection}
                 label="Review Status"
