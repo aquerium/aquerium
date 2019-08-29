@@ -11,14 +11,21 @@ const FAILED_CREDENTIALS_ERROR =
 const API_ERROR_MESSAGE =
   "It looks like we encountered a problem with the API, please try again later.";
 
-// This error message renders is no error code could be found in state.
+// This error message renders if an unexpected error code was received.
 const GENERIC_ERROR_MESSAGE = "Sorry, we've encountered an unexpected error. Please sign in again.";
+
+// This error message renders if the query was malformed.
+const BAD_QUERY_MESSAGE =
+  "Whoops, it looks like some of the fields of the query you entered were invalid. Perhaps try double-checking what you entered?";
 
 // Error codes handling failed authorization.
 const FAILED_CREDENTIALS = [404, 401, 403];
 
 // Error codes handling API failure.
 const API_ERROR = [500, 503];
+
+// Error code handling a malformed query.
+const BAD_QUERY = 422;
 
 interface IErrorPageProps {
   /** The error code potentially stored in state. If there is no code stored, a generic error message will render. */
@@ -53,10 +60,12 @@ function ErrorPageView(props: IErrorPageProps) {
   const errorMessage = !props.errorCode
     ? GENERIC_ERROR_MESSAGE
     : FAILED_CREDENTIALS.includes(props.errorCode)
-    ? FAILED_CREDENTIALS_ERROR
-    : API_ERROR.includes(props.errorCode)
-    ? API_ERROR_MESSAGE
-    : GENERIC_ERROR_MESSAGE;
+      ? FAILED_CREDENTIALS_ERROR
+      : API_ERROR.includes(props.errorCode)
+        ? API_ERROR_MESSAGE
+        : (props.errorCode === BAD_QUERY)
+          ? BAD_QUERY_MESSAGE
+          : GENERIC_ERROR_MESSAGE;
 
   return (
     <Stack horizontalAlign="center" verticalAlign="center" styles={stackStyles}>
@@ -64,8 +73,8 @@ function ErrorPageView(props: IErrorPageProps) {
       <Text styles={oopsStyles}>Oops!</Text>
       <Text styles={errorStyles}>{errorMessage}</Text>
       <ActionButton
-        iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : iconLogoutProps}
-        text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : "Return to Login"}
+        iconProps={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? iconHomeProps : iconLogoutProps}
+        text={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? "Return to Home" : "Return to Login"}
         styles={homeIconStyles}
         onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : props.logout}
       />
