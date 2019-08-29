@@ -7,6 +7,8 @@ import { description } from "./InfoButton";
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
   task: ITask;
+  /** The fields a user wishes to prioritize when vieiwing a task list. */
+  customViews: string[];
 }
 
 const gridStackStyle = {
