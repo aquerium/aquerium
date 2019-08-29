@@ -3,11 +3,11 @@ import { Stack, Text, Icon, ActionButton } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import { IState, toHome, logout } from "../state";
 
-// The error message sent if updateGist returns.
+// The error message sent if an error occured regarding user credentials.
 const FAILED_CREDENTIALS_ERROR =
   "It looks like we had an problem processing your credentials. Please verify your PAT by signing in again.";
 
-// The error message sent if tasks could not be gotten successfully from the github API.
+// The error message sent if an API call failed.
 const API_ERROR_MESSAGE =
   "It looks like we encountered a problem with the API, please try again later.";
 
@@ -55,7 +55,7 @@ const homeIconStyles = {
 
 function ErrorPageView(props: IErrorPageProps) {
   // Uses ternary logic to determine what the error message should be.
-  // If error code does is undefined or does not exist in the error code arrays, the generic message is returned.
+  // If error code is undefined or does not exist in the error code arrays, the generic message is returned.
   // Else, either of the other error messages is selected.
   const errorMessage = !props.errorCode
     ? GENERIC_ERROR_MESSAGE

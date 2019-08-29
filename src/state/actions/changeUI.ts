@@ -28,7 +28,7 @@ export type changeUIErrorAction = { type: string; errorCode?: number };
  * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
-  return async function(dispatch: Dispatch) {
+  return async function (dispatch: Dispatch) {
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
@@ -50,6 +50,8 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(storeUserInfo(user));
         dispatch(updateMap(response.queryMap));
         dispatch(toHome());
+      } else {
+        dispatch(toError(response.errorCode));
       }
     }
   });
@@ -61,8 +63,8 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
       const responseMap = await getQueryMapObj(user);
-      if (responseMap.queryMap === undefined) {
-        // If queryMap is undefined, this this user has invalid credentials.
+      if (!responseMap.queryMap || responseMap.errorCode) {
+        dispatch(toError(responseMap.errorCode));
         dispatch(setIsInvalidPAT(true));
       } else {
         // Else, the user's querymap already exists.
@@ -72,8 +74,8 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
     } else {
       // If username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid.
       const responseGist = await createGist(PAT);
-      if (responseGist.user === undefined) {
-        // If the response from createGIST is invalid.
+      if (!responseGist.user || responseGist.errorCode) {
+        dispatch(toError(responseGist.errorCode));
         dispatch(setIsInvalidPAT(true));
       } else {
         // Store this user's info in local storage and in redux.
@@ -105,7 +107,7 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryList
  * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
-  return function(dispatch: Dispatch) {
+  return function (dispatch: Dispatch) {
     chrome.storage.sync.set({ token: "" });
     dispatch(logout());
   };
