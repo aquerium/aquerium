@@ -1,5 +1,4 @@
-import { mergeStyleSets, IStyle } from "@uifabric/styling";
-import { IStyleBaseArray } from "@uifabric/merge-styles";
+import { mergeStyleSets } from "@uifabric/styling";
 
 export const rootTokenGap = {
   childrenGap: 14
@@ -46,10 +45,17 @@ export const EditQueryUIClassNames = mergeStyleSets({
     transform: "translateX(-6px)"
   },
   topBar: { height: "50px" },
-
   separatorIcon: { fontSize: "26px", background: "rgba(240,240,240,1)" },
   separator: { width: "482px" }
 });
+
+export const typeDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "118px" } } }
+};
+
+export const customizeViewDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "334px" } } }
+};
 
 export const separatorContentStyles = {
   content: { background: "rgba(240,240,240,1)" }

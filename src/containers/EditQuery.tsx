@@ -14,7 +14,7 @@ import {
   Icon
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
+import { IQuery, toHome, removeQuery, IState, addOrEditQuery, ITask } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -22,7 +22,9 @@ import {
   actionIcons,
   typeOptions,
   reviewStatusOptions,
-  separatorContentStyles
+  separatorContentStyles,
+  customizeViewDropdown,
+  typeDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -95,7 +97,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           tasks: [],
           url: ""
         },
-    customViews: []
+    customViews: ["author", "createdAt"]
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
@@ -159,6 +161,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             />
             <Stack horizontal horizontalAlign="center">
               <Dropdown
+                styles={typeDropdown}
                 required
                 onChange={this._setTypeSelection}
                 label="Type of tasks"
@@ -269,6 +272,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Separator>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
+                styles={customizeViewDropdown}
                 label="Customize Task Tile Fields"
                 multiSelect
                 selectedKeys={this.state.customViews}
@@ -280,7 +284,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                   { key: "mentions", text: "Mentions" },
                   { key: "reviewStatus", text: "Review Status" },
                   { key: "labels", text: "Labels" },
-                  { key: "lastUpdated", text: "Last Updated" }
+                  { key: "lastUpdated", text: "Date Last Updated" },
+                  { key: "createdAt", text: "Date Created" }
                 ]}
                 onChange={this._setCustomViews}
               />
@@ -302,19 +307,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (!item) {
       return;
     }
-    const newKey = item.key === "issues and pr" ? undefined : item.key;
-    const enableReviewField = newKey !== "issues";
-    const updatedSelections = update(this.state.selections, {
-      type: {
-        $set: newKey as IQuery["type"]
-      },
-      reviewStatus: {
-        $set: enableReviewField
-          ? this.state.selections.reviewStatus
-          : (undefined as IQuery["reviewStatus"])
+    const newSelections = [...this.state.customViews];
+    if (item.selected) {
+      newSelections.push(item.key as string);
+    } else {
+      const currIndex = newSelections.indexOf(item.key as string);
+      if (currIndex > -1) {
+        newSelections.splice(currIndex, 1);
       }
-    });
-    this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
+    }
+    this.setState({ customViews: newSelections });
+    console.log(this.state.customViews);
   };
 
   private _renderMessageBar = (): JSX.Element => {
