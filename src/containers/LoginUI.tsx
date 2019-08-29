@@ -20,7 +20,7 @@ import { connect } from "react-redux";
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
-  src: "GlitterboxLogo2.png",
+  src: "logo.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 100,
@@ -94,7 +94,7 @@ function LoginUIComponent(props: ILoginProps) {
       tokens={stackTokens}
       className={LoginUIClassNames.root}
     >
-      <Image {...imageProps as any} className={LoginUIClassNames.logo} />
+      <Image {...(imageProps as any)} className={LoginUIClassNames.logo} />
       <Text className={LoginUIClassNames.aqueriumTitle}>Welcome to Aquerium!</Text>
       <Text className={LoginUIClassNames.aqueriumInfo}>
         Keep track of desired queries at a glance and​ be notified when deadlines approach and pass.{" "}
