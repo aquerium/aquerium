@@ -24,7 +24,7 @@ interface IQueryTile {
   /** The font size for the query details. */
   basicInfo: string;
   /** The styles for the query name on the back of the query tile. */
-  basicInfoQueryLink: string;
+  basicInfoQueryName: string;
 }
 
 export const gridStackStyle = {
@@ -113,7 +113,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     height: "100%",
     maxHeight: "100px",
     fontSize: 24,
-    fontFamily: "Segoe UI Light",
     color: "#794500"
   },
   queryTaskCount: {
@@ -125,13 +124,15 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     fontSize: 16,
     paddingBottom: 10
   },
-  basicInfoQueryLink: {
+  basicInfoQueryName: {
     textAlign: "center",
     bottom: 10,
     width: "100%",
     maxWidth: 290,
-    fontSize: 22,
+    fontSize: 24,
     textDecoration: "none",
+    fontFamily: "Segoe UI Light",
+    color: "#794500",
     selectors: {
       "&:hover": { textDecorationLine: "none" }
     }
