@@ -1,30 +1,13 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo } from "../state";
+import { IGist } from "./github";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
 
 /**
- * Represents the object structure for using GitHub Gists API
- */
-interface IGist {
-  /** Description of the gist */
-  description: string;
-  /** Whether the gist is public or private */
-  public: boolean;
-  /** Files contained in the gist */
-  files: {
-    /** Name of the file */
-    [key: string]: {
-      /** File contents */
-      content: string;
-    };
-  };
-}
-
-/**
- * Creates a GitHub gist upon initial submission of the user's personal access token and returns the user's relevant information
- * @param token User's GitHub personal access token
+ * Creates a GitHub gist upon initial submission of the user's personal access token and returns the user's relevant information.
+ * @param token User's GitHub personal access token.
  */
 export async function createGist(token: string): Promise<{ user?: IUserInfo; errorCode?: number }> {
   try {
@@ -60,8 +43,8 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
 }
 
 /**
- * Returns the queryMap object in the user's gist file
- * @param user IUserInfo object with the user's relevant information
+ * Returns the queryMap object in the user's gist file.
+ * @param user IUserInfo object with the user's relevant information.
  */
 export async function getQueryMapObj(
   user: IUserInfo
@@ -78,9 +61,9 @@ export async function getQueryMapObj(
 }
 
 /**
- * Updates the user's gist contents with an updated queryMap object
- * @param user IUserInfo object with the user's relevant information
- * @param queryMap Contains the user's queries in a dictionary
+ * Updates the user's gist contents with an updated queryMap object.
+ * @param user IUserInfo object with the user's relevant information.
+ * @param queryMap Contains the user's queries in a dictionary.
  */
 export async function updateGist(
   user: IUserInfo,
@@ -114,9 +97,29 @@ export async function updateGist(
 }
 
 /**
- * Reads from the user's gist and returns the gist contents in IGist format
- * @param user IUserInfo object with the user's relevant information
+ * Checks whether a helper gist has already been created for a given token.
+ * @param token User's GitHub personal access token.
  */
+export async function checkForGist(token: string): Promise<{ gist?: IGist; errorCode?: number }> {
+  try {
+    const response = await fetch("https://api.github.com/gists?access_token=" + token);
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
+    const responseJSON: IGist[] = await response.json();
+    for (let gist of responseJSON) {
+      if (gist.files.hasOwnProperty(GIST_NAME)) {
+        return { gist: gist };
+      }
+    }
+    return {};
+  } catch (error) {
+    console.error(error);
+    return { errorCode: 500 };
+  }
+}
+
+// Reads from the user's gist and returns the gist contents.
 async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
   try {
     const response = await fetch(

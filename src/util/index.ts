@@ -1,3 +1,3 @@
 export * from "./api";
-export * from "./github";
+export * from "./github.d";
 export * from "./utilities";

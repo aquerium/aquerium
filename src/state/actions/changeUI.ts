@@ -1,6 +1,6 @@
 /* global chrome */
 import { IUserInfo, IQuery, queryListType } from "../state.types";
-import { getQueryMapObj, createGist } from "../../util/api";
+import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
 import { updateMap } from "./queryList";
@@ -28,7 +28,7 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
  * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
-  return async function(dispatch: Dispatch) {
+  return async function (dispatch: Dispatch) {
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
@@ -60,24 +60,23 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
-      const responseMap = await getQueryMapObj(user);
-      if (responseMap.queryMap === undefined) {
-        // If queryMap is undefined, this this user has invalid credentials.
-        dispatch(setIsInvalidPAT(true));
-      } else {
-        // Else, the user's querymap already exists
-        const user = createIUserInfo(PAT, result.username, result.gistID);
-        loginQueryMapExists(user, dispatch, responseMap.queryMap);
-      }
+      await loginExistingUser(dispatch, user);
     } else {
-      // If username and gistID aren't in storage, then this is a new user! We need to see if their PAT is valid.
-      const responseGist = await createGist(PAT);
-      if (responseGist.user === undefined) {
-        // If the response from createGIST is invalid.
-        dispatch(setIsInvalidPAT(true));
+      const response = await checkForGist(PAT);
+      // If there already is a gist for this account, then update local storage.
+      if (response.gist && response.gist.owner && response.gist.id) {
+        const user = createIUserInfo(PAT, response.gist.owner.login, response.gist.id);
+        await loginExistingUser(dispatch, user);
       } else {
-        // Store this user's info in local storage and in redux.
-        loginQueryMapExists(responseGist.user, dispatch, {});
+        // Then this is a new user! We need to see if their PAT is valid.
+        const responseGist = await createGist(PAT);
+        if (responseGist.user === undefined) {
+          // If the response from createGIST is invalid.
+          dispatch(setIsInvalidPAT(true));
+        } else {
+          // Store this user's info in local storage and in redux.
+          loginQueryMapExists(responseGist.user, dispatch, {});
+        }
       }
     }
   });
@@ -93,6 +92,18 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
   };
 }
 
+// Helper function that logs in an existing user.
+async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
+  const responseMap = await getQueryMapObj(user);
+  if (responseMap.queryMap === undefined) {
+    // If queryMap is undefined, this user has invalid credentials.
+    dispatch(setIsInvalidPAT(true));
+  } else {
+    // Else, the user's querymap already exists.
+    loginQueryMapExists(user, dispatch, responseMap.queryMap);
+  }
+}
+
 // Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
   chrome.storage.sync.set(user);
@@ -105,7 +116,7 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryList
  * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
-  return function(dispatch: Dispatch) {
+  return function (dispatch: Dispatch) {
     chrome.storage.sync.set({ token: "" });
     dispatch(logout());
   };
