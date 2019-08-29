@@ -76,7 +76,7 @@ function ErrorPageView(props: IErrorPageProps) {
         iconProps={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? iconHomeProps : iconLogoutProps}
         text={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? "Return to Home" : "Return to Login"}
         styles={homeIconStyles}
-        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : props.logout}
+        onClick={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? props.toHome : props.logout}
       />
     </Stack>
   );
