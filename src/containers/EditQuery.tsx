@@ -25,7 +25,8 @@ import {
   separatorContentStyles,
   customizeViewDropdown,
   typeDropdown,
-  reviewStatusDropdown
+  reviewStatusDropdown,
+  customViewsOptions
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -274,17 +275,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Customize Task Tile Fields"
                 multiSelect
                 selectedKeys={this.state.selections.customViews}
-                options={[
-                  { key: "type", text: "Type of tasks" },
-                  { key: "repo", text: "Repo" },
-                  { key: "assignee", text: "Assignee" },
-                  { key: "author", text: "Author" },
-                  { key: "mentions", text: "Mentions" },
-                  { key: "reviewStatus", text: "Review Status" },
-                  { key: "labels", text: "Labels" },
-                  { key: "lastUpdated", text: "Date Last Updated" },
-                  { key: "createdAt", text: "Date Created" }
-                ]}
+                options={customViewsOptions}
                 onChange={this._setCustomViews}
               />
               {description([
