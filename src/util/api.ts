@@ -112,7 +112,7 @@ export async function checkForGist(token: string): Promise<{ gist?: IGist; error
         return { gist: gist };
       }
     }
-    return { errorCode: 500 };
+    return {};
   } catch (error) {
     console.error(error);
     return { errorCode: 500 };
