@@ -80,6 +80,12 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
               <br />
             </Text>
           )}
+          {query.reasonableCount && (
+            <Text className={QueryTileClassNames.basicInfo}>
+              <b>Reasonable Count:</b> {query.reasonableCount} open tasks
+              <br />
+            </Text>
+          )}
         </Stack>
       </button>
     </div>
