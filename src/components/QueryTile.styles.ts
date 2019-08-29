@@ -1,5 +1,5 @@
 import { mergeStyleSets } from "@uifabric/styling";
-import { hoveringAndShading } from "../components/HoveringAndShading.styles";
+import { hoveringAndShading } from "./HoveringAndShading.styles";
 
 /**
  * Interface for grid styling.

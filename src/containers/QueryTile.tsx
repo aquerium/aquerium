@@ -2,7 +2,11 @@ import React from "react";
 import { IQuery, toQueryList } from "../state";
 import { connect } from "react-redux";
 import { Stack, Text, Separator, Link } from "office-ui-fabric-react";
-import { QueryTileClassNames, gridStackStyle, separatorStyles } from "./QueryTile.styles";
+import {
+  QueryTileClassNames,
+  gridStackStyle,
+  separatorStyles
+} from "../components/QueryTile.styles";
 
 interface IRenderTileProps {
   /** A single IQuery to be rendered. */
