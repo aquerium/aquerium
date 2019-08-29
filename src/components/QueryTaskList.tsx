@@ -1,5 +1,5 @@
 import React from "react";
-import { QueryTaskClassNames } from "../containers/QueryTaskList.styles";
+import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { QueryTaskTile } from "./QueryTaskTile";
 import { IQuery } from "../state";
 
