@@ -8,19 +8,18 @@ import {
   separatorStyles
 } from "../components/QueryTile.styles";
 
-interface IRenderTileProps {
+interface IQueryTileProps {
   /** A single IQuery to be rendered. */
   currQuery: IQuery;
   /** Action creator that sends user to queryListUI. */
   toQueryList: (query: IQuery) => void;
 }
 
-export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
+function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
   function onClickToQueryList() {
     props.toQueryList(query);
   }
-
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={QueryTileClassNames.queryFront}>
