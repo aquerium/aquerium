@@ -1,5 +1,5 @@
 /**
- * Generate a unque id for the query.
+ * Generate a unique id for the query.
  */
 export const createUid = (): string => {
   return Math.random()
