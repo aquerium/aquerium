@@ -71,7 +71,7 @@ export interface IQuery {
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
   /** The number of tasks in a query that if exceeded, would be considered unreasonable. */
-  reasonableCount: number;
+  reasonableCount: string;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
   /** The URL for the github page containing this query. */

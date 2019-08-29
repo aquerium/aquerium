@@ -83,13 +83,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           id: "",
           name: "",
           lastUpdated: 0,
-          reasonableCount: 0,
+          reasonableCount: "0",
           tasks: [],
           url: ""
         }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _numberRegex = /^[0-9]*$/i;
 
   public render = (): JSX.Element => {
     return (
@@ -218,28 +219,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
             ])()}
           </Stack>
-          {/* <Stack horizontal horizontalAlign="center">
-            <Slider
-              label="Staleness for Issues"
-              onChange={this._setstalenessIssueSelection}
-              min={1}
-              defaultValue={this.state.selections.stalenessIssue}
-              max={7}
-            />
-            {description(["The number of days after which an Issue will be considered stale."])()}
-          </Stack>
           <Stack horizontal horizontalAlign="center">
-            <Slider
-              label="Staleness for Pull Requests"
-              onChange={this._setStalenessPullSelection}
-              min={1}
-              defaultValue={this.state.selections.stalenessPull}
-              max={7}
+            <TextField
+              label="Reasonable Count"
+              defaultValue={this.state.selections.reasonableCount}
+              validateOnFocusIn
+              validateOnFocusOut
+              onGetErrorMessage={this._checkReasonableCountSelection}
             />
             {description([
-              "The number of days after which a Pull Request will be considered stale."
+              "The number of tasks in this query that if exceeded, would be considered unreasonable."
             ])()}
-          </Stack> */}
+          </Stack>
         </Stack>
       </div>
     );
@@ -419,14 +410,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  // private _setstalenessIssueSelection = (input?: number | undefined): void => {
-  //   if (!input) {
-  //     return;
-  //   }
-  //   const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
-
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
     if (!input) {
       return;
@@ -435,16 +418,20 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  // private _setStalenessPullSelection = (input?: number | undefined): void => {
-  //   if (!input) {
-  //     return;
-  //   }
-  //   const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
-
   private _setLabelsSelection = (items: string[]): void => {
     const updatedSelections = update(this.state.selections, { labels: { $set: items } });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  };
+
+  private _checkReasonableCountSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this._numberRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid input for reasonable count.";
+    }
+    value = value.trim();
+    const updatedSelections = update(this.state.selections, { reasonableCount: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 }
