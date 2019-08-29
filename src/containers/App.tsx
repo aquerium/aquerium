@@ -43,7 +43,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 450, height: 35 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 35 }];
 
 const scopedSettings = {
   TextField: {
@@ -64,12 +64,13 @@ const scopedSettings = {
   },
   MessageBar: {
     styles: {
-      root: [hoveringAndShading]
+      root: [hoveringAndShading, { width: 465, height: 45 }],
+      innerText: { display: "block", whiteSpace: "normal", height: "40px" }
     }
   },
   MessageBarButton: {
     styles: {
-      root: { width: 95 }
+      root: { width: 95, fontSize: 14 }
     }
   },
   Slider: {
