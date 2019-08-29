@@ -1,6 +1,5 @@
 import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShading.styles";
-import { blockStatement } from "@babel/types";
 
 /**
  * Defines styles for the various aspects of the QueryTaskList grid.
