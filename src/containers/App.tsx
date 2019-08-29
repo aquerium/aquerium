@@ -8,7 +8,6 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
-import { QueryTaskListUI } from "../components/QueryTaskListUI";
 
 initializeIcons();
 

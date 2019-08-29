@@ -1,13 +1,6 @@
 import { getId } from "@uifabric/utilities";
 import React from "react";
-import {
-  Stack,
-  ActionButton,
-  Text,
-  TooltipHost,
-  Link,
-  TooltipOverflowMode
-} from "office-ui-fabric-react";
+import { Stack, ActionButton, TooltipHost, TooltipOverflowMode } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { IQuery } from "../state";
 
