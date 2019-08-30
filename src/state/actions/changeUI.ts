@@ -47,6 +47,12 @@ function loginOnApplicationMount(dispatch: Dispatch) {
       const user = createIUserInfo(result.token, result.username, result.gistID);
       const response = await getQueryMapObj(user);
       if (response.queryMap) {
+        chrome.storage.sync.get(["soup"], async resultQuery => {
+          //if (resultQuery.query) {
+          console.log("here in result query!")
+          console.log(resultQuery.query);
+          //}
+        });
         dispatch(storeUserInfo(user));
         dispatch(updateMap(response.queryMap));
         dispatch(toHome());

@@ -1,3 +1,4 @@
+/*global chrome*/
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
@@ -101,6 +102,12 @@ class AppView extends React.Component<IAppViewProps> {
   public componentDidMount(): void {
     this.props.login();
   }
+
+  public componentWillUnmount(): void {
+    if (/*this.props.currQuery && */(this.props.UI === 'EditQuery' || this.props.UI === 'QueryList')) {
+      chrome.storage.sync.set({ query: "sauce" });
+    }
+  };
 
   public render(): JSX.Element {
     return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
