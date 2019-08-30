@@ -24,9 +24,9 @@ import {
   typeOptions,
   reviewStatusOptions,
   separatorContentStyles,
-  customizeViewDropdown,
   typeDropdown,
-  reviewStatusDropdown
+  reviewStatusDropdown,
+  sortByOptions
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -94,7 +94,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           lastUpdated: 0,
           tasks: [],
           url: "",
-          customViews: ["author", "createdAt", "repo"]
+          customViews: ["author", "createdAt", "repo"],
+          sortBy: "author-date-desc"
         }
   };
 
@@ -283,7 +284,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Separator>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
-                styles={customizeViewDropdown}
                 responsiveMode={ResponsiveMode.large}
                 label="Customize Task Tile Fields"
                 multiSelect
@@ -295,10 +295,35 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 "Select the fields you wish to prioritize while viewing the task list."
               ])()}
             </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                responsiveMode={ResponsiveMode.large}
+                label="Sort by"
+                selectedKey={this.state.selections.sortBy}
+                options={sortByOptions}
+                onChange={this._setSortBy}
+              />
+              {description(["Select the fields you wish to sort the task list by."])()}
+            </Stack>
           </Stack>
         </Stack>
       </>
     );
+  };
+
+  private _setSortBy = (
+    event: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+    index?: number
+  ): void => {
+    if (!item) {
+      return;
+    }
+    const newKey = item.key;
+    const updatedSelections = update(this.state.selections, {
+      sortBy: { $set: newKey as IQuery["sortBy"] }
+    });
+    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
   private _renderMessageBar = (): JSX.Element => {

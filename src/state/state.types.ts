@@ -82,6 +82,8 @@ export interface IQuery {
   url: string;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: string[];
+  /** The fields to sort the task list by. */
+  sortBy: string;
 }
 
 /**

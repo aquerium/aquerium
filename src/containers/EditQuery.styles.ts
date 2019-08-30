@@ -53,10 +53,6 @@ export const typeDropdown = {
   subComponentStyles: { label: {}, panel: { root: { height: "118px" } } }
 };
 
-export const customizeViewDropdown = {
-  subComponentStyles: { label: {}, panel: { root: { height: "334px" } } }
-};
-
 export const reviewStatusDropdown = {
   subComponentStyles: { label: {}, panel: { root: { height: "262px" } } }
 };
@@ -79,4 +75,11 @@ export const reviewStatusOptions = [
   { key: "Reviewed by you", text: "Reviewed by you" },
   { key: "Awaiting review from you", text: "Awaiting review from you" },
   { key: "", text: "N/A" }
+];
+
+export const sortByOptions = [
+  { key: "author-date-asc", text: "Date Created - Ascending" },
+  { key: "author-date-desc", text: "Date Created - Descending" },
+  { key: "updated-asc", text: "Date Last Updated - Ascending" },
+  { key: "updated-desc", text: "Date Last Updated - Descending" }
 ];
