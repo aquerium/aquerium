@@ -2,7 +2,7 @@ import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { getQueryURLEndpoint, getQueryTasks, getQueryURLHTML } from "../../util/utilities";
 import { createUid } from "../../util/uIDGenerator";
 
 // This type defines an action that updates the queryList with updatedList.
@@ -22,7 +22,8 @@ export const addOrEditQuery = (query: IQuery) => {
     }
     // We have a valid task array, and need to store it in our new query.
     const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
-      tasks: { $set: resp.tasks }
+      tasks: { $set: resp.tasks },
+      url: { $set: getQueryURLHTML(user, query) }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });

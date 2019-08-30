@@ -1,5 +1,5 @@
 /* global chrome */
-import { IUserInfo, IState, IQuery, queryListType } from "../state.types";
+import { IUserInfo, IQuery, queryListType } from "../state.types";
 import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
@@ -25,10 +25,10 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
  * This action creator takes in a string that determines whether a user is attempting a login from opening the extension or signing in on the login page.
  * If they are signing in on opening, the currPAT field will be blank, and this action will check to see if the user has valid credentials in local storage.
  * If they are logging in on the login screen, the action creator will check to see that their PAT is valid, as well as if they're a new or returning user.
- * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty
+ * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
-  return async function(dispatch: Dispatch) {
+  return async function (dispatch: Dispatch) {
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
@@ -116,7 +116,7 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryList
  * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
-  return function(dispatch: Dispatch) {
+  return function (dispatch: Dispatch) {
     chrome.storage.sync.set({ token: "" });
     dispatch(logout());
   };
@@ -134,6 +134,14 @@ export const logout = () => ({
  */
 export const toEditQuery = () => ({
   type: "EDIT"
+});
+
+/**
+ * Action creator to send the user to the QueryList UI.
+ */
+export const toQueryList = (query: IQuery) => ({
+  type: "QUERY",
+  query
 });
 
 /**
