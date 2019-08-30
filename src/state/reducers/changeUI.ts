@@ -22,8 +22,12 @@ export const changeUI = (
     case "EDIT": {
       return update(state, { currUI: { $set: "EditQuery" } });
     }
+    case "QUERY": {
+      const { query } = action as changeUIQueryTaskListAction;
+      return update(state, { currUI: { $set: "QueryList" }, currQuery: { $set: query } });
+    }
     case "HOME": {
-      return update(state, { currUI: { $set: "Home" } });
+      return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     case "ERROR": {
       return update(state, {

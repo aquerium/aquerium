@@ -2,7 +2,7 @@ import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { updateGist } from "../../util/api";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks } from "../../util/utilities";
+import { getQueryURLEndpoint, getQueryTasks, getQueryURLHTML } from "../../util/utilities";
 import { createUid } from "../../util/uIDGenerator";
 import { toError } from "../actions";
 
@@ -14,7 +14,7 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
@@ -22,8 +22,9 @@ export const addOrEditQuery = (query: IQuery) => {
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
-      tasks: { $set: resp.tasks }
+    const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
+      tasks: { $set: resp.tasks },
+      url: { $set: getQueryURLHTML(user, query) }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
@@ -52,7 +53,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);

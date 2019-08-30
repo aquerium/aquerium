@@ -4,6 +4,7 @@
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
+  /** Stores information pertaining to the UI being displayed. */
   changeUI: {
     /** Stores the various possible UI's that can be displayed. */
     currUI: "Home" | "Login" | "EditQuery" | "QueryList" | "ErrorPage";
@@ -60,12 +61,12 @@ export interface IQuery {
   mentions?: string;
   /** OPTIONAL The current review status for tasks in the query. */
   reviewStatus?:
-    | "No reviews"
-    | "Review required"
-    | "Approved review"
-    | "Changes requested"
-    | "Reviewed by you"
-    | "Awaiting review from you";
+  | "No reviews"
+  | "Review required"
+  | "Approved review"
+  | "Changes requested"
+  | "Reviewed by you"
+  | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
   /** Number of days before an issue goes stale. */

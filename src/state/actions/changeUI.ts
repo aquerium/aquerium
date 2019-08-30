@@ -1,5 +1,5 @@
 /* global chrome */
-import { IUserInfo, queryListType } from "../state.types";
+import { IUserInfo, IQuery, queryListType } from "../state.types";
 import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
@@ -135,7 +135,15 @@ export const toEditQuery = () => ({
 });
 
 /**
- * Action creator to send the user to Home UI.
+ * Action creator to send the user to the QueryList UI.
+ */
+export const toQueryList = (query: IQuery) => ({
+  type: "QUERY",
+  query
+});
+
+/**
+ * Action creator to send the user to Home UI
  */
 export const toHome = () => ({
   type: "HOME"
