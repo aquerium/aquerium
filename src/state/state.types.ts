@@ -5,7 +5,7 @@
 export interface IState {
   /** A map of strings (query ID's) to IQueries. */
   queryList: queryListType;
-  /** Stores a string containing the current UI and the current query if in EditQuery/QueryList */
+  /** Stores information pertaining to the UI being displayed. */
   changeUI: {
     currUI: "Home" | "Login" | "EditQuery" | "QueryList";
     currQuery?: IQuery;
@@ -78,7 +78,7 @@ export interface IQuery {
   lastUpdated?: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
-  /** the URL for the github page containing this query */
+  /** The URL for the github page containing this query. */
   url: string;
 }
 

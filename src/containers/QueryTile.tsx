@@ -1,24 +1,27 @@
 import React from "react";
-import { Stack, Text, Separator, Link } from "office-ui-fabric-react";
-import { QueryTileClassNames, gridStackStyle, separatorStyles } from "./QueryTile.styles";
 import { IQuery, toQueryList } from "../state";
 import { connect } from "react-redux";
+import { Stack, Text, Separator } from "office-ui-fabric-react";
+import {
+  QueryTileClassNames,
+  gridStackStyle,
+  separatorStyles
+} from "../components/QueryTile.styles";
 
-interface IRenderTileProps {
+interface IQueryTileProps {
   /** A single IQuery to be rendered. */
   currQuery: IQuery;
-  /** Action creator that sends user to queryListUI */
+  /** Action creator that sends user to queryListUI. */
   toQueryList: (query: IQuery) => void;
 }
 
-export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
+function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
-  function toQueryTaskList() {
+  function onClickToQueryList() {
     props.toQueryList(query);
   }
-
   return (
-    <div className={QueryTileClassNames.queryTile}>
+    <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={QueryTileClassNames.queryFront}>
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text className={QueryTileClassNames.queryName} nowrap block>
@@ -31,10 +34,7 @@ export const QueryTileView = (props: IRenderTileProps): JSX.Element => {
       </div>
       <button className={QueryTileClassNames.queryBack} onClick={toQueryTaskList}>
         <Stack verticalAlign="space-around">
-          <Link href={query.url} className={QueryTileClassNames.basicInfoQueryLink}>
-            {query.name}
-            <br />
-          </Link>
+          <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>

@@ -1,8 +1,8 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks, updateGist, createUid } from "../../util";
-import { setHomeLoadingTrue, setHomeLoadingFalse } from "./changeUI";
+import { getQueryURLEndpoint, getQueryTasks, getQueryURLHTML } from "../../util/utilities";
+import { createUid } from "../../util/uIDGenerator";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
@@ -12,7 +12,7 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
@@ -23,7 +23,8 @@ export const addOrEditQuery = (query: IQuery) => {
     }
     // We have a valid task array, and need to store it in our new query.
     const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
-      tasks: { $set: resp.tasks }
+      tasks: { $set: resp.tasks },
+      url: { $set: getQueryURLHTML(user, query) }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
@@ -56,7 +57,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
@@ -75,7 +76,7 @@ export const removeQuery = (queryID: string) => {
  * Action creator to reload all of the tasks from every query and re-render them in the home UI.
  */
 export const refreshMap = () => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     for (const key in queryList) {
@@ -92,7 +93,7 @@ export const refreshMap = () => {
           return;
         }
         const delayInMilliseconds = 700;
-        setTimeout(function() {
+        setTimeout(function () {
           dispatch(setHomeLoadingFalse());
           dispatch(updateMap(newList));
         }, delayInMilliseconds);

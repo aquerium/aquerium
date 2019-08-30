@@ -1,18 +1,18 @@
 import React from "react";
 import { QueryTile } from "./QueryTile";
-import { QueryTileClassNames } from "./QueryTile.styles";
+import { QueryTileClassNames } from "../components/QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType } from "../state/state.types";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import { getHomeLoadingPhrase } from "../misc/loadingPhrases";
 
-interface ITileListUIProps {
-  /** The queryList map that is passed in, element at a time, to be rendered by TaskTile. */
+interface IQueryListUIProps {
+  /** The queryList map that is passed in, element at a time, to be rendered by QueryTile. */
   queryList: queryListType;
   isHomeLoading: boolean;
 }
 
-function QueryListComponent(props: ITileListUIProps) {
+function QueryListComponent(props: IQueryListUIProps) {
   return (
     <div className={QueryTileClassNames.root}>
       {!props.isHomeLoading ? (

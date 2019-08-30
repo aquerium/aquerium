@@ -15,18 +15,16 @@ import {
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
-import { getLoginLoadingPhrase } from "../misc/loadingPhrases";
-/** @constant
-    @type {number} value corresponding to enter key 
-*/
+
+//Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
   src: "GlitterboxLogo2.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
-  width: 100,
-  height: 100
+  width: 175,
+  height: 175
 };
 
 interface ILoginProps {
@@ -52,7 +50,7 @@ const getTextFieldStyles = (renderError: boolean) => {
     const { required } = props;
     return {
       fieldGroup: [
-        { width: 180 },
+        { width: 350 },
         required && {
           borderColor: !renderError
             ? props.theme.semanticColors.inputBorder
@@ -64,8 +62,7 @@ const getTextFieldStyles = (renderError: boolean) => {
 };
 
 const stackTokens = {
-  childrenGap: "5%",
-  padding: "20px"
+  childrenGap: "20%"
 };
 
 const onKeyDown = (checkPasswordValidity: () => void) => {

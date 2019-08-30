@@ -30,11 +30,13 @@ export const changeUI = (
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
       return update(state, {
-        $set: { currUI: "QueryList", currQuery: query, isHomeLoading: false, isLoginLoading: false }
+        currUI: { $set: "QueryList" }, currQuery: { $set: query }, isHomeLoading: {
+          $set: false
+        }, isLoginLoading: { $set: false }
       });
     }
     case "HOME": {
-      return update(state, { currUI: { $set: "Home" } });
+      return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     case "HOME_LOADING_TRUE": {
       return update(state, { isHomeLoading: { $set: true } });
