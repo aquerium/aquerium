@@ -80,10 +80,8 @@ export interface IQuery {
   tasks: ITask[];
   /** The URL for the github page containing this query. */
   url: string;
-  /**
-   * An array that keeps track of the fields a user wishes to view on the task list tile.
-   */
-  customViews: any[];
+  /** An array that keeps track of the fields a user wishes to view on the task list tile. */
+  customViews: string[];
 }
 
 /**

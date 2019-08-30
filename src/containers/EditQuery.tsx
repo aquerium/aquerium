@@ -100,7 +100,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
 
-  private customViewsOptions = [
+  private _customViewsOptions = [
     { key: "type", text: "Type of tasks" },
     { key: "repo", text: "Repo" },
     { key: "assignee", text: "Assignee" },
@@ -288,11 +288,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Customize Task Tile Fields"
                 multiSelect
                 selectedKeys={this.state.selections.customViews}
-                options={this.customViewsOptions}
+                options={this._customViewsOptions}
                 onChange={this._setCustomViews}
               />
               {description([
-                "Select the fields you wish to prioritize while viewing the task list. "
+                "Select the fields you wish to prioritize while viewing the task list."
               ])()}
             </Stack>
           </Stack>

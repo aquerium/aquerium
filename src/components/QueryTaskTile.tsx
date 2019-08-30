@@ -7,9 +7,7 @@ import { description } from "./InfoButton";
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
   task: ITask;
-  /**
-   * An array that keeps track of the fields a user wishes to view on the task list tile.
-   */
+  /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: any[];
 }
 
