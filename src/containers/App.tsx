@@ -101,12 +101,14 @@ const mapStateToProps = (state: IState) => {
 class AppView extends React.Component<IAppViewProps> {
   public componentDidMount(): void {
     this.props.login();
+
+
   }
 
+
   public componentWillUnmount(): void {
-    if (/*this.props.currQuery && */(this.props.UI === 'EditQuery' || this.props.UI === 'QueryList')) {
-      chrome.storage.sync.set({ query: "sauce" });
-    }
+    chrome.storage.sync.set({ query: "sside sauce" });
+    //whenever you change UI's notify the local storage UI object
   };
 
   public render(): JSX.Element {
