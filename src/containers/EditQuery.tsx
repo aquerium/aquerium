@@ -15,7 +15,7 @@ import {
   ResponsiveMode
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, removeQuery, IState, addOrEditQuery, ITask } from "../state";
+import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -105,8 +105,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     { key: "repo", text: "Repo" },
     { key: "assignee", text: "Assignee" },
     { key: "author", text: "Author" },
-    { key: "mentions", text: "Mentions" },
-    { key: "reviewStatus", text: "Review Status", disabled: !this.state.enableReviewStatusField },
     { key: "labels", text: "Labels" },
     { key: "lastUpdated", text: "Date Last Updated" },
     { key: "createdAt", text: "Date Created" }

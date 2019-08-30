@@ -38,6 +38,7 @@ export const QueryTaskListNavBar = (props: IQueryTaskListNavBarProps): JSX.Eleme
         <a
           href={query.url}
           target="_blank"
+          rel="noopener noreferrer"
           className={QueryTaskClassNames.queryTitle}
           aria-labelledby={isTooltipVisible ? tooltipId : undefined}
         >

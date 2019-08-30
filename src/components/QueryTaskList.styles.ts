@@ -41,16 +41,20 @@ export const QueryTaskClassNames = mergeStyleSets({
   taskTile: [
     hoveringAndShading,
     {
-      width: "517px",
+      width: "507px",
+      height: "95px",
       textAlign: "left",
       outline: "none",
       border: "none",
       background: "#f8f8f8",
-      height: 64,
-      paddingLeft: 10,
-      paddingTop: 5
+      padding: "5px"
     }
   ],
+  taskInfoElement: {
+    width: "100%",
+    height: "57px",
+    maxWidth: "470px"
+  },
   queryTitle: {
     fontSize: 24,
     color: "#1b3e74",
@@ -68,30 +72,40 @@ export const QueryTaskClassNames = mergeStyleSets({
     maxWidth: 420,
     height: "100%"
   },
+  titleAndInfoIcon: {
+    height: "30px"
+  },
   taskTitle: {
     fontSize: 20,
+    paddingLeft: 7,
     color: "#1b3e74",
+    float: "left",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     display: "block",
     textDecorationLine: "none",
     width: "100%",
-    maxWidth: 465,
+    maxWidth: 470,
     selectors: {
       "&:hover": { color: "#b64e00" },
       "&:active": { color: "8a3c00" }
     }
   },
   basicInfo: {
-    paddingTop: 5,
+    paddingLeft: 7,
     overflow: "hidden",
+    float: "left",
     textOverflow: "ellipsis",
     width: "100%",
-    maxWidth: 465,
+    maxWidth: "490px",
     fontSize: 14
   },
   infoIcon: {
-    padding: 3
+    position: "relative",
+    float: "right",
+    transform: "translateY(-100%)",
+    height: "30px",
+    width: "30px"
   }
 });

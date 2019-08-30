@@ -13,7 +13,7 @@ interface IInfoButtonState {
 }
 
 interface IInfoButtonProps extends ITextFieldProps {
-  calloutText: string[];
+  calloutText: any[];
 }
 
 const InfoButtonStyles = mergeStyleSets({
@@ -87,7 +87,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   }
 }
 
-export const description = (description: string[]) => {
+export const description = (description: any[]) => {
   return (props?: ITextFieldProps): JSX.Element => {
     return <InfoButton {...props} calloutText={description} />;
   };
