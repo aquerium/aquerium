@@ -19,7 +19,8 @@ interface IInfoButtonProps extends ITextFieldProps {
 const InfoButtonStyles = mergeStyleSets({
   icon: {
     selectors: {
-      "&:hover": { background: "transparent" }
+      "&:hover": { background: "transparent" },
+      "&:active": { background: "transparent" }
     },
     background: "transparent",
     borderRadius: 25
