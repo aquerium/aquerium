@@ -1,18 +1,27 @@
 import React from "react";
+import { IQuery, toQueryList } from "../state";
+import { connect } from "react-redux";
 import { Stack, Text, Separator } from "office-ui-fabric-react";
-import { QueryTileClassNames, gridStackStyle, separatorStyles } from "./QueryTile.styles";
-import { IQuery } from "../state";
+import {
+  QueryTileClassNames,
+  gridStackStyle,
+  separatorStyles
+} from "../components/QueryTile.styles";
 
-interface IRenderTileProps {
+interface IQueryTileProps {
   /** A single IQuery to be rendered. */
-  query: IQuery;
+  currQuery: IQuery;
+  /** Action creator that sends user to queryListUI. */
+  toQueryList: (query: IQuery) => void;
 }
 
-export const QueryTile = (props: IRenderTileProps): JSX.Element => {
-  const { query } = props;
-
+function QueryTileView(props: IQueryTileProps) {
+  const query = props.currQuery;
+  function onClickToQueryList() {
+    props.toQueryList(query);
+  }
   return (
-    <div className={QueryTileClassNames.queryTile}>
+    <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={QueryTileClassNames.queryFront}>
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text className={QueryTileClassNames.queryName} nowrap block>
@@ -82,3 +91,12 @@ export const QueryTile = (props: IRenderTileProps): JSX.Element => {
     </div>
   );
 };
+
+const action = {
+  toQueryList
+};
+
+export const QueryTile = connect(
+  undefined,
+  action
+)(QueryTileView);
