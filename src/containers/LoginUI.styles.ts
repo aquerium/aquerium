@@ -27,7 +27,7 @@ export const LoginUIClassNames = mergeStyleSets({
   },
   spinner: {
     textAlign: "center",
-    top: 400,
+    transform: "translateY(150px)",
     color: "#004d7c"
   },
   loginFields: {

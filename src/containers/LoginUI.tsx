@@ -15,6 +15,7 @@ import {
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
+import { getLoginLoadingPhrase } from "../misc/loadingPhrases"
 
 //Value corresponding to enter key.
 const ENTER_KEYCODE = 13;

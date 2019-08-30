@@ -1,8 +1,8 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks, getQueryURLHTML } from "../../util/utilities";
-import { createUid } from "../../util/uIDGenerator";
+import { createUid, getQueryURLEndpoint, getQueryTasks, getQueryURLHTML, updateGist } from "../../util";
+import { setHomeLoadingTrue, setHomeLoadingFalse } from "./";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
