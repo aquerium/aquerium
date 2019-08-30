@@ -1,5 +1,5 @@
 import update from "immutability-helper";
-import { changeUIAction, changeUIErrorAction } from "../actions/changeUI";
+import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
 const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
