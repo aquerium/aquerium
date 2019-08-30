@@ -26,12 +26,17 @@ const InfoButtonStyles = mergeStyleSets({
     borderRadius: 25
   },
   callout: {
-    padding: 10,
-    maxWidth: 150
+    padding: 10
   },
   textDiv: {
     textAlign: "center",
-    fontSize: 16
+    fontSize: 16,
+    width: "100%",
+    maxWidth: "500px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    display: "block"
   }
 });
 
