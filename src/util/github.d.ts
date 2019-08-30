@@ -1,4 +1,29 @@
 /**
+ * Represents a Gist item in GitHub's API.
+ */
+export interface IGist {
+  /** ID of the gist. */
+  id?: string;
+  /** Owner of the gist. */
+  owner?: {
+    /** Owner's username. */
+    login: string;
+  };
+  /** Description of the gist. */
+  description: string;
+  /** Whether the gist is public or private. */
+  public: boolean;
+  /** Files contained in the gist. */
+  files: {
+    /** Name of the file. */
+    [key: string]: {
+      /** File contents. */
+      content: string;
+    };
+  };
+}
+
+/**
  * Represents an issue item in GitHub's API.
  */
 export interface IIssue {
