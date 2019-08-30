@@ -18,7 +18,7 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
 /**
  * The action type for changing to the error UI.
  */
-export type changeUIErrorAction = { type: string; errorCode?: number };
+export type changeUIErrorAction = { type: string; errorCode?: number, query?: IQuery };
 
 /**
  * The action type for changing to the QueryTaskList UI.
@@ -157,7 +157,8 @@ export const toHome = () => ({
 /**
  * Action creator to send the user to the Error UI.
  */
-export const toError = (errorCode?: number) => ({
+export const toError = (errorCode?: number, query?: IQuery) => ({
   type: "ERROR",
-  errorCode
+  errorCode,
+  query
 });

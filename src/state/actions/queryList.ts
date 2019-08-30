@@ -18,7 +18,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
-      dispatch(toError(resp.errorCode));
+      dispatch(toError(resp.errorCode, query));
       return;
     }
     // We have a valid task array, and need to store it in our new query.
@@ -30,7 +30,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      dispatch(toError(resp.errorCode));
+      dispatch(toError(resp.errorCode, query));
       return;
     }
     dispatch(updateMap(newList));

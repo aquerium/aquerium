@@ -30,9 +30,11 @@ export const changeUI = (
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     case "ERROR": {
+      const { errorCode, query } = action as changeUIErrorAction;
       return update(state, {
         currUI: { $set: "ErrorPage" },
-        errorCode: { $set: (action as changeUIErrorAction).errorCode }
+        errorCode: { $set: errorCode },
+        currQuery: { $set: query }
       });
     }
     default:

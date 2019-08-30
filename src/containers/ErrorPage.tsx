@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack, Text, Icon, ActionButton } from "office-ui-fabric-react";
 import { connect } from "react-redux";
-import { IState, toHome, logout } from "../state";
+import { IState, toHome, logout, toEditQuery } from "../state";
 
 // The error message sent if an error occured regarding user credentials.
 const FAILED_CREDENTIALS_ERROR =
@@ -34,6 +34,8 @@ interface IErrorPageProps {
   toHome: () => void;
   /** This function calls an action to send the user to the Login UI. */
   logout: () => void;
+  /** This function calls an action to send the user to the Edit Query UI. */
+  toEditQuery: () => void;
 }
 
 const mapStateToProps = (state: IState) => ({
@@ -48,9 +50,10 @@ const errorStyles = {
 const stackStyles = { root: { height: "100%" } };
 const iconHomeProps = { iconName: "Home" };
 const iconLogoutProps = { iconName: "SignOut" };
-const homeIconStyles = {
+const iconEditProps = { iconName: "Edit" }
+const ReturnIconStyles = {
   root: { fontSize: 30, transform: "translateY(200%)" },
-  icon: { fontSize: 80 }
+  icon: { fontSize: 40 }
 };
 
 function ErrorPageView(props: IErrorPageProps) {
@@ -73,10 +76,10 @@ function ErrorPageView(props: IErrorPageProps) {
       <Text styles={oopsStyles}>Oops!</Text>
       <Text styles={errorStyles}>{errorMessage}</Text>
       <ActionButton
-        iconProps={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? iconHomeProps : iconLogoutProps}
-        text={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? "Return to Home" : "Return to Login"}
-        styles={homeIconStyles}
-        onClick={errorMessage === API_ERROR_MESSAGE || errorMessage === BAD_QUERY_MESSAGE ? props.toHome : props.logout}
+        iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : errorMessage === BAD_QUERY_MESSAGE ? iconEditProps : iconLogoutProps}
+        text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : errorMessage === BAD_QUERY_MESSAGE ? "Return to your Query" : "Return to Login"}
+        styles={ReturnIconStyles}
+        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : errorMessage === BAD_QUERY_MESSAGE ? props.toEditQuery : props.logout}
       />
     </Stack>
   );
@@ -84,7 +87,8 @@ function ErrorPageView(props: IErrorPageProps) {
 
 const action = {
   toHome,
-  logout
+  logout,
+  toEditQuery
 };
 
 export const ErrorPage = connect(
