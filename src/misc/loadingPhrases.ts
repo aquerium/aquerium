@@ -7,6 +7,7 @@ const loginLoadingPhrases = [
   "Verifying your ssn...",
   "Making multiple calls to gets()..."
 ];
+
 const homeLoadingPhrases = [
   "Getting queries...",
   "Purchasing Github. Please be patient...",
@@ -29,7 +30,7 @@ export function getHomeLoadingPhrase() {
   return homeLoadingPhrases[getRandomInt(homeLoadingPhrases.length)];
 }
 
-/** This function returns a random number from 0 to max-1. Cited from MDN docs */
+/** This function returns a random number from 0 to max-1. Cited from MDN docs. */
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
 }
