@@ -1,4 +1,3 @@
-/*global chrome*/
 import React from "react";
 import { HomeUI } from "../components/HomeUI";
 import { initializeIcons } from "@uifabric/icons";
@@ -101,16 +100,7 @@ const mapStateToProps = (state: IState) => {
 class AppView extends React.Component<IAppViewProps> {
   public componentDidMount(): void {
     this.props.login();
-
-
   }
-
-
-  public componentWillUnmount(): void {
-    chrome.storage.sync.set({ query: "sside sauce" });
-    //whenever you change UI's notify the local storage UI object
-  };
-
   public render(): JSX.Element {
     return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
   }

@@ -1,3 +1,4 @@
+/*global chrome*/
 import React from "react";
 import update from "immutability-helper";
 import {
@@ -80,14 +81,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-          id: "",
-          name: "",
-          stalenessIssue: 4,
-          stalenessPull: 4,
-          lastUpdated: 0,
-          tasks: [],
-          url: ""
-        }
+        id: "",
+        name: "",
+        stalenessIssue: 4,
+        stalenessPull: 4,
+        lastUpdated: 0,
+        tasks: [],
+        url: ""
+      }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
@@ -99,41 +100,41 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-            <Stack
-              horizontal
-              verticalAlign="center"
-              horizontalAlign="space-evenly"
-              className={EditQueryUIClassNames.topBar}
-            >
-              <ActionButton
-                iconProps={actionIcons.back.name}
-                styles={actionIcons.back.styles}
-                text="Back"
-                onClick={this.props.toHome}
-              />
-              {this.state.selections.id === "" ? (
+              <Stack
+                horizontal
+                verticalAlign="center"
+                horizontalAlign="space-evenly"
+                className={EditQueryUIClassNames.topBar}
+              >
                 <ActionButton
-                  iconProps={actionIcons.add.name}
-                  styles={actionIcons.add.styles}
-                  text="Add"
-                  onClick={this._setMessageBarAddOrEdit}
+                  iconProps={actionIcons.back.name}
+                  styles={actionIcons.back.styles}
+                  text="Back"
+                  onClick={this.props.toHome}
                 />
-              ) : (
+                {this.state.selections.id === "" ? (
+                  <ActionButton
+                    iconProps={actionIcons.add.name}
+                    styles={actionIcons.add.styles}
+                    text="Add"
+                    onClick={this._setMessageBarAddOrEdit}
+                  />
+                ) : (
+                    <ActionButton
+                      iconProps={actionIcons.update.name}
+                      styles={actionIcons.update.styles}
+                      text="Update"
+                      onClick={this._setMessageBarAddOrEdit}
+                    />
+                  )}
                 <ActionButton
-                  iconProps={actionIcons.update.name}
-                  styles={actionIcons.update.styles}
-                  text="Update"
-                  onClick={this._setMessageBarAddOrEdit}
+                  iconProps={actionIcons.remove.name}
+                  styles={actionIcons.remove.styles}
+                  text="Remove"
+                  onClick={this._setMessageBarRemove}
                 />
-              )}
-              <ActionButton
-                iconProps={actionIcons.remove.name}
-                styles={actionIcons.remove.styles}
-                text="Remove"
-                onClick={this._setMessageBarRemove}
-              />
-            </Stack>
-          )}
+              </Stack>
+            )}
 
           <Stack
             horizontalAlign="start"
@@ -354,6 +355,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       value = value.trim();
       const updatedSelections = update(this.state.selections, { name: { $set: value } });
       this.setState({ selections: updatedSelections, inputStatus: newStatus });
+      chrome.storage.sync.set({ query: this.state.selections });
     }
   };
 
@@ -378,6 +380,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     });
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkRepoSelection = (
@@ -390,6 +393,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { repo: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkAssigneeSelection = (
@@ -402,6 +406,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkAuthorSelection = (
@@ -414,6 +419,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { author: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkMentionSelection = (
@@ -426,6 +432,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setReviewStatusSelection = (
@@ -441,6 +448,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       reviewStatus: { $set: newKey as IQuery["reviewStatus"] }
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setstalenessIssueSelection = (input?: number | undefined): void => {
@@ -449,6 +457,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
@@ -457,6 +466,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     const updatedSelections = update(this.state.selections, { lastUpdated: { $set: input } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setStalenessPullSelection = (input?: number | undefined): void => {
@@ -465,11 +475,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setLabelsSelection = (items: string[]): void => {
     const updatedSelections = update(this.state.selections, { labels: { $set: items } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 }
 
