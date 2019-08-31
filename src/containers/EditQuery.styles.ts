@@ -27,6 +27,14 @@ export const actionIcons = {
   }
 };
 
+export const caretStyles = {
+  rootHovered: { background: "transparent" },
+  icon: { background: "transparent" },
+  rootPressed: { background: "transparent" }
+};
+
+export const optionsContainer = { optionsContainer: { maxHeight: "400px" } };
+
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
     padding: "0px 0px 10px 40px",

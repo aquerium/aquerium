@@ -62,9 +62,9 @@ const scopedSettings = {
       title: [fieldGroupStyles, { padding: "2px" }]
     }
   },
-  ComboBox: {
+  TagPicker: {
     styles: {
-      root: fieldGroupStyles
+      input: fieldGroupStyles
     }
   },
   MessageBar: {
