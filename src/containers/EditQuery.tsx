@@ -9,7 +9,9 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption
+  IDropdownOption,
+  TagPicker,
+  ITag
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -215,10 +217,19 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               {description(["Track Pull Requests with the single selected review requirement."])()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
-              <MultiSelect
+              {/* <MultiSelect
                 label="Repo Labels"
                 onChange={this._setLabelsSelection}
                 items={this.state.selections.labels || []}
+              /> */}
+              <TagPicker
+                onResolveSuggestions={this._typeInPicker}
+                onItemSelected={this._onItemSelected}
+                getTextFromItem={this._getTextFromItem}
+                pickerSuggestionsProps={{
+                  suggestionsHeaderText: "Suggested Tags",
+                  noResultsFoundText: "No Color Tags Found"
+                }}
               />
               {description(["The GitHub labels assigned to particular tasks."])()}
             </Stack>
@@ -260,6 +271,39 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         </Stack>
       </>
     );
+  };
+  private _getTextFromItem(item: ITag): string {
+    return item.name;
+  }
+  private _onItemSelected = (item?: ITag | undefined): ITag | null => {
+    if (this._picker.current && this._listContainsDocument(item, this._picker.current.items)) {
+      return null;
+    }
+    return item;
+  };
+
+  private _testTags: ITag[] = [
+    "black",
+    "blue",
+    "brown",
+    "cyan",
+    "green",
+    "magenta",
+    "mauve",
+    "orange",
+    "pink",
+    "purple",
+    "red",
+    "rose",
+    "violet",
+    "white",
+    "yellow"
+  ].map(item => ({ key: item, name: item }));
+
+  private _typeInPicker = (filterText: string, tagList?: ITag[] | undefined): ITag[] => {
+    return filterText
+      ? this._testTags.filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0)
+      : [];
   };
 
   private _renderMessageBar = (): JSX.Element => {
