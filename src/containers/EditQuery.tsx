@@ -11,7 +11,11 @@ import {
   Dropdown,
   IDropdownOption,
   TagPicker,
-  ITag
+  ITag,
+  IBasePicker,
+  ISuggestionModel,
+  ComboBox,
+  IComboBoxOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -48,6 +52,8 @@ interface IEditQueryUIState {
   renderMessageBar: boolean;
   /** Whether the review status field is enabled or not, depending on if PR's are in the query. */
   enableReviewStatusField: boolean;
+  /** A list of the suggested labels, given a valid repo has been typed. */
+  labelSuggestions: IComboBoxOption[];
   /**
    * The current selections the user is making to a query, which will be used to either construct
    * a new query or edit an existing one.
@@ -79,6 +85,23 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     message: "",
     renderMessageBar: false,
     enableReviewStatusField: true,
+    labelSuggestions: [
+      "black",
+      "blue",
+      "brown",
+      "cyan",
+      "green",
+      "magenta",
+      "mauve",
+      "orange",
+      "pink",
+      "purple",
+      "red",
+      "rose",
+      "violet",
+      "white",
+      "yellow"
+    ].map(item => ({ key: item, text: item })),
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
@@ -93,6 +116,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+
+  private _picker = React.createRef<IBasePicker<ITag>>();
 
   public render = (): JSX.Element => {
     return (
@@ -222,14 +247,36 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onChange={this._setLabelsSelection}
                 items={this.state.selections.labels || []}
               /> */}
-              <TagPicker
+              {/* <TagPicker
+              onChange={}
+              onKeyDown={()=> {}}
+                createGenericItem={this._genericItem}
+
                 onResolveSuggestions={this._typeInPicker}
                 onItemSelected={this._onItemSelected}
                 getTextFromItem={this._getTextFromItem}
                 pickerSuggestionsProps={{
-                  suggestionsHeaderText: "Suggested Tags",
-                  noResultsFoundText: "No Color Tags Found"
+                  suggestionsHeaderText: "Suggested Labels",
+                  noResultsFoundText: "No Labels Found"
                 }}
+                inputProps={{
+                  onBlur: (ev: React.FocusEvent<HTMLInputElement>) => console.log('onBlur called'),
+                  onFocus: (ev: React.FocusEvent<HTMLInputElement>) => console.log('onFocus called'),
+                  'aria-label': 'Tag Picker'
+                }}
+              /> */}
+               <ComboBox
+               useComboBoxAsMenuWidth
+               caretDownButtonStyles={{root:{background: "transparent", selectors: {"&:hover": {background: "transparent"}, "&:active": {background: "transparent"}} }}}
+                multiSelect
+                selectedKey={this.state.selections.labels}
+                label="Labels"
+                allowFreeform={true}
+                autoComplete="on"
+                options={this.state.labelSuggestions}
+                onChange={this._onChangeMulti}
+                onResolveOptions={this._getOptionsMulti}
+                text={state.initialDisplayValueMulti}
               />
               {description(["The GitHub labels assigned to particular tasks."])()}
             </Stack>
@@ -272,39 +319,37 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       </>
     );
   };
-  private _getTextFromItem(item: ITag): string {
-    return item.name;
-  }
-  private _onItemSelected = (item?: ITag | undefined): ITag | null => {
-    if (this._picker.current && this._listContainsDocument(item, this._picker.current.items)) {
-      return null;
-    }
-    return item;
-  };
 
-  private _testTags: ITag[] = [
-    "black",
-    "blue",
-    "brown",
-    "cyan",
-    "green",
-    "magenta",
-    "mauve",
-    "orange",
-    "pink",
-    "purple",
-    "red",
-    "rose",
-    "violet",
-    "white",
-    "yellow"
-  ].map(item => ({ key: item, name: item }));
+  // private _genericItem = (input: string, ValidationState: number): ISuggestionModel<T> | T => {
 
-  private _typeInPicker = (filterText: string, tagList?: ITag[] | undefined): ITag[] => {
-    return filterText
-      ? this._testTags.filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0)
-      : [];
-  };
+  // }
+
+  // private _getTextFromItem(item: ITag): string {
+  //   return item.name;
+  // }
+
+  // private _listContainsDocument(tag: ITag, tagList?: ITag[]) {
+  //   if (!tagList || !tagList.length || tagList.length === 0) {
+  //     return false;
+  //   }
+  //   return tagList.filter(compareTag => compareTag.key === tag.key).length > 0;
+  // }
+
+  // private _onItemSelected = (item?: ITag): ITag | null => {
+  //   if(!item) return null;
+  //   if (this._picker.current && this._listContainsDocument(item, this._picker.current.items)) {
+  //     return null;
+  //   }
+  //   return item;
+  // };
+
+  // private _typeInPicker = (filterText: string, tagList?: ITag[] | undefined): ITag[] => {
+  //   return filterText
+  //     ? this.state.labelSuggestions
+  //     .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0)
+  //     .filter(tag => !this._listContainsDocument(tag, tagList))
+  //     : [];
+  // };
 
   private _renderMessageBar = (): JSX.Element => {
     return (

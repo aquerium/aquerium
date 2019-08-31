@@ -62,6 +62,11 @@ const scopedSettings = {
       title: [fieldGroupStyles, { padding: "2px" }]
     }
   },
+  ComboBox: {
+    styles: {
+      root: fieldGroupStyles
+    }
+  },
   MessageBar: {
     styles: {
       root: [hoveringAndShading, { width: 465, height: 45 }],
@@ -109,7 +114,7 @@ class AppView extends React.Component<IAppViewProps> {
   private _renderUI = () => {
     switch (this.props.UI) {
       case "Login": {
-        return <LoginUI />;
+        return <EditQuery />;
       }
       case "Home": {
         return <HomeUI />;
