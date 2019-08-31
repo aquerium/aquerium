@@ -256,29 +256,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
-      this.setState({
-        messageType: MessageBarType.warning,
-        message:
-          "Are you sure you want to " +
-          (this.state.selections.id === "" ? "add" : "update") +
-          " this query?",
-        actions: (
-          <div>
-            <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
-            {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
-          </div>
-        ),
-        renderMessageBar: true
-      });
-    } else {
+    if (this.state.inputStatus !== InputStatuses.successfulEdit || !this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.severeWarning,
         message: "Ensure query edits are valid!",
         actions: undefined,
         renderMessageBar: true
       });
+    } else {
+      this._addOrEditQuery();
     }
   };
 
