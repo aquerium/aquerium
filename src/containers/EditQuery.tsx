@@ -291,10 +291,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _addItems = [
     {
-      key: "back",
-      name: "Back",
-      ariaLabel: "Back",
-      iconProps: { iconName: "Back" },
+      key: "cancel",
+      name: "Cancel",
+      ariaLabel: "Cancel",
+      iconProps: { iconName: "Cancel" },
       onClick: this.props.toHome,
       buttonStyles: {
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
@@ -316,10 +316,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _updateItems = [
     {
-      key: "back",
-      name: "Back",
-      ariaLabel: "Back",
-      iconProps: { iconName: "Back" },
+      key: "Cancel",
+      name: "Cancel",
+      ariaLabel: "Cancel",
+      iconProps: { iconName: "Cancel" },
       onClick: this.props.toHome,
       buttonStyles: {
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
