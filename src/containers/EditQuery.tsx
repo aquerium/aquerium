@@ -34,16 +34,7 @@ import {
 import { connect } from "react-redux";
 import { isTemplateElement } from "@babel/types";
 
-enum InputStatuses {
-  /** Value indicating that the input has been validated. */
-  successfulEdit = 0,
-  /** Value indicating that the current user input is not valid. */
-  invalidEdit
-}
-
 interface IEditQueryUIState {
-  /** Tracks the state of changes the user is making to a query's settings. */
-  inputStatus: InputStatuses;
   /**
    * Tracks the the type of message that should be rendered,
    * given the action the user wants to take and the status of the query's settings.
@@ -64,6 +55,8 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
+  /** Boolean denoting valid inputs for a given input field. The indices, in order, are query title, repo, author, assignee and mentions. */
+  validInputs: boolean[];
 }
 
 interface IEditQueryUIProps {
@@ -85,7 +78,6 @@ const mapStateToProps = (state: IState) => {
 
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
-    inputStatus: InputStatuses.successfulEdit,
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
@@ -113,10 +105,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           tasks: [],
           labels: [],
           url: ""
-        }
+        },
+    validInputs: [true, true, true, true, true]
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:'%"{}\[\]()]+( *[a-z0-9-_.\\/+&#@:'%"{}\[\]()]+ *)*$/i;
 
   private _picker = React.createRef<IBasePicker<ITag>>();
 
@@ -171,10 +164,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <TextField
               label="Your query title"
               placeholder="Please enter a title"
+              onChange={this._onChangeorEnterTitle}
               defaultValue={this.state.selections.name}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkNameSelection}
+              errorMessage={!this.state.validInputs[0] ? "Invalid query name" : ""}
               required
             />
             <Stack horizontal horizontalAlign="center">
@@ -189,10 +181,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Repo"
+                description={
+                  this.state.labelSuggestions.length
+                    ? "Label suggestions for " + this.state.selections.repo + " available below."
+                    : ""
+                }
+                onChange={this._onChangeorEnterRepo}
                 defaultValue={this.state.selections.repo}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkRepoSelection}
+                errorMessage={!this.state.validInputs[1] ? "Invalid repo name" : ""}
               />
               {description([
                 "List a repository from which to track Issues and/or Pull Requests."
@@ -201,30 +197,27 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Assignee"
+                onChange={this._onChangeorEnterAssignee}
                 defaultValue={this.state.selections.assignee}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkAssigneeSelection}
+                errorMessage={!this.state.validInputs[3] ? "Invalid assignee name" : ""}
               />
               {description(["Track Issues and/or Pull Requests assigned to a specific user."])()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Author"
+                onChange={this._onChangeorEnterAuthor}
                 defaultValue={this.state.selections.author}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkAuthorSelection}
+                errorMessage={!this.state.validInputs[2] ? "Invalid author name" : ""}
               />
               {description(["Track Issues and/or Pull Requests opened by a specific user."])()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Mention"
+                onChange={this._onChangeorEnterMentions}
                 defaultValue={this.state.selections.mentions}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkMentionSelection}
+                errorMessage={!this.state.validInputs[4] ? "Invalid name" : ""}
               />
               {description(["Track Issues and/or Pull Requests that mention a specific user."])()}
             </Stack>
@@ -261,21 +254,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                   noResultsFoundText: "No Labels Found"
                 }}
               />
-              {/* <ComboBox
-                useComboBoxAsMenuWidth
-                caretDownButtonStyles={caretStyles}
-                styles={optionsContainer}
-                multiSelect
-                selectedKey={this.state.selections.labels}
-                label="Labels"
-                allowFreeform={true}
-                autoComplete="on"
-                text={"Type a label and hit enter"}
-                options={this.state.labelSuggestions}
-                // onChange={this._onChangeMulti}
-                // onResolveOptions={this._getOptionsMulti}
-                // text={state.initialDisplayValueMulti}
-              /> */}
               {description(["The GitHub labels assigned to particular tasks."])()}
             </Stack>
             {/* REMOVE THIS LINE */}
@@ -320,6 +298,136 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
+  private _onChangeorEnterTitle = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[0] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[0] = true;
+    if (!newValue) {
+      currInputs[0] = false;
+    } else {
+      newValue = newValue.trim();
+      const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
+      this.setState({ selections: updatedSelections });
+    }
+    this.setState({
+      validInputs: currInputs
+    });
+  };
+
+  private _onChangeorEnterRepo = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[1] = true;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[1] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[1] = true;
+    newValue = newValue.trim();
+    //TODO Validate repo and fetch labels.
+    const updatedLabelSuggestions: ITag[] =
+      newValue && newValue !== this.state.selections.repo
+        ? [{ key: "yay", name: "yay" }] //Fetch new labels
+        : this.state.labelSuggestions;
+    //COMPLETE ^^^
+    const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      labelSuggestions: updatedLabelSuggestions,
+      validInputs: currInputs
+    });
+  };
+
+  private _onChangeorEnterAuthor = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[2] = true;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[2] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[2] = true;
+    newValue = newValue.trim();
+    const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
+
+  private _onChangeorEnterAssignee = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[3] = true;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[3] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[3] = true;
+    newValue = newValue.trim();
+    const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
+
+  private _onChangeorEnterMentions = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[4] = true;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[4] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[4] = true;
+    newValue = newValue.trim();
+    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
+
   private _renderMessageBar = (): JSX.Element => {
     return (
       <Stack
@@ -340,7 +448,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
+    if (this.state.validInputs.indexOf(false) < 0 && this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.warning,
         message:
@@ -400,20 +508,20 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ renderMessageBar: false });
   };
 
-  private _checkNameSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid query name.";
-    } else {
-      let newStatus = InputStatuses.successfulEdit;
-      if (!value) newStatus = InputStatuses.invalidEdit;
-      value = value.trim();
-      const updatedSelections = update(this.state.selections, { name: { $set: value } });
-      this.setState({ selections: updatedSelections, inputStatus: newStatus });
-    }
-  };
+  // private _checkNameSelection = (
+  //   value: string
+  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  //   if (value && !this._nameRegex.test(value)) {
+  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
+  //     return "Invalid query name.";
+  //   } else {
+  //     let newStatus = InputStatuses.successfulEdit;
+  //     if (!value) newStatus = InputStatuses.invalidEdit;
+  //     value = value.trim();
+  //     const updatedSelections = update(this.state.selections, { name: { $set: value } });
+  //     this.setState({ selections: updatedSelections, inputStatus: newStatus });
+  //   }
+  // };
 
   private _setTypeSelection = (
     event: React.FormEvent<HTMLDivElement>,
@@ -438,63 +546,63 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
   };
 
-  private _checkRepoSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid repo name.";
-    }
-    value = value.trim();
-    //TODO Validate repo and fetch labels.
-    const updatedLabelSuggestions: ITag[] =
-      value && value !== this.state.selections.repo
-        ? [{ key: "yay", name: "yay" }] //Fetch new labels
-        : this.state.labelSuggestions;
-    //COMPLETE ^^^
-    const updatedSelections = update(this.state.selections, { repo: { $set: value } });
-    this.setState({
-      selections: updatedSelections,
-      labelSuggestions: updatedLabelSuggestions,
-      inputStatus: InputStatuses.successfulEdit
-    });
-  };
+  // private _checkRepoSelection = (
+  //   value: string
+  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  //   if (value && !this._nameRegex.test(value)) {
+  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
+  //     return "Invalid repo name.";
+  //   }
+  //   value = value.trim();
+  //   //TODO Validate repo and fetch labels.
+  //   const updatedLabelSuggestions: ITag[] =
+  //     value && value !== this.state.selections.repo
+  //       ? [{ key: "yay", name: "yay" }] //Fetch new labels
+  //       : this.state.labelSuggestions;
+  //   //COMPLETE ^^^
+  //   const updatedSelections = update(this.state.selections, { repo: { $set: value } });
+  //   this.setState({
+  //     selections: updatedSelections,
+  //     labelSuggestions: updatedLabelSuggestions,
+  //     inputStatus: InputStatuses.successfulEdit
+  //   });
+  // };
 
-  private _checkAssigneeSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid assignee name.";
-    }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
+  // private _checkAssigneeSelection = (
+  //   value: string
+  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  //   if (value && !this._nameRegex.test(value)) {
+  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
+  //     return "Invalid assignee name.";
+  //   }
+  //   value = value.trim();
+  //   const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
+  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  // };
 
-  private _checkAuthorSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid author name.";
-    }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { author: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
+  // private _checkAuthorSelection = (
+  //   value: string
+  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  //   if (value && !this._nameRegex.test(value)) {
+  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
+  //     return "Invalid author name.";
+  //   }
+  //   value = value.trim();
+  //   const updatedSelections = update(this.state.selections, { author: { $set: value } });
+  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  // };
 
-  private _checkMentionSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid mention name.";
-    }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
+  // private _checkMentionSelection = (
+  //   value: string
+  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  //   if (value && !this._nameRegex.test(value)) {
+  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
+  //     return "Invalid mention name.";
+  //   }
+  //   value = value.trim();
+  //   const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
+  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+  // };
 
   private _setReviewStatusSelection = (
     event: React.FormEvent<HTMLDivElement>,
@@ -508,7 +616,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     const updatedSelections = update(this.state.selections, {
       reviewStatus: { $set: newKey as IQuery["reviewStatus"] }
     });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    this.setState({ selections: updatedSelections });
   };
 
   private _setstalenessIssueSelection = (input?: number | undefined): void => {
@@ -516,7 +624,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    this.setState({ selections: updatedSelections });
   };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
@@ -524,7 +632,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const updatedSelections = update(this.state.selections, { lastUpdated: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    this.setState({ selections: updatedSelections });
   };
 
   private _setStalenessPullSelection = (input?: number | undefined): void => {
@@ -532,7 +640,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    this.setState({ selections: updatedSelections });
   };
 
   // private _setLabelsSelection = (items: string[]): void => {
@@ -540,7 +648,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   // };
 
-  //Functions for dealing with picker.
+  // Private helper functions for dealing with picker (for repo labels).
+
   private _validateInput = (input: string) => {
     console.log("Before validating");
     return !this.state.selections.labels || this.state.selections.labels.indexOf(input) < 0
@@ -563,7 +672,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     const updatedSelections = update(this.state.selections, {
       labels: { $set: newSelectedLabels }
     });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    this.setState({ selections: updatedSelections });
   };
 
   private _getTextFromItem(item: ITag): string {

@@ -75,7 +75,7 @@ function QueryTileView(props: IQueryTileProps) {
               <br />
             </Text>
           )}
-          {query.labels && (
+          {query.labels && query.labels.length > 0 && (
             <Text className={QueryTileClassNames.basicInfo}>
               <b>Labels:</b> [{query.labels.join(", ")}]<br />
             </Text>
@@ -90,7 +90,7 @@ function QueryTileView(props: IQueryTileProps) {
       </button>
     </div>
   );
-};
+}
 
 const action = {
   toQueryList
