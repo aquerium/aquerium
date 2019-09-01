@@ -4,6 +4,8 @@ export const rootTokenGap = {
   childrenGap: 14
 };
 
+export const bridgeLabelGap = { root: { transform: "translateY(-14px)" } };
+
 export const actionIcons = {
   back: {
     name: { iconName: "Back" },

@@ -17,7 +17,8 @@ import {
   ComboBox,
   IComboBoxOption,
   SelectableOptionMenuItemType,
-  ValidationState
+  ValidationState,
+  Label
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -29,10 +30,11 @@ import {
   typeOptions,
   reviewStatusOptions,
   caretStyles,
-  optionsContainer
+  optionsContainer,
+  bridgeLabelGap
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
-import { isTemplateElement } from "@babel/types";
+import { getRepoLabels } from "../util/api";
 
 interface IEditQueryUIState {
   /**
@@ -235,12 +237,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description(["Track Pull Requests with the single selected review requirement."])()}
             </Stack>
-            <Stack horizontal horizontalAlign="center">
+            <Label>Labels</Label>
+            <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
               {/* <MultiSelect
                 label="Repo Labels"
                 onChange={this._setLabelsSelection}
                 items={this.state.selections.labels || []}
               /> */}
+
               <TagPicker
                 componentRef={this._picker}
                 onValidateInput={this._validateInput}
@@ -250,14 +254,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onChange={this._onChangeSelectedLabels}
                 getTextFromItem={this._getTextFromItem}
                 pickerSuggestionsProps={{
-                  suggestionsHeaderText: this.state.labelSuggestions ? "Suggested Labels" : "",
+                  suggestionsHeaderText: this.state.labelSuggestions
+                    ? "Suggested labels from " + this.state.selections.repo
+                    : "",
                   noResultsFoundText: "No Labels Found"
                 }}
               />
-              {description(["The GitHub labels assigned to particular tasks."])()}
+              {description(["The GitHub labels assigned to particular tasks."], true)()}
             </Stack>
-            {/* REMOVE THIS LINE */}
-            <span>{this.state.selections.labels}</span>
             <Stack horizontal horizontalAlign="center">
               <Slider
                 label="Last Updated"
@@ -340,6 +344,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     currInputs[1] = true;
     newValue = newValue.trim();
     //TODO Validate repo and fetch labels.
+    getRepoLabels(newValue);
     const updatedLabelSuggestions: ITag[] =
       newValue && newValue !== this.state.selections.repo
         ? [{ key: "yay", name: "yay" }] //Fetch new labels

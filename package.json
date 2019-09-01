@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@octokit/rest": "^16.28.7",
     "es6-promise": "^4.2.8",
     "immutability-helper": "^3.0.1",
     "isomorphic-fetch": "^2.2.1",

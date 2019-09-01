@@ -1,6 +1,7 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo } from "../state";
 import { IGist } from "./github";
+import Octokit from "@octokit/rest";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
@@ -132,6 +133,32 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
     return { gist: responseJSON };
   } catch (error) {
     console.error(error);
+    return { errorCode: 500 };
+  }
+}
+
+export async function getRepoLabels(
+  repo: string
+): Promise<{ labels?: string[]; errorCode?: number }> {
+  let labels: string[] = [];
+  try {
+    const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
+    const firstSlashIndex = repo.indexOf("/");
+    let owner = "";
+    if (firstSlashIndex < 0) {
+      owner = repo;
+    } else {
+      owner = repo.substr(0, firstSlashIndex);
+      repo = repo.substr(firstSlashIndex + 1);
+    }
+    console.log("Owner: " + owner);
+    console.log("Repo: " + repo);
+    const result = octokit.issues.listLabelsForRepo({ owner, repo });
+    console.log("Result: " + result);
+    const labels: string[] = [];
+    return { labels };
+  } catch (error) {
+    // console.error(error);
     return { errorCode: 500 };
   }
 }

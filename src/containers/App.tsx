@@ -43,7 +43,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 35 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 32 }];
 
 const scopedSettings = {
   TextField: {
@@ -53,7 +53,7 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      root: [hoveringAndShading, { height: 35 }]
+      root: [hoveringAndShading, { height: 32 }]
     },
     target: "_blank"
   },
@@ -64,7 +64,8 @@ const scopedSettings = {
   },
   TagPicker: {
     styles: {
-      input: fieldGroupStyles
+      input: fieldGroupStyles,
+      itemsWrapper: { maxHeight: "60px", overflowY: "auto" }
     }
   },
   MessageBar: {
