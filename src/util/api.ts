@@ -141,14 +141,18 @@ export async function getRepoLabels(
   repo: string
 ): Promise<{ labels?: string[]; errorCode?: number }> {
   try {
+    //TODO Remove hardcoded PAT.
+    //TODO Fix pagination problem.
     const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
-    const firstSlashIndex = repo.indexOf("/");
-    let owner = "";
     const result = await octokit.request("GET /repos/" + repo + "/labels", {
       headers: {
         Accept: "application/vnd.github.symmetra-preview+json"
       }
     });
+    // const result = await fetch("https://api.github.com/repos/" + repo + "/labels");
+    // if (!result.ok) {
+    //   return { errorCode: result.status };
+    // }
     let labels: string[] = [];
     for (let label of result.data) {
       labels.push(label.name);
