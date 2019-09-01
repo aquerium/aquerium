@@ -2,6 +2,8 @@ import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
 
+export const emoji = require("node-emoji");
+
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
  * @param url API endpoint for a specific query.
