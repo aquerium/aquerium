@@ -2,6 +2,7 @@ import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
 
+/** Emoji object to help render emojis correctly throughout the app. */
 export const emoji = require("node-emoji");
 
 /**
