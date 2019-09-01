@@ -13,7 +13,7 @@ import {
   IDropdownOption
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
+import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -59,6 +59,8 @@ interface IEditQueryUIProps {
   currQuery?: IQuery;
   /** Action that sends the user back to the HomeUI. */
   toHome: () => void;
+  /** Action that sends the user back to the QueryList UI */
+  toQueryList: (query: IQuery) =>  void;
   /** Action that tells redux and the Gist to modify the current query. */
   addOrEditQuery: (query: IQuery) => void;
   /** Action that tells redux and the Gist to remove the current query. */
@@ -70,6 +72,7 @@ const mapStateToProps = (state: IState) => {
     currQuery: state.changeUI.currQuery
   };
 };
+
 
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
@@ -91,8 +94,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _foo = (): void => {
+    this.props.toQueryList(this.state.selections);
+  }
 
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
   public render = (): JSX.Element => {
     return (
       <>
@@ -110,7 +116,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                   iconProps={actionIcons.back.name}
                   styles={actionIcons.back.styles}
                   text="Back"
-                  onClick={this.props.toHome}
+                  onClick={this.state.selections.id === "" ? this.props.toHome : this._foo}
                 />
                 {this.state.selections.id === "" ? (
                   <ActionButton
@@ -488,7 +494,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 const action = {
   toHome,
   addOrEditQuery,
-  removeQuery
+  removeQuery,
+  toQueryList
 };
 
 export const EditQuery = connect(
