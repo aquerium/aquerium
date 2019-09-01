@@ -157,7 +157,6 @@ export async function getRepoLabels(
     let labels: string[] = [];
     for (let label of result.data) {
       let currName = label.name;
-      // currName = emoji.emojify(currName);
       labels.push(currName);
     }
     return { labels };
