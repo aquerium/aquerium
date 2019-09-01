@@ -145,9 +145,9 @@ export async function getRepoLabels(
     //TODO Fix pagination problem.
     const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
     const result = await octokit.request("GET /repos/" + repo + "/labels", {
-      headers: {
-        Accept: "application/vnd.github.symmetra-preview+json"
-      }
+      // headers: {
+      //   Accept: "application/vnd.github.symmetra-preview+json"
+      // }
     });
     // const result = await fetch("https://api.github.com/repos/" + repo + "/labels");
     // if (!result.ok) {
@@ -155,7 +155,9 @@ export async function getRepoLabels(
     // }
     let labels: string[] = [];
     for (let label of result.data) {
-      labels.push(label.name);
+      let currName = label.name;
+      currName = emoji.emojify(currName);
+      labels.push(currName);
     }
     return { labels };
   } catch (error) {
