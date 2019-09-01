@@ -96,7 +96,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     validInputs: [true, true, true, true, true]
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:'%"{}\[\]()]+( *[a-z0-9-_.\\/+&#@:'%"{}\[\]()]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:'%"{}[\]()]+( *[a-z0-9-_.\\/+&#@:'%"{}[\]()]+ *)*$/i;
 
   private _picker = React.createRef<IBasePicker<ITag>>();
 
@@ -427,7 +427,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _validateAndFindRepoLabels = (
     ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    if (ev.which != ENTER_KEYCODE) return;
+    if (ev.which !== ENTER_KEYCODE) return;
     this._findRepoLabels();
   };
 
