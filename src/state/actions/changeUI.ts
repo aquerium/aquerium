@@ -21,6 +21,12 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
 
 /**
+ * The action type for changing to the EditQuery UI.
+ */
+export type changeUIEditQueryAction = { type: string; query?: IQuery };
+
+
+/**
  * Action creator to send the user from login UI to Home UI.
  * This action creator takes in a string that determines whether a user is attempting a login from opening the extension or signing in on the login page.
  * If they are signing in on opening, the currPAT field will be blank, and this action will check to see if the user has valid credentials in local storage.
@@ -57,7 +63,8 @@ function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
             } else if (resultQuery.currUI === "EditQuery") {
               dispatch(storeUserInfo(user));
               dispatch(updateMap(response.queryMap!!));
-              dispatch(toEditQuery());
+              //can we $set currQuery here?
+              dispatch(toEditQuery(resultQuery.query));
               return;
             }
           }

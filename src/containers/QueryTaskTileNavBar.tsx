@@ -9,16 +9,18 @@ interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
   /** A function that calls the action to go to the Edit Query UI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
   /** A function that calls the action to go to the Home UI. */
   toHome: () => void;
 }
 
 function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
+  function onClickToEditQuery() {
+    props.toEditQuery(query);
+  }
   const { query } = props;
   const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
   const iconSize = { icon: { fontSize: 22 } };
-
   const tooltipId = getId("text-tooltip");
   const calloutGapSpace = { gapSpace: 0 };
   return (
@@ -36,7 +38,7 @@ function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
           {query.name}
         </Link>
       </TooltipHost>
-      <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={props.toEditQuery} />
+      <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={onClickToEditQuery} />
     </Stack>
   );
 }
