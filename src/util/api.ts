@@ -1,6 +1,7 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo } from "../state";
 import { IGist } from "./github";
+import { emoji } from "../util";
 import Octokit from "@octokit/rest";
 
 const GIST_NAME = "aquerium_helper.json";
@@ -156,7 +157,7 @@ export async function getRepoLabels(
     let labels: string[] = [];
     for (let label of result.data) {
       let currName = label.name;
-      currName = emoji.emojify(currName);
+      // currName = emoji.emojify(currName);
       labels.push(currName);
     }
     return { labels };

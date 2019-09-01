@@ -14,7 +14,8 @@ import {
   ITag,
   IBasePicker,
   ValidationState,
-  Label
+  Label,
+  IPickerItemProps
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -28,6 +29,7 @@ import {
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 import { getRepoLabels } from "../util/api";
+import { emoji } from "../util";
 
 /** Value corresponding to enter key. */
 const ENTER_KEYCODE = 13;
@@ -91,6 +93,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           lastUpdated: 0,
           tasks: [],
           labels: [],
+          labelsToRender: [],
           url: ""
         },
     validInputs: [true, true, true, true, true]
@@ -174,7 +177,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                     : ""
                 }
                 onChange={this._onChangeRepo}
-                onKeyDown={this._validateAndFindRepoLabels}
+                onKeyDown={this._validateAndFindRepoLabelsOnEnter}
                 validateOnFocusOut
                 onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
@@ -229,8 +232,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
               <TagPicker
                 selectedItems={
-                  this.state.selections.labels
-                    ? this.state.selections.labels.map(item => ({
+                  this.state.selections.labelsToRender
+                    ? this.state.selections.labelsToRender.map(item => ({
                         key: item,
                         name: item
                       }))
@@ -295,6 +298,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       </>
     );
   };
+
+  private _renderSelectedLabel = (props: IPickerItemProps<ITag>): void => {};
 
   private _renderMessageBar = (): JSX.Element => {
     return (
@@ -391,6 +396,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       currInputs[0] = false;
     } else {
       newValue = newValue.trim();
+      let emojified: string = emoji.emojify(newValue);
+      if (emojified) newValue = emojified;
       const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
       this.setState({ selections: updatedSelections });
     }
@@ -424,7 +431,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     });
   };
 
-  private _validateAndFindRepoLabels = (
+  private _validateAndFindRepoLabelsOnEnter = (
     ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
     if (ev.which !== ENTER_KEYCODE) return;
@@ -514,7 +521,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     currInputs[3] = true;
-
     const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -539,7 +545,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     currInputs[4] = true;
-
     const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -602,11 +607,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _onChangeSelectedLabels = (items?: ITag[]) => {
     if (!items) return;
     let newSelectedLabels = [];
+    let newEmojifiedSelectedLabels = [];
     for (let item of items) {
+      let emojified = emoji.emojify(item.name);
+      newEmojifiedSelectedLabels.push(emojified);
       newSelectedLabels.push(item.name);
     }
     const updatedSelections = update(this.state.selections, {
-      labels: { $set: newSelectedLabels }
+      labels: { $set: newSelectedLabels },
+      labelsToRender: { $set: newEmojifiedSelectedLabels }
     });
     this.setState({ selections: updatedSelections });
   };

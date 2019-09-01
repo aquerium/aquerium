@@ -1,3 +1,5 @@
+import { ITag } from "office-ui-fabric-react";
+
 /**
  * @interface
  * This interface defines the state object.
@@ -68,6 +70,8 @@ export interface IQuery {
     | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
+  /** The array of labels that are rendered across the app. */
+  labelsToRender?: string[];
   /** Number of days before an issue goes stale. */
   stalenessIssue: number;
   /** Number of days before a pr goes stale. */
