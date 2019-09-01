@@ -13,24 +13,17 @@ import {
   TagPicker,
   ITag,
   IBasePicker,
-  ISuggestionModel,
-  ComboBox,
-  IComboBoxOption,
-  SelectableOptionMenuItemType,
   ValidationState,
   Label
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
-import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
   actionIcons,
   typeOptions,
   reviewStatusOptions,
-  caretStyles,
-  optionsContainer,
   bridgeLabelGap
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
@@ -175,11 +168,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Repo"
-                // description={
-                //   this.state.labelSuggestions.length > 0
-                //     ? "Label suggestions for " + this.state.selections.repo + " available below."
-                //     : ""
-                // }
+                description={
+                  this.state.labelSuggestions.length > 0
+                    ? "Label suggestions for " + this.state.selections.repo + " available below."
+                    : ""
+                }
                 onChange={this._onChangeRepo}
                 onKeyDown={this._validateAndFindRepoLabels}
                 validateOnFocusOut
@@ -234,13 +227,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Stack>
             <Label>Labels</Label>
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
-              {/* <MultiSelect
-                label="Repo Labels"
-                onChange={this._setLabelsSelection}
-                items={this.state.selections.labels || []}
-              /> */}
-
               <TagPicker
+                selectedItems={
+                  this.state.selections.labels
+                    ? this.state.selections.labels.map(item => ({
+                        key: item,
+                        name: item
+                      }))
+                    : []
+                }
                 componentRef={this._picker}
                 onValidateInput={this._validateInput}
                 createGenericItem={this._genericItem}
@@ -249,10 +244,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onChange={this._onChangeSelectedLabels}
                 getTextFromItem={this._getTextFromItem}
                 pickerSuggestionsProps={{
-                  suggestionsHeaderText: this.state.labelSuggestions ? "Suggested labels" : "",
-                  noResultsFoundText: "No results"
+                  suggestionsHeaderText:
+                    this.state.labelSuggestions.length > 0
+                      ? "Suggested labels from " + this.state.selections.repo
+                      : "No suggestions available",
+                  noResultsFoundText:
+                    this.state.labelSuggestions.length > 0
+                      ? "Type to find suggestions"
+                      : "Add custom labels"
                 }}
-                inputProps={{ placeholder: "Start typing to find suggestioned labels" }}
               />
               {description(["The GitHub labels assigned to particular tasks."], true)()}
             </Stack>
@@ -294,154 +294,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         </Stack>
       </>
     );
-  };
-
-  private _onChangeTitle = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[0] = false;
-      this.setState({ validInputs: currInputs });
-      return;
-    }
-    currInputs[0] = true;
-    if (!newValue) {
-      currInputs[0] = false;
-    } else {
-      newValue = newValue.trim();
-      const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
-      this.setState({ selections: updatedSelections });
-    }
-    this.setState({
-      validInputs: currInputs
-    });
-  };
-
-  private _onChangeRepo = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    if (!newValue) {
-      let currInputs = this.state.validInputs;
-      currInputs[1] = true;
-      this.setState({ validInputs: currInputs });
-    }
-    let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[1] = false;
-      this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
-      return;
-    }
-    currInputs[1] = true;
-    const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
-    this.setState({
-      selections: updatedSelections,
-      validInputs: currInputs
-    });
-  };
-
-  private _validateAndFindRepoLabels = (
-    ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
-    if (ev.which != ENTER_KEYCODE) return;
-    this._findRepoLabels();
-  };
-
-  private _validateRepoLabelsOnFocusOut = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    this._findRepoLabels();
-    return undefined;
-  };
-
-  private _findRepoLabels = async () => {
-    //Ensure a repo has been typed and it is different from the one previously stored.
-    if (!this.state.selections.repo) return;
-    //Fetch new labels.
-    const result = await getRepoLabels(this.state.selections.repo);
-    if (!result.labels) return;
-    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({ key: item, name: item }));
-    this.setState({
-      labelSuggestions: updatedLabelSuggestions
-    });
-    console.log(this.state.labelSuggestions);
-  };
-
-  private _onChangeAuthor = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    if (!newValue) {
-      let currInputs = this.state.validInputs;
-      currInputs[2] = true;
-      this.setState({ validInputs: currInputs });
-    }
-    let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[2] = false;
-      this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
-      return;
-    }
-    currInputs[2] = true;
-    const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
-    this.setState({
-      selections: updatedSelections,
-      validInputs: currInputs
-    });
-  };
-
-  private _onChangeAssignee = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    if (!newValue) {
-      let currInputs = this.state.validInputs;
-      currInputs[3] = true;
-      this.setState({ validInputs: currInputs });
-    }
-    let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[3] = false;
-      this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
-      return;
-    }
-    currInputs[3] = true;
-
-    const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
-    this.setState({
-      selections: updatedSelections,
-      validInputs: currInputs
-    });
-  };
-
-  private _onChangeMentions = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ) => {
-    if (!newValue) {
-      let currInputs = this.state.validInputs;
-      currInputs[4] = true;
-      this.setState({ validInputs: currInputs });
-    }
-    let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[4] = false;
-      this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
-      return;
-    }
-    currInputs[4] = true;
-
-    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
-    this.setState({
-      selections: updatedSelections,
-      validInputs: currInputs
-    });
   };
 
   private _renderMessageBar = (): JSX.Element => {
@@ -524,20 +376,79 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ renderMessageBar: false });
   };
 
-  // private _checkNameSelection = (
-  //   value: string
-  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-  //   if (value && !this._nameRegex.test(value)) {
-  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
-  //     return "Invalid query name.";
-  //   } else {
-  //     let newStatus = InputStatuses.successfulEdit;
-  //     if (!value) newStatus = InputStatuses.invalidEdit;
-  //     value = value.trim();
-  //     const updatedSelections = update(this.state.selections, { name: { $set: value } });
-  //     this.setState({ selections: updatedSelections, inputStatus: newStatus });
-  //   }
-  // };
+  private _onChangeTitle = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[0] = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+    currInputs[0] = true;
+    if (!newValue) {
+      currInputs[0] = false;
+    } else {
+      newValue = newValue.trim();
+      const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
+      this.setState({ selections: updatedSelections });
+    }
+    this.setState({
+      validInputs: currInputs
+    });
+  };
+
+  private _onChangeRepo = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[1] = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[1] = false;
+      this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
+      return;
+    }
+    currInputs[1] = true;
+    const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      labelSuggestions: [],
+      validInputs: currInputs
+    });
+  };
+
+  private _validateAndFindRepoLabels = (
+    ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    if (ev.which != ENTER_KEYCODE) return;
+    this._findRepoLabels();
+  };
+
+  private _validateRepoLabelsOnFocusOut = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    this._findRepoLabels();
+    return undefined;
+  };
+
+  private _findRepoLabels = async () => {
+    //Ensure a repo has been typed.
+    if (!this.state.selections.repo) return;
+    //Fetch new labels.
+    const result = await getRepoLabels(this.state.selections.repo);
+    if (!result.labels) return;
+    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({ key: item, name: item }));
+    this.setState({
+      labelSuggestions: updatedLabelSuggestions
+    });
+  };
 
   private _setTypeSelection = (
     event: React.FormEvent<HTMLDivElement>,
@@ -562,63 +473,79 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
   };
 
-  // private _checkRepoSelection = (
-  //   value: string
-  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-  //   if (value && !this._nameRegex.test(value)) {
-  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
-  //     return "Invalid repo name.";
-  //   }
-  //   value = value.trim();
-  //   //TODO Validate repo and fetch labels.
-  //   const updatedLabelSuggestions: ITag[] =
-  //     value && value !== this.state.selections.repo
-  //       ? [{ key: "yay", name: "yay" }] //Fetch new labels
-  //       : this.state.labelSuggestions;
-  //   //COMPLETE ^^^
-  //   const updatedSelections = update(this.state.selections, { repo: { $set: value } });
-  //   this.setState({
-  //     selections: updatedSelections,
-  //     labelSuggestions: updatedLabelSuggestions,
-  //     inputStatus: InputStatuses.successfulEdit
-  //   });
-  // };
+  private _onChangeAuthor = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[2] = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[2] = false;
+      this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
+      return;
+    }
+    currInputs[2] = true;
+    const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
 
-  // private _checkAssigneeSelection = (
-  //   value: string
-  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-  //   if (value && !this._nameRegex.test(value)) {
-  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
-  //     return "Invalid assignee name.";
-  //   }
-  //   value = value.trim();
-  //   const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
+  private _onChangeAssignee = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[3] = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[3] = false;
+      this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
+      return;
+    }
+    currInputs[3] = true;
 
-  // private _checkAuthorSelection = (
-  //   value: string
-  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-  //   if (value && !this._nameRegex.test(value)) {
-  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
-  //     return "Invalid author name.";
-  //   }
-  //   value = value.trim();
-  //   const updatedSelections = update(this.state.selections, { author: { $set: value } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
+    const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
 
-  // private _checkMentionSelection = (
-  //   value: string
-  // ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-  //   if (value && !this._nameRegex.test(value)) {
-  //     this.setState({ inputStatus: InputStatuses.invalidEdit });
-  //     return "Invalid mention name.";
-  //   }
-  //   value = value.trim();
-  //   const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
+  private _onChangeMentions = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs[4] = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs[4] = false;
+      this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
+      return;
+    }
+    currInputs[4] = true;
+
+    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+  };
 
   private _setReviewStatusSelection = (
     event: React.FormEvent<HTMLDivElement>,
@@ -659,22 +586,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections });
   };
 
-  // private _setLabelsSelection = (items: string[]): void => {
-  //   const updatedSelections = update(this.state.selections, { labels: { $set: items } });
-  //   this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  // };
-
   // Private helper functions for dealing with picker (for repo labels).
-
   private _validateInput = (input: string) => {
-    console.log("Before validating");
+    if (!this._nameRegex.test(input)) return ValidationState.invalid;
     return !this.state.selections.labels || this.state.selections.labels.indexOf(input) < 0
       ? ValidationState.valid
       : ValidationState.invalid;
   };
 
   private _genericItem(input: string, validationState: number) {
-    console.log(this.state);
     const newItem = { key: input, name: input };
     return newItem;
   }
