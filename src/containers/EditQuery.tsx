@@ -36,6 +36,9 @@ import {
 import { connect } from "react-redux";
 import { getRepoLabels } from "../util/api";
 
+/** Value corresponding to enter key. */
+const ENTER_KEYCODE = 13;
+
 interface IEditQueryUIState {
   /**
    * Tracks the the type of message that should be rendered,
@@ -84,18 +87,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     message: "",
     renderMessageBar: false,
     enableReviewStatusField: true,
-    labelSuggestions: [
-      { key: "A", name: "Option A" },
-      { key: "B", name: "Option B" },
-      { key: "C", name: "Option C" },
-      { key: "D", name: "Option D" },
-      { key: "E", name: "Option E" },
-      { key: "F", name: "Option F" },
-      { key: "G", name: "Option G" },
-      { key: "H", name: "Option H" },
-      { key: "I", name: "Option I" },
-      { key: "J", name: "Option J" }
-    ],
+    labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
@@ -166,7 +158,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <TextField
               label="Your query title"
               placeholder="Please enter a title"
-              onChange={this._onChangeorEnterTitle}
+              onChange={this._onChangeTitle}
               defaultValue={this.state.selections.name}
               errorMessage={!this.state.validInputs[0] ? "Invalid query name" : ""}
               required
@@ -183,12 +175,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Repo"
-                description={
-                  this.state.labelSuggestions.length
-                    ? "Label suggestions for " + this.state.selections.repo + " available below."
-                    : ""
-                }
-                onChange={this._onChangeorEnterRepo}
+                // description={
+                //   this.state.labelSuggestions.length > 0
+                //     ? "Label suggestions for " + this.state.selections.repo + " available below."
+                //     : ""
+                // }
+                onChange={this._onChangeRepo}
+                onKeyDown={this._validateAndFindRepoLabels}
+                validateOnFocusOut
+                onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
                 errorMessage={!this.state.validInputs[1] ? "Invalid repo name" : ""}
               />
@@ -199,7 +194,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Assignee"
-                onChange={this._onChangeorEnterAssignee}
+                onChange={this._onChangeAssignee}
                 defaultValue={this.state.selections.assignee}
                 errorMessage={!this.state.validInputs[3] ? "Invalid assignee name" : ""}
               />
@@ -208,7 +203,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Author"
-                onChange={this._onChangeorEnterAuthor}
+                onChange={this._onChangeAuthor}
                 defaultValue={this.state.selections.author}
                 errorMessage={!this.state.validInputs[2] ? "Invalid author name" : ""}
               />
@@ -217,7 +212,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Mention"
-                onChange={this._onChangeorEnterMentions}
+                onChange={this._onChangeMentions}
                 defaultValue={this.state.selections.mentions}
                 errorMessage={!this.state.validInputs[4] ? "Invalid name" : ""}
               />
@@ -254,11 +249,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onChange={this._onChangeSelectedLabels}
                 getTextFromItem={this._getTextFromItem}
                 pickerSuggestionsProps={{
-                  suggestionsHeaderText: this.state.labelSuggestions
-                    ? "Suggested labels from " + this.state.selections.repo
-                    : "",
-                  noResultsFoundText: "No Labels Found"
+                  suggestionsHeaderText: this.state.labelSuggestions ? "Suggested labels" : "",
+                  noResultsFoundText: "No results"
                 }}
+                inputProps={{ placeholder: "Start typing to find suggestioned labels" }}
               />
               {description(["The GitHub labels assigned to particular tasks."], true)()}
             </Stack>
@@ -302,7 +296,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
-  private _onChangeorEnterTitle = (
+  private _onChangeTitle = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
@@ -325,7 +319,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     });
   };
 
-  private _onChangeorEnterRepo = (
+  private _onChangeRepo = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
@@ -333,32 +327,50 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       let currInputs = this.state.validInputs;
       currInputs[1] = true;
       this.setState({ validInputs: currInputs });
-      return;
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs[1] = false;
       this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
       return;
     }
     currInputs[1] = true;
-    newValue = newValue.trim();
-    //TODO Validate repo and fetch labels.
-    getRepoLabels(newValue);
-    const updatedLabelSuggestions: ITag[] =
-      newValue && newValue !== this.state.selections.repo
-        ? [{ key: "yay", name: "yay" }] //Fetch new labels
-        : this.state.labelSuggestions;
-    //COMPLETE ^^^
     const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
-      labelSuggestions: updatedLabelSuggestions,
       validInputs: currInputs
     });
   };
 
-  private _onChangeorEnterAuthor = (
+  private _validateAndFindRepoLabels = (
+    ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    if (ev.which != ENTER_KEYCODE) return;
+    this._findRepoLabels();
+  };
+
+  private _validateRepoLabelsOnFocusOut = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    this._findRepoLabels();
+    return undefined;
+  };
+
+  private _findRepoLabels = async () => {
+    //Ensure a repo has been typed and it is different from the one previously stored.
+    if (!this.state.selections.repo) return;
+    //Fetch new labels.
+    const result = await getRepoLabels(this.state.selections.repo);
+    if (!result.labels) return;
+    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({ key: item, name: item }));
+    this.setState({
+      labelSuggestions: updatedLabelSuggestions
+    });
+    console.log(this.state.labelSuggestions);
+  };
+
+  private _onChangeAuthor = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
@@ -366,16 +378,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       let currInputs = this.state.validInputs;
       currInputs[2] = true;
       this.setState({ validInputs: currInputs });
-      return;
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs[2] = false;
       this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
       return;
     }
     currInputs[2] = true;
-    newValue = newValue.trim();
     const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -383,7 +394,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     });
   };
 
-  private _onChangeorEnterAssignee = (
+  private _onChangeAssignee = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
@@ -391,16 +402,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       let currInputs = this.state.validInputs;
       currInputs[3] = true;
       this.setState({ validInputs: currInputs });
-      return;
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs[3] = false;
       this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
       return;
     }
     currInputs[3] = true;
-    newValue = newValue.trim();
+
     const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -408,7 +419,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     });
   };
 
-  private _onChangeorEnterMentions = (
+  private _onChangeMentions = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
@@ -416,16 +427,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       let currInputs = this.state.validInputs;
       currInputs[4] = true;
       this.setState({ validInputs: currInputs });
-      return;
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs[4] = false;
       this.setState({ validInputs: currInputs });
+      newValue = newValue.trim();
       return;
     }
     currInputs[4] = true;
-    newValue = newValue.trim();
+
     const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -699,7 +710,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     return item;
   };
 
-  private _typeInPicker = (filterText: string, tagList?: ITag[] | undefined): ITag[] => {
+  private _typeInPicker = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
     return filterText
       ? this.state.labelSuggestions
           .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0)

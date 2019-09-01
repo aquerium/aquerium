@@ -140,25 +140,21 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
 export async function getRepoLabels(
   repo: string
 ): Promise<{ labels?: string[]; errorCode?: number }> {
-  let labels: string[] = [];
   try {
     const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
     const firstSlashIndex = repo.indexOf("/");
     let owner = "";
-    if (firstSlashIndex < 0) {
-      owner = repo;
-    } else {
-      owner = repo.substr(0, firstSlashIndex);
-      repo = repo.substr(firstSlashIndex + 1);
+    const result = await octokit.request("GET /repos/" + repo + "/labels", {
+      headers: {
+        Accept: "application/vnd.github.symmetra-preview+json"
+      }
+    });
+    let labels: string[] = [];
+    for (let label of result.data) {
+      labels.push(label.name);
     }
-    console.log("Owner: " + owner);
-    console.log("Repo: " + repo);
-    const result = octokit.issues.listLabelsForRepo({ owner, repo });
-    console.log("Result: " + result);
-    const labels: string[] = [];
     return { labels };
   } catch (error) {
-    // console.error(error);
     return { errorCode: 500 };
   }
 }
