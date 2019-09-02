@@ -38,7 +38,6 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
           } as ILabel)
       )
     };
-    console.log("Labels: " + task.labels);
     tasks.push(task);
   });
 
