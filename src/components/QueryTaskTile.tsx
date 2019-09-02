@@ -28,11 +28,11 @@ const gitLabelStyles = (backgroundColor: string) => {
         b: parseInt(rgbResult[3], 16)
       }
     : null;
-
   //Styles based on inspecting the element on a GitHub label example.
   return mergeStyleSets({
     label: {
       backgroundColor: "#" + backgroundColor,
+      //Color contrasting algorithm from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color.
       color:
         rgbValue && rgbValue.r * 0.299 + rgbValue.g * 0.587 + rgbValue.b * 0.114 > 186
           ? "#000000"
