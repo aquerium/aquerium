@@ -112,7 +112,6 @@ export const QueryTaskClassNames = mergeStyleSets({
     paddingLeft: 7,
     overflow: "hidden",
     float: "left",
-    // textOverflow: "ellipsis",
     width: "100%",
     maxWidth: "490px",
     fontSize: 14
