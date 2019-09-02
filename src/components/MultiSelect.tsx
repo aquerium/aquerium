@@ -7,7 +7,6 @@ import {
   labels,
   buttonProps
 } from "./MultiSelect.styles";
-import { emoji } from "../util/utilities";
 
 //Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
@@ -85,8 +84,6 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
       newValue = "";
       this.setState({ errorMessage: "" });
     }
-    let emojified: string = emoji.emojify(newValue);
-    if (emojified) newValue = emojified;
     this.setState({ pendingItem: newValue });
   };
 
@@ -98,12 +95,12 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
     this.setState({ pendingItem: this.state.pendingItem.trim() });
     const { pendingItem } = this.state;
 
-    let labelRegex = /^[a-z0-9-_.\\/~+&#@::]+( *[a-z0-9-_.\\/+&#@::]+ *)*$/i;
+    let labelRegex = /^[a-z0-9-_.\\/~+&#@:()[\]:]+( *[a-z0-9-_.\\/+&#@::()[\]]+ *)*$/i;
     if (items && items.includes(pendingItem)) {
       this.setState({ errorMessage: "Label already included." });
       return;
     }
-    if (items) {
+    if (items && labelRegex.test(pendingItem)) {
       items.push(pendingItem);
       onChange(items);
     }

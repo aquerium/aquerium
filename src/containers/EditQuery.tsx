@@ -29,6 +29,7 @@ import {
   reviewStatusDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
+import { emoji } from "../util";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated. */
@@ -93,17 +94,19 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           stalenessPull: 4,
           lastUpdated: 0,
           tasks: [],
+          labels: [],
+          labelsToRender: [],
           url: "",
           customViews: ["author", "createdAt", "repo"]
         }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
 
   private _customViewsOptions = [
     { key: "type", text: "Type of tasks" },
     { key: "repo", text: "Repo" },
-    { key: "assignee", text: "Assignee" },
+    { key: "assignees", text: "Assignees" },
     { key: "author", text: "Author" },
     { key: "labels", text: "Labels" },
     { key: "lastUpdated", text: "Date Last Updated" },
@@ -240,7 +243,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <MultiSelect
                 label="Repo Labels"
                 onChange={this._setLabelsSelection}
-                items={this.state.selections.labels || []}
+                items={this.state.selections.labelsToRender || []}
               />
               {description(["The GitHub labels assigned to particular tasks."])()}
             </Stack>
@@ -507,7 +510,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setLabelsSelection = (items: string[]): void => {
-    const updatedSelections = update(this.state.selections, { labels: { $set: items } });
+    let emojified = [];
+    for (let label of items) {
+      emojified.push(emoji.emojify(label));
+    }
+    const updatedSelections = update(this.state.selections, {
+      labels: { $set: items },
+      labelsToRender: { $set: emojified }
+    });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
@@ -528,8 +538,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         newSelections.splice(currIndex, 1);
       }
     }
-    const newQuery = update(this.state.selections, { customViews: { $set: newSelections } });
-    this.setState({ selections: newQuery });
+    const updatedSelections = update(this.state.selections, {
+      customViews: { $set: newSelections }
+    });
+    this.setState({ selections: updatedSelections });
   };
 }
 

@@ -3,6 +3,7 @@ import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
+import { emoji } from "../util";
 
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
@@ -15,34 +16,47 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task, customViews } = props;
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
-  const taskInfo = [
-    <span>
-      Type: <b>{task.type}</b>
-    </span>,
-    <span>
-      Author: <b>{task.author}</b>
-    </span>,
-    <span>
-      Created: <b>{task.createdAt}</b>
-    </span>,
-    <span>
-      Last updated: <b>{task.updatedAt}</b>
-    </span>,
-    <span>
-      Assigned to: <b>{task.assignees.join(", ")}</b>
-    </span>,
-    <span>
-      Repo: <b>{task.repo}</b>
-    </span>,
-    <span>
-      Labels: [<b>{task.labels.join(", ")}</b>]
-    </span>
-  ];
   const options = ["type", "author", "repo", "createdAt", "lastUpdated", "assignees", "labels"];
   let optionIndices = new Map();
   for (let option of options) {
     optionIndices.set(option, customViews.indexOf(option));
   }
+
+  const taskInfo = (): any[] => {
+    const { task } = props;
+    let taskInfo: any[] = [
+      <span>
+        Type: <b>{task.type}</b>
+      </span>,
+      <span>
+        Repo: <b>{task.repo}</b>
+      </span>,
+      <span>
+        Author: <b>{task.author}</b>
+      </span>,
+      <span>
+        Created: <b>{task.createdAt}</b>
+      </span>,
+      <span>
+        Last updated: <b>{task.updatedAt}</b>
+      </span>
+    ];
+    if (task.assignees.length > 0) {
+      taskInfo.push(
+        <span>
+          Assigned to: <b>{task.assignees.join(", ")}</b>
+        </span>
+      );
+    }
+    if (task.labels.length > 0) {
+      taskInfo.push(
+        <span>
+          Labels: [<b>{task.labels.map(label => emoji.emojify(label)).join(", ")}</b>]
+        </span>
+      );
+    }
+    return taskInfo;
+  };
 
   const renderInfoElement = (index: number, info: any, beforeText?: string, afterText?: string) => {
     return index > -1 ? (
@@ -68,7 +82,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {task.title}
           </a>
         </TooltipHost>
-        <div className={QueryTaskClassNames.infoIcon}>{description(taskInfo)()}</div>
+        <div className={QueryTaskClassNames.infoIcon}>{description(taskInfo())()}</div>
       </div>
       <Stack
         verticalAlign="space-around"
@@ -100,7 +114,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             )}
             {renderInfoElement(
               optionIndices.get("labels"),
-              task.labels.join(", "),
+              task.labels.map(label => emoji.emojify(label)).join(", "),
               "With Labels: [",
               "] "
             )}
