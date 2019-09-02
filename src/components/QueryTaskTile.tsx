@@ -109,14 +109,14 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {renderInfoElement(
               optionIndices.get("assignees"),
               task.assignees.join(", "),
-              "Assigned to ",
-              " "
+              "Assigned to: [",
+              "] "
             )}
             {renderInfoElement(
               optionIndices.get("labels"),
               task.labels.map(label => emoji.emojify(label)).join(", "),
               "With Labels: [",
-              "] "
+              "]"
             )}
           </Text>
         )}
