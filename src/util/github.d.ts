@@ -36,7 +36,7 @@ export interface IIssue {
   user: {
     login: string;
   };
-  labels: [{ name: string }];
+  labels: [ILabel];
   assignees: [{ login: string }];
 }
 
@@ -54,6 +54,6 @@ export interface IPull {
   user: {
     login: string;
   };
-  labels: [{ name: string }];
+  labels: [ILabel];
   assignees: [{ login: string }];
 }

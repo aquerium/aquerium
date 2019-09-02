@@ -16,6 +16,17 @@ export interface IState {
 
 /**
  * @interface
+ * This interface represents a single label, withc its name and color.
+ */
+export interface ILabel {
+  /** The name of the label. */
+  name: string;
+  /** The color provided by GitHub and/or a repository. */
+  color: string;
+}
+
+/**
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -32,7 +43,7 @@ export interface ITask {
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** Array of labels further classifying the task. */
-  labels: string[];
+  labels: ILabel[];
   /** Time stamp for creation. */
   createdAt: string;
   /** Time stamp for last update. */
@@ -71,7 +82,7 @@ export interface IQuery {
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
   /** The array of labels that are rendered across the app. */
-  labelsToRender?: string[];
+  labelsToRender: string[];
   /** Number of days before an issue goes stale. */
   stalenessIssue: number;
   /** Number of days before a pr goes stale. */

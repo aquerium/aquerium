@@ -14,6 +14,7 @@ interface IQueryTaskTile {
 
 export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task, customViews } = props;
+  const emojifiedLabels = task.labels.map(label => emoji.emojify(label.name)).join(", ");
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
   const options = ["type", "author", "repo", "createdAt", "lastUpdated", "assignees", "labels"];
@@ -51,7 +52,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
     if (task.labels.length > 0) {
       taskInfo.push(
         <span>
-          Labels: [<b>{task.labels.map(label => emoji.emojify(label)).join(", ")}</b>]
+          Labels: [<b>{emojifiedLabels}</b>]
         </span>
       );
     }
@@ -112,12 +113,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
               "Assigned to: [",
               "] "
             )}
-            {renderInfoElement(
-              optionIndices.get("labels"),
-              task.labels.map(label => emoji.emojify(label)).join(", "),
-              "With Labels: [",
-              "]"
-            )}
+            {renderInfoElement(optionIndices.get("labels"), emojifiedLabels, "With Labels: [", "]")}
           </Text>
         )}
       </Stack>
