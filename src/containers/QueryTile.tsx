@@ -75,7 +75,7 @@ function QueryTileView(props: IQueryTileProps) {
               <br />
             </Text>
           )}
-          {query.labelsToRender.length > 0 && (
+          {query.labelsToRender && (
             <Text className={QueryTileClassNames.basicInfo}>
               <b>Labels:</b> [{query.labelsToRender.join(", ")}]<br />
             </Text>

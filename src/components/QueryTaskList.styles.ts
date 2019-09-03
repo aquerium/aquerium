@@ -42,7 +42,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     hoveringAndShading,
     {
       width: "507px",
-      height: "95px",
+      height: "94px",
       textAlign: "left",
       outline: "none",
       border: "none",

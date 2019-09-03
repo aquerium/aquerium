@@ -10,7 +10,7 @@ interface IQueryTaskTile {
   /** A single ITask to be rendered. */
   task: ITask;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
-  customViews: any[];
+  customViews: string[];
 }
 
 interface IGitLabelProps {
@@ -20,11 +20,13 @@ interface IGitLabelProps {
 
 export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task, customViews } = props;
-  const emojifiedLabels = task.labels.map(label => (
-    <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
-      {emoji.emojify(label.name)}
-    </span>
-  ));
+  const emojifiedLabels = task.labels
+    ? task.labels.map(label => (
+        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+          {emoji.emojify(label.name)}
+        </span>
+      ))
+    : null;
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
   const options = ["type", "author", "repo", "createdAt", "lastUpdated", "assignees", "labels"];
@@ -87,7 +89,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
               "Assigned to: [",
               "] "
             )}
-            {renderInfoElement(optionIndices.get("labels"), emojifiedLabels, "Labels: [", "]")}
+            {renderInfoElement(optionIndices.get("labels"), emojifiedLabels, "Labels: ")}
           </Text>
         )}
       </Stack>
