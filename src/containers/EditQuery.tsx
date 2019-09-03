@@ -4,7 +4,6 @@ import update from "immutability-helper";
 import {
   Stack,
   TextField,
-  ActionButton,
   Slider,
   MessageBar,
   MessageBarType,
@@ -95,7 +94,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
   };
 
-  private _foo = (): void => {
+  private _onClickToQueryList = (): void => {
     this.props.toQueryList(this.state.selections);
   }
 
@@ -325,7 +324,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
-      onClick: this.props.toHome,
+      onClick: this._onClickToQueryList,
       buttonStyles: {
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
         icon: { fontSize: 20, color: "Gray" }
