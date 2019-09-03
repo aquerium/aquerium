@@ -1,14 +1,14 @@
 import React from "react";
 import { Stack, Spinner, SpinnerSize } from "office-ui-fabric-react";
 
-interface IErrorPageProps {
+interface ILoadingPageProps {
   /** The loading message to be rendered. */
   loadingMessage: string;
 }
 
 const stackStyles = { root: { height: "100%" } };
 
-export const LoadingPage = (props: IErrorPageProps): JSX.Element => {
+export const LoadingPage = (props: ILoadingPageProps): JSX.Element => {
   const { loadingMessage } = props;
 
   return (
