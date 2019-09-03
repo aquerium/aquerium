@@ -163,7 +163,7 @@ export async function getRepoLabels(
 
     labels = labels.concat(
       data.map((label: { name: string; color: string }) => ({
-        name: emoji.replace(label.name, (emoji: { key: string }) => `:${emoji.key}:`),
+        name: label.name,
         color: label.color
       }))
     );
