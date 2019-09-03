@@ -52,7 +52,7 @@ export const login = (currPAT?: string) => {
 
 // Helper function to attempt to log a user in when the extension is first opened.
 // Checks for valid credentials and loads the appropriate map if they are approved.
-async function loginOnApplicationMount(dispatch: Dispatch) {
+function loginOnApplicationMount(dispatch: Dispatch) {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
     if (result.token && result.username && result.gistID) {
       const user = createIUserInfo(result.token, result.username, result.gistID);
@@ -80,7 +80,7 @@ async function loginOnApplicationMount(dispatch: Dispatch) {
 };
 
 // Helper function to attempt to log a user in via their PAT.
-async function loginViaPAT(dispatch: Dispatch, PAT: string) {
+function loginViaPAT(dispatch: Dispatch, PAT: string) {
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
