@@ -13,7 +13,7 @@ interface IInfoButtonState {
 }
 
 interface IInfoButtonProps extends ITextFieldProps {
-  calloutText: any[];
+  calloutText: string;
 }
 
 const InfoButtonStyles = mergeStyleSets({
@@ -32,11 +32,9 @@ const InfoButtonStyles = mergeStyleSets({
     textAlign: "center",
     fontSize: 16,
     width: "100%",
-    maxWidth: "500px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    display: "block"
+    maxWidth: "400px",
+    overflowY: "auto",
+    maxHeight: "400px"
   }
 });
 
@@ -79,12 +77,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             role="alertdialog"
           >
             <div id={this._descriptionId} className={InfoButtonStyles.textDiv}>
-              {this.props.calloutText.map(text => (
-                <span>
-                  {text}
-                  <br />
-                </span>
-              ))}
+              {this.props.calloutText}
             </div>
           </Callout>
         )}
@@ -93,7 +86,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   }
 }
 
-export const description = (description: any[]) => {
+export const description = (description: string) => {
   return (props?: ITextFieldProps): JSX.Element => {
     return <InfoButton {...props} calloutText={description} />;
   };

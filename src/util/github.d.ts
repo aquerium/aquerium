@@ -30,6 +30,7 @@ export interface IIssue {
   html_url: string;
   number: number;
   title: string;
+  body: string;
   created_at: string;
   updated_at: string;
   repository_url: string;
@@ -47,6 +48,7 @@ export interface IPull {
   html_url: string;
   number: number;
   title: string;
+  body: string;
   created_at: string;
   updated_at: string;
   pull_request: {};

@@ -189,9 +189,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkRepoSelection}
               />
-              {description([
-                "List a repository from which to track Issues and/or Pull Requests."
-              ])()}
+              {description("List a repository from which to track Issues and/or Pull Requests.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -201,7 +199,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkAssigneeSelection}
               />
-              {description(["Track Issues and/or Pull Requests assigned to a specific user."])()}
+              {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -211,7 +209,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkAuthorSelection}
               />
-              {description(["Track Issues and/or Pull Requests opened by a specific user."])()}
+              {description("Track Issues and/or Pull Requests opened by a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -221,7 +219,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkMentionSelection}
               />
-              {description(["Track Issues and/or Pull Requests that mention a specific user."])()}
+              {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
@@ -237,7 +235,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 }
                 options={reviewStatusOptions}
               />
-              {description(["Track Pull Requests with the single selected review requirement."])()}
+              {description("Track Pull Requests with the single selected review requirement.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <MultiSelect
@@ -245,7 +243,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onChange={this._setLabelsSelection}
                 items={this.state.selections.labelsToRender || []}
               />
-              {description(["The GitHub labels assigned to particular tasks."])()}
+              {description("The GitHub labels assigned to particular tasks.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -255,9 +253,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 defaultValue={this.state.selections.lastUpdated}
                 max={31}
               />
-              {description([
+              {description(
                 "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
-              ])()}
+              )()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -267,7 +265,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 defaultValue={this.state.selections.stalenessIssue}
                 max={7}
               />
-              {description(["The number of days after which an Issue will be considered stale."])()}
+              {description("The number of days after which an Issue will be considered stale.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -277,9 +275,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 defaultValue={this.state.selections.stalenessPull}
                 max={7}
               />
-              {description([
+              {description(
                 "The number of days after which a Pull Request will be considered stale."
-              ])()}
+              )()}
             </Stack>
             <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
               <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
@@ -294,9 +292,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 options={this._customViewsOptions}
                 onChange={this._setCustomViews}
               />
-              {description([
+              {description(
                 "Select the fields you wish to prioritize while viewing the task list."
-              ])()}
+              )()}
             </Stack>
           </Stack>
         </Stack>

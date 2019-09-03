@@ -64,42 +64,6 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
     optionIndices.set(option, customViews.indexOf(option));
   }
 
-  const taskInfo = (): any[] => {
-    const { task } = props;
-    let taskInfo: any[] = [
-      <span>
-        Type: <b>{task.type}</b>
-      </span>,
-      <span>
-        Repo: <b>{task.repo}</b>
-      </span>,
-      <span>
-        Author: <b>{task.author}</b>
-      </span>,
-      <span>
-        Created: <b>{task.createdAt}</b>
-      </span>,
-      <span>
-        Last updated: <b>{task.updatedAt}</b>
-      </span>
-    ];
-    if (task.assignees.length > 0) {
-      taskInfo.push(
-        <span>
-          Assigned to: <b>{task.assignees.join(", ")}</b>
-        </span>
-      );
-    }
-    if (task.labels.length > 0) {
-      taskInfo.push(
-        <span>
-          Labels: [<b>{emojifiedLabels}</b>]
-        </span>
-      );
-    }
-    return taskInfo;
-  };
-
   const renderInfoElement = (index: number, info: any, beforeText?: string, afterText?: string) => {
     return index > -1 ? (
       <span>
@@ -124,7 +88,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {task.title}
           </a>
         </TooltipHost>
-        <div className={QueryTaskClassNames.infoIcon}>{description(taskInfo())()}</div>
+        <div className={QueryTaskClassNames.infoIcon}>{description(task.body)()}</div>
       </div>
       <Stack
         verticalAlign="space-around"

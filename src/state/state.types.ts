@@ -36,6 +36,8 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
+  /** The body of the ITask, adding further information about the task. */
+  body: string;
   /** The assignees of the task. */
   assignees: string[];
   /** The repo the task is a member of. */
