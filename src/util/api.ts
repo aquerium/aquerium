@@ -1,7 +1,6 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
-import { emoji } from ".";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
@@ -160,7 +159,6 @@ export async function getRepoLabels(
     }
     //Save the initial set of labels.
     const data = await response.json();
-
     labels = labels.concat(
       data.map((label: { name: string; color: string }) => ({
         name: label.name,
@@ -184,11 +182,6 @@ export async function getRepoLabels(
           return { errorCode: response.status };
         }
         const data = await response.json();
-        for (const label of data) {
-          console.log(
-            "Label: " + emoji.replace(label.name, (emoji: { key: string }) => `:${emoji.key}:`)
-          );
-        }
         labels = labels.concat(
           data.map((label: { name: string; color: string }) => ({
             name: label.name,

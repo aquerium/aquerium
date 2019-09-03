@@ -83,7 +83,8 @@ function QueryTileView(props: IQueryTileProps) {
           )}
           {query.labelsToRender && query.labelsToRender.length > 0 && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Labels:</b> [{emojifiedAndColoredLabels}]<br />
+              <b>Labels:</b> {emojifiedAndColoredLabels}
+              <br />
             </Text>
           )}
           {query.lastUpdated && (

@@ -106,3 +106,23 @@ function getRefDate(daysRef: number): string {
 
   return dateRef.getFullYear() + "-" + mmStr + "-" + ddStr;
 }
+
+/**
+ * Takes in a url string and, if emojis/characters are present, ensures a valid URL
+ * with the correct URL encoding.
+ * @param queryUrl
+ */
+export const normalizedURL = (queryUrl: string): string => {
+  // Inspired by the solution on:
+  // https://meta.stackexchange.com/questions/285366/emoji-in-url-breaks-insert-hyperlink-tool-in-editor.
+  var m = /^\s*(.*?)(?:\s+"(.*)")?\s*$/.exec(queryUrl);
+  let normalized = "";
+  if (m) {
+    let url = m[1];
+    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function(match) {
+      if (match.length === 3 && match.charAt(0) === "%") return match;
+      else return encodeURI(match);
+    });
+  }
+  return normalized;
+};
