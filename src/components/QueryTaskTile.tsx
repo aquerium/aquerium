@@ -1,21 +1,16 @@
 import React from "react";
 import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { Stack, Text, TooltipHost, getId, mergeStyleSets } from "office-ui-fabric-react";
+import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { emoji } from "../util";
-import { gitLabelStyles } from "./GitLabelStyles";
+import { gitLabelStyles } from "./GitLabel.Styles";
 
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
   task: ITask;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: string[];
-}
-
-interface IGitLabelProps {
-  /** Background color of the label. */
-  color: string;
 }
 
 export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
@@ -30,7 +25,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
   const options = ["type", "author", "repo", "createdAt", "lastUpdated", "assignees", "labels"];
-  let optionIndices = new Map();
+  const optionIndices = new Map();
   for (let option of options) {
     optionIndices.set(option, customViews.indexOf(option));
   }
@@ -86,8 +81,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {renderInfoElement(
               optionIndices.get("assignees"),
               task.assignees.join(", "),
-              "Assigned to: [",
-              "] "
+              "Assigned to: "
             )}
             {renderInfoElement(optionIndices.get("labels"), emojifiedLabels, "Labels: ")}
           </Text>
