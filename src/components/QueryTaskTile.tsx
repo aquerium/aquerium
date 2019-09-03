@@ -39,7 +39,11 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
     return optionIndices.get(prop) > -1 ? (
       <span>
         {beforeText}
-        <b>{prop === "labels" && !info ? "None yet" : info}</b>
+        <b>
+          {(prop === "labels" || prop === "assignees" || prop === "lastUpdated") && !info
+            ? "None yet"
+            : info}
+        </b>
         {afterText}
       </span>
     ) : null;
