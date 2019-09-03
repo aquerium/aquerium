@@ -18,6 +18,17 @@ export interface IState {
 }
 
 /**
+ * This interface represents a single label, with its name and color.
+ */
+export interface ILabel {
+  /** The name of the label. */
+  name: string;
+  /** The color provided by GitHub and/or a repository. */
+  color: string;
+}
+
+/**
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -27,12 +38,16 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
+  /** The body of the ITask, adding further information about the task. */
+  body: string;
+  /** The assignees of the task. */
+  assignees: string[];
   /** The repo the task is a member of. */
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
-  /** State of a task only be "open" or "closed". */
-  state: "open" | "closed";
+  /** Array of labels further classifying the task. */
+  labels: ILabel[];
   /** Time stamp for creation. */
   createdAt: string;
   /** Time stamp for last update. */
@@ -69,6 +84,8 @@ export interface IQuery {
     | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
+  /** The array of labels that are rendered across the app. */
+  labelsToRender: string[];
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
   /** The number of tasks in a query that if exceeded, would be considered unreasonable. */
@@ -77,6 +94,8 @@ export interface IQuery {
   tasks: ITask[];
   /** The URL for the github page containing this query. */
   url: string;
+  /** An array that keeps track of the fields a user wishes to view on the task list tile. */
+  customViews: string[];
 }
 
 /**
