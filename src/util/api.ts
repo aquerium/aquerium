@@ -144,21 +144,24 @@ export async function getRepoLabels(
   try {
     //TODO Remove hardcoded PAT.
     //TODO Fix pagination problem.
-    const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
-    const result = await octokit.request("GET /repos/" + repo + "/labels", {
-      // headers: {
-      //   Accept: "application/vnd.github.symmetra-preview+json"
-      // }
-    });
-    // const result = await fetch("https://api.github.com/repos/" + repo + "/labels");
-    // if (!result.ok) {
-    //   return { errorCode: result.status };
-    // }
-    let labels: string[] = [];
-    for (let label of result.data) {
-      let currName = label.name;
-      labels.push(currName);
+    // const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
+    // const result = await octokit.request("GET /repos/" + repo + "/labels", {
+    //   // headers: {
+    //   //   Accept: "application/vnd.github.symmetra-preview+json"
+    //   // }
+    // });
+    const result = await fetch("https://api.github.com/repos/" + repo + "/labels");
+    if (!result.ok) {
+      return { errorCode: result.status };
     }
+    const header = await result.headers.get("Link");
+    // const numPages = header.substr(header.lastIndexOf("page=") header.);
+    console.log(response);
+    let labels: string[] = [];
+    // for (let label of result.data) {
+    //   let currName = label.name;
+    //   labels.push(currName);
+    // }
     return { labels };
   } catch (error) {
     return { errorCode: 500 };
