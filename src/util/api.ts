@@ -139,30 +139,17 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
 }
 
 export async function getRepoLabels(
+  // TODO: Take in user: IUserInfo
   repo: string
 ): Promise<{ labels?: string[]; errorCode?: number }> {
   try {
-    //TODO Remove hardcoded PAT.
-    //TODO Fix pagination problem.
-    // const octokit = new Octokit({ auth: "f44a4262b9ae96a637b82b68cff721601cd4eabd" });
-    // const result = await octokit.request("GET /repos/" + repo + "/labels", {
-    //   // headers: {
-    //   //   Accept: "application/vnd.github.symmetra-preview+json"
-    //   // }
-    // });
-    const result = await fetch("https://api.github.com/repos/" + repo + "/labels");
-    if (!result.ok) {
-      return { errorCode: result.status };
-    }
-    const header = await result.headers.get("Link");
-    // const numPages = header.substr(header.lastIndexOf("page=") header.);
-    console.log(response);
-    let labels: string[] = [];
-    // for (let label of result.data) {
-    //   let currName = label.name;
-    //   labels.push(currName);
-    // }
-    return { labels };
+    const octokit = new Octokit({ auth: "" }); // TODO: Inside the quotes should be user.token
+    const options = octokit.issues.listLabelsForRepo.endpoint.merge({
+      owner: repo.substr(0, repo.indexOf("/")),
+      repo: repo.substr(repo.indexOf("/") + 1)
+    });
+    const labels = await octokit.paginate(options);
+    return { labels: labels.map(label => label.name) };
   } catch (error) {
     return { errorCode: 500 };
   }
