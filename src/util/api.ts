@@ -152,7 +152,9 @@ export async function getRepoLabels(
     let labels: ILabel[] = [];
     //Fetch initial set of labels.
     const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
-    const response = await fetch(labelsURL);
+    const response = await fetch(labelsURL, {
+      headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+    });
     if (!response.ok) {
       return { errorCode: response.status };
     }
@@ -175,7 +177,9 @@ export async function getRepoLabels(
 
       //Fetch all pages of labels.
       for (let i = 2; i <= numPages; i++) {
-        const response = await fetch(labelsURL + "?page=" + i);
+        const response = await fetch(labelsURL + "?page=" + i, {
+          headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+        });
         if (!response.ok) {
           return { errorCode: response.status };
         }

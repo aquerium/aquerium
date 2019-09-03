@@ -17,7 +17,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task } = props;
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
-  // const taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
+  const taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
 
   return (
     <Stack horizontal verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>
@@ -37,7 +37,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
           #{task.num} opened {task.createdAt} by {task.author}
         </Text>
       </Stack>
-      <div className={QueryTaskClassNames.infoIcon}>{description("taskInfo")()}</div>
+      <div className={QueryTaskClassNames.infoIcon}>{description(taskInfo)()}</div>
     </Stack>
   );
 };
