@@ -7,6 +7,7 @@ import {
   gridStackStyle,
   separatorStyles
 } from "../components/QueryTile.styles";
+import { gitLabelStyles } from "../components/GitLabelStyles";
 
 interface IQueryTileProps {
   /** A single IQuery to be rendered. */
@@ -17,6 +18,11 @@ interface IQueryTileProps {
 
 function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
+  const emojifiedAndColoredLabels = query.labelsToRender.map(label => (
+    <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+      {label.name}
+    </span>
+  ));
   function onClickToQueryList() {
     props.toQueryList(query);
   }
@@ -77,7 +83,7 @@ function QueryTileView(props: IQueryTileProps) {
           )}
           {query.labelsToRender && query.labelsToRender.length > 0 && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Labels:</b> [{query.labelsToRender.join(", ")}]<br />
+              <b>Labels:</b> [{emojifiedAndColoredLabels}]<br />
             </Text>
           )}
           {query.lastUpdated && (

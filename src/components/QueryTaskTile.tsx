@@ -17,7 +17,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task } = props;
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
-  const taskInfo = "Type: " + task.type + ", Last updated: " + task.updatedAt;
+  const taskInfo = ["Type: " + task.type, "Last updated: " + task.updatedAt];
 
   return (
     <Stack horizontal verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>
@@ -26,6 +26,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
           <a
             href={task.url}
             target="_blank"
+            rel="noopener noreferrer"
             className={QueryTaskClassNames.taskTitle}
             aria-labelledby={hostId}
           >

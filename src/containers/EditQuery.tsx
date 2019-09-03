@@ -174,9 +174,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Repo"
                 description={
                   this.state.labelSuggestions.length > 0 && this.state.selections.repo
-                    ? "Label suggestions for " +
-                      this.state.selections.repo.bold() +
-                      " available below."
+                    ? "Label suggestions for " + this.state.selections.repo + " available below."
                     : "No label suggestions available below."
                 }
                 onChange={this._onChangeRepo}

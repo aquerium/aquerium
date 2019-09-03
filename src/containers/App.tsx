@@ -65,7 +65,7 @@ const scopedSettings = {
   TagPicker: {
     styles: {
       input: fieldGroupStyles,
-      itemsWrapper: { maxHeight: "60px", overflowY: "auto" }
+      itemsWrapper: { maxHeight: "60px", maxWidth: "465px", overflowY: "auto" }
     }
   },
   MessageBar: {

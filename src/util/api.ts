@@ -1,7 +1,6 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
-import { emoji } from "../util";
 import Octokit from "@octokit/rest";
 
 const GIST_NAME = "aquerium_helper.json";
