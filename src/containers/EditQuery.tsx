@@ -83,15 +83,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       : {
           id: "",
           name: "",
-          stalenessIssue: 4,
-          stalenessPull: 4,
           lastUpdated: 0,
+          reasonableCount: 0,
           tasks: [],
           url: ""
         }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _numberRegex = /^[0-9]*$/i;
 
   public render = (): JSX.Element => {
     return (
@@ -198,7 +198,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <Slider
                 label="Last Updated"
                 onChange={this._setLastUpdatedSelection}
-                min={1}
+                min={0}
                 defaultValue={this.state.selections.lastUpdated}
                 max={31}
               />
@@ -207,25 +207,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               ])()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
-              <Slider
-                label="Staleness for Issues"
-                onChange={this._setstalenessIssueSelection}
-                min={1}
-                defaultValue={this.state.selections.stalenessIssue}
-                max={7}
-              />
-              {description(["The number of days after which an Issue will be considered stale."])()}
-            </Stack>
-            <Stack horizontal horizontalAlign="center">
-              <Slider
-                label="Staleness for Pull Requests"
-                onChange={this._setStalenessPullSelection}
-                min={1}
-                defaultValue={this.state.selections.stalenessPull}
-                max={7}
+              <TextField
+                label="Reasonable Task Count"
+                defaultValue={this.state.selections.reasonableCount.toString()}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkReasonableCountSelection}
               />
               {description([
-                "The number of days after which a Pull Request will be considered stale."
+                "The number of tasks in this query that if exceeded, would be considered unreasonable."
               ])()}
             </Stack>
           </Stack>
@@ -462,14 +452,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private _setstalenessIssueSelection = (input?: number | undefined): void => {
-    if (!input) {
-      return;
-    }
-    const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-  };
-
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
     if (!input) {
       return;
@@ -478,16 +460,22 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private _setStalenessPullSelection = (input?: number | undefined): void => {
-    if (!input) {
-      return;
-    }
-    const updatedSelections = update(this.state.selections, { stalenessIssue: { $set: input } });
+  private _setLabelsSelection = (items: string[]): void => {
+    const updatedSelections = update(this.state.selections, { labels: { $set: items } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 
-  private _setLabelsSelection = (items: string[]): void => {
-    const updatedSelections = update(this.state.selections, { labels: { $set: items } });
+  private _checkReasonableCountSelection = (
+    value: string
+  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+    if (value && !this._numberRegex.test(value)) {
+      this.setState({ inputStatus: InputStatuses.invalidEdit });
+      return "Invalid number entered for reasonable task count.";
+    }
+    value = value.trim();
+    const updatedSelections = update(this.state.selections, {
+      reasonableCount: { $set: value ? parseInt(value) : 0 }
+    });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 }

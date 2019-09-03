@@ -2,7 +2,7 @@ import { mergeStyleSets } from "@uifabric/styling";
 import { IImageProps, ImageFit } from "office-ui-fabric-react";
 
 export const imageProps: IImageProps = {
-  src: "GlitterboxLogo2.png",
+  src: "logo.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 40,
