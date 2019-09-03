@@ -28,13 +28,17 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         for (const key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
           if (responseItems.tasks) {
+            // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;
+            // Add the number of "unreasonable" tasks to the badge count.
             badge += responseItems.tasks.length - newMap[key].reasonableCount;
           }
         }
 
-        const badgeText = badge < 0 ? "0" : badge.toString();
+        const badgeText = badge < 0 ? "0" : badge.toString(); // Prevents displaying negative badges.
         chrome.browserAction.setBadgeText({ text: badgeText });
+
+        // Call updateGist if there were indeed updates to the user's query results.
         if (JSON.stringify(map) !== JSON.stringify(newMap)) {
           await updateGist(user, newMap);
         }
