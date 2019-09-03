@@ -1,5 +1,5 @@
 /* global chrome */
-import { IUserInfo, IQuery, queryListType, IState } from "../state.types";
+import { IUserInfo, IQuery, queryListType } from "../state.types";
 import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
@@ -39,43 +39,38 @@ export type changeUIEditQueryAction = { type: string; query?: IQuery };
  * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
-  return async function (dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch) {
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
     } else {
       // Called when the user opens the application.
-      loginOnApplicationMount(dispatch, getState);
+      loginOnApplicationMount(dispatch);
     }
   };
 };
 
 // Helper function to attempt to log a user in when the extension is first opened.
 // Checks for valid credentials and loads the appropriate map if they are approved.
-function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
+function loginOnApplicationMount(dispatch: Dispatch) {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
     if (result.token && result.username && result.gistID) {
       const user = createIUserInfo(result.token, result.username, result.gistID);
       const response = await getQueryMapObj(user);
       if (response.queryMap) {
+        dispatch(storeUserInfo(user));
+        dispatch(updateMap(response.queryMap));
+        // We check to see if the user had any cached data in local storage.
         chrome.storage.sync.get(["currUI", "query"], async resultQuery => {
           if (resultQuery.query && resultQuery.currUI) {
             if (resultQuery.currUI === "QueryList") {
-              dispatch(storeUserInfo(user));
-              dispatch(updateMap(response.queryMap!!));
               dispatch(toQueryList(resultQuery.query));
-              return;
             } else if (resultQuery.currUI === "EditQuery") {
-              dispatch(storeUserInfo(user));
-              dispatch(updateMap(response.queryMap!!));
-              //can we $set currQuery here?
               dispatch(toEditQuery(resultQuery.query));
-              return;
             }
+            return;
           }
         });
-        dispatch(storeUserInfo(user));
-        dispatch(updateMap(response.queryMap));
         dispatch(toHome());
       } else {
         dispatch(toError(response.errorCode));

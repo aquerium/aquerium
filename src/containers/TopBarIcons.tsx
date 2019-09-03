@@ -26,9 +26,11 @@ interface ITopBarIconsProps {
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
+
   function onClickToEditQuery() {
     props.toEditQuery();
   };
+
   const menuProps = {
     items: [
       {

@@ -99,9 +99,11 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
+
   public componentDidMount(): void {
     this.props.login();
   }
+
   public render(): JSX.Element {
     return <Customizer scopedSettings={scopedSettings}>{this._renderUI()}</Customizer>;
   }
