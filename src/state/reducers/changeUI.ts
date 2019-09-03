@@ -22,7 +22,7 @@ export const changeUI = (
       chrome.storage.sync.set({ currUI: "Login" });
       return update(state, { currUI: { $set: "Login" } });
     }
-    case "EDIT": { //when should we update state
+    case "EDIT": {
       const { query } = action as changeUIEditQueryAction
       chrome.storage.sync.set({ currUI: "EditQuery" });
       return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query } });
