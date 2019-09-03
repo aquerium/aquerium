@@ -78,7 +78,7 @@ const scopedSettings = {
     }
   },
   Slider: {
-    styles: { container: { width: 450 } }
+    styles: { container: { width: 465 } }
   },
   Link: {
     target: "_blank"

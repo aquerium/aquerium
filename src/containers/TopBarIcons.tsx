@@ -1,6 +1,6 @@
 import * as React from "react";
 import { clearTokenLogout, toEditQuery } from "../state";
-import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
+import { Image, Stack, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
   topBarItemGap,

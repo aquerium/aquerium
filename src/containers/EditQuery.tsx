@@ -216,6 +216,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               {description("The GitHub labels assigned to particular tasks.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Reasonable Task Count"
+                defaultValue={this.state.selections.reasonableCount.toString()}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkReasonableCountSelection}
+              />
+              {description(
+                "The number of tasks in this query that if exceeded, would be considered unreasonable."
+              )()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
               <Slider
                 label="Last Updated"
                 onChange={this._setLastUpdatedSelection}
@@ -227,31 +239,23 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
               )()}
             </Stack>
-            <TextField
-              label="Reasonable Task Count"
-              defaultValue={this.state.selections.reasonableCount.toString()}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkReasonableCountSelection}
-            />
-            {description(
-              "The number of tasks in this query that if exceeded, would be considered unreasonable."
-            )()}
-          </Stack>
-          <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
-            <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
-          </Separator>
-          <Stack horizontal horizontalAlign="center">
-            <Dropdown
-              styles={customizeViewDropdown}
-              responsiveMode={ResponsiveMode.large}
-              label="Customize Task Tile Fields"
-              multiSelect
-              selectedKeys={this.state.selections.customViews}
-              options={this._customViewsOptions}
-              onChange={this._setCustomViews}
-            />
-            {description("Select the fields you wish to prioritize while viewing the task list.")()}
+            <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
+              <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
+            </Separator>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                styles={customizeViewDropdown}
+                responsiveMode={ResponsiveMode.large}
+                label="Customize Task Tile Fields"
+                multiSelect
+                selectedKeys={this.state.selections.customViews}
+                options={this._customViewsOptions}
+                onChange={this._setCustomViews}
+              />
+              {description(
+                "Select the fields you wish to prioritize while viewing the task list."
+              )()}
+            </Stack>
           </Stack>
         </Stack>
       </>
