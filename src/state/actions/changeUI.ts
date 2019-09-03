@@ -46,7 +46,7 @@ export const login = (currPAT?: string) => {
     } else {
       // Called when the user opens the application.
       loginOnApplicationMount(dispatch);
-    }
+    };
   };
 };
 
@@ -64,24 +64,20 @@ async function loginOnApplicationMount(dispatch: Dispatch) {
         chrome.storage.sync.get(["currUI", "query"], resultQuery => {
           if (resultQuery.query && resultQuery.currUI) {
             if (resultQuery.currUI === "QueryList") {
-              chrome.storage.sync.set({ currUI: "QueryList", query: resultQuery.query });
-              dispatch(goToQueryList(resultQuery.query));
+              toQueryList(resultQuery.query)(dispatch);
             } else if (resultQuery.currUI === "EditQuery") {
-              chrome.storage.sync.set({ currUI: "EditQuery" });
-              dispatch(goToEditQuery(resultQuery.query));
-            }
+              toEditQuery(resultQuery.query)(dispatch);
+            };
             return;
-          }
+          };
         });
-        chrome.storage.sync.set({ currUI: "Home" });
-        dispatch(goToHome());
+        toHome()(dispatch)
       } else {
-        chrome.storage.sync.set({ currUI: "ErrorPage" });
-        dispatch(goToError(response.errorCode));
-      }
-    }
+        toError(response.errorCode)(dispatch);
+      };
+    };
   });
-}
+};
 
 // Helper function to attempt to log a user in via their PAT.
 async function loginViaPAT(dispatch: Dispatch, PAT: string) {
@@ -102,11 +98,11 @@ async function loginViaPAT(dispatch: Dispatch, PAT: string) {
           loginQueryMapExists(responseGist.user, dispatch, {});
         } else {
           dispatch(setIsInvalidPAT(true));
-        }
-      }
-    }
+        };
+      };
+    };
   });
-}
+};
 
 // Helper function that creates an IUserInfo.
 function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
@@ -116,7 +112,7 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
     gistID: newGistID,
     invalidPAT: false
   };
-}
+};
 
 // Helper function that logs in an existing user.
 async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
@@ -125,17 +121,16 @@ async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<v
     loginQueryMapExists(user, dispatch, responseMap.queryMap);
   } else {
     dispatch(setIsInvalidPAT(true));
-  }
-}
+  };
+};
 
 // Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
   dispatch(updateMap(map));
-  chrome.storage.sync.set({ currUI: "Home" });
-  dispatch(goToHome());
-}
+  toHome()(dispatch);
+};
 
 /**
  * Action creator to clear a user's stored token and then logout.
@@ -155,7 +150,7 @@ export const logout = () => {
     chrome.storage.sync.set({ currUI: "Login" });
     dispatch(goToLogout());
   };
-}
+};
 
 /**
  * Sets local storage to reflect the updated UI and then calls the goToEditQuery action.
@@ -165,7 +160,7 @@ export const toEditQuery = (query?: IQuery) => {
     chrome.storage.sync.set({ currUI: "EditQuery" });
     dispatch(goToEditQuery(query));
   };
-}
+};
 
 /**
  * Sets local storage to reflect the updated UI and then calls the goToQueryList action.
@@ -175,7 +170,7 @@ export const toQueryList = (query: IQuery) => {
     chrome.storage.sync.set({ currUI: "QueryList", query: query });
     dispatch(goToQueryList(query));
   };
-}
+};
 
 /**
  * Sets local storage to reflect the updated UI and then calls the goToHome action.
@@ -195,7 +190,7 @@ export const toError = (errorCode?: number, query?: IQuery) => {
     chrome.storage.sync.set({ currUI: "ErrorPage" });
     dispatch(goToError(errorCode, query));
   };
-}
+};
 
 /**
  * Action creator to send the user from home UI to Login UI.

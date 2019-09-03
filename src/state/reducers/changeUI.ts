@@ -21,7 +21,7 @@ export const changeUI = (
       return update(state, { currUI: { $set: "Login" } });
     }
     case "EDIT": {
-      const { query } = action as changeUIEditQueryAction
+      const { query } = action as changeUIEditQueryAction;
       return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query } });
     }
     case "QUERY": {
