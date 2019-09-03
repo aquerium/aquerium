@@ -17,7 +17,7 @@ const homeLoadingPhrases = [
   "Querying Github (for a friend)...",
   "Getting this bread...",
   "Trying this rhye",
-  "Clicking refresh won't make me think any faster..."
+  "Clicking refresh won't make me thunk any faster..."
 ];
 
 /** Returns a random string from loginLoadingPhrases.  */
