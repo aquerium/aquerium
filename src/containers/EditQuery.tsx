@@ -59,7 +59,7 @@ interface IEditQueryUIProps {
   currQuery?: IQuery;
   /** Action that sends the user back to the HomeUI. */
   toHome: () => void;
-  /** Action that sends the user back to the QueryList UI */
+  /** Action that sends the user back to the QueryList UI. */
   toQueryList: (query: IQuery) => void;
   /** Action that tells redux and the Gist to modify the current query. */
   addOrEditQuery: (query: IQuery) => void;
