@@ -19,11 +19,11 @@ export const addOrEditQuery = (query: IQuery) => {
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
       dispatch(setHomeLoadingFalse());
-      dispatch(toError(resp.errorCode, query));
+      toError(resp.errorCode, query);
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
+    const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks },
       url: { $set: getQueryURLHTML(user, query) }
     });
@@ -32,7 +32,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       dispatch(setHomeLoadingFalse());
-      dispatch(toError(resp.errorCode, query));
+      toError(resp.errorCode, query);
       return;
     } else {
       dispatch(updateMap(newList));
@@ -65,7 +65,7 @@ export const removeQuery = (queryID: string) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       dispatch(setHomeLoadingFalse());
-      dispatch(toError(response.errorCode));
+      toError(response.errorCode);
       return;
     }
     dispatch(updateMap(newList));
@@ -89,7 +89,7 @@ export const refreshMap = () => {
         const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
         const response = await updateGist(user, newList);
         if (response.errorCode) {
-          dispatch(toError(response.errorCode));
+          toError(response.errorCode)(dispatch);
           dispatch(setHomeLoadingFalse());
           return;
         }
@@ -99,7 +99,7 @@ export const refreshMap = () => {
           dispatch(updateMap(newList));
         }, delayInMilliseconds);
       } else {
-        dispatch(toError(responseItems.errorCode));
+        toError(responseItems.errorCode)(dispatch);
         dispatch(setHomeLoadingFalse());
         return;
       }

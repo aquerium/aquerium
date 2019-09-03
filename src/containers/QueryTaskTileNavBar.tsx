@@ -9,12 +9,15 @@ interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
   /** A function that calls the action to go to the Edit Query UI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
   /** A function that calls the action to go to the Home UI. */
   toHome: () => void;
 }
 
 function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
+  function onClickToEditQuery() {
+    props.toEditQuery(query);
+  }
   const { query } = props;
   const iconProps = {
     back: { iconName: "Back", name: "Back" },
@@ -44,7 +47,7 @@ function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
           {query.name}
         </Link>
       </TooltipHost>
-      <CommandBarButton iconProps={iconProps.edit} styles={iconSize} onClick={props.toEditQuery} />
+      <CommandBarButton iconProps={iconProps.edit} styles={iconSize} onClick={onClickToEditQuery} />
     </Stack>
   );
 }
