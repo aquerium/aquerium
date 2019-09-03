@@ -51,7 +51,7 @@ const stackStyles = { root: { height: "100%" } };
 const iconHomeProps = { iconName: "Home" };
 const iconLogoutProps = { iconName: "SignOut" };
 const iconEditProps = { iconName: "Edit" }
-const ReturnIconStyles = {
+const returnIconStyles = {
   root: { fontSize: 30, transform: "translateY(200%)" },
   icon: { fontSize: 40 }
 };
@@ -78,7 +78,7 @@ function ErrorPageView(props: IErrorPageProps) {
       <ActionButton
         iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : errorMessage === BAD_QUERY_MESSAGE ? iconEditProps : iconLogoutProps}
         text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : errorMessage === BAD_QUERY_MESSAGE ? "Return to your Query" : "Return to Login"}
-        styles={ReturnIconStyles}
+        styles={returnIconStyles}
         onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : errorMessage === BAD_QUERY_MESSAGE ? props.toEditQuery : props.logout}
       />
     </Stack>
