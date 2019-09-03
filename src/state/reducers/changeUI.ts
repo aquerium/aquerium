@@ -15,25 +15,20 @@ export const changeUI = (
 ) => {
   switch (action.type) {
     case "LOGIN": {
-      chrome.storage.sync.set({ currUI: "Home" });
       return update(state, { currUI: { $set: "Home" } });
     }
     case "LOGOUT": {
-      chrome.storage.sync.set({ currUI: "Login" });
       return update(state, { currUI: { $set: "Login" } });
     }
     case "EDIT": {
       const { query } = action as changeUIEditQueryAction
-      chrome.storage.sync.set({ currUI: "EditQuery" });
       return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query } });
     }
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
-      chrome.storage.sync.set({ currUI: "QueryList", query: query });
       return update(state, { currUI: { $set: "QueryList" }, currQuery: { $set: query } });
     }
     case "HOME": {
-      chrome.storage.sync.set({ currUI: "Home" });
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
     }
     case "ERROR": {
