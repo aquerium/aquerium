@@ -143,13 +143,41 @@ export async function getRepoLabels(
   repo: string
 ): Promise<{ labels?: string[]; errorCode?: number }> {
   try {
-    const octokit = new Octokit({ auth: "" }); // TODO: Inside the quotes should be user.token
-    const options = octokit.issues.listLabelsForRepo.endpoint.merge({
-      owner: repo.substr(0, repo.indexOf("/")),
-      repo: repo.substr(repo.indexOf("/") + 1)
-    });
-    const labels = await octokit.paginate(options);
-    return { labels: labels.map(label => label.name) };
+    // const octokit = new Octokit({ auth: "" }); // TODO: Inside the quotes should be user.token
+    // const options = octokit.issues.listLabelsForRepo.endpoint.merge({
+    //   owner: repo.substr(0, repo.indexOf("/")),
+    //   repo: repo.substr(repo.indexOf("/") + 1)
+    // });
+    // const labels = await octokit.paginate(options);
+    // return { labels: labels.map(label => label.name) };
+    let labels: string[] = [];
+    //Fetch initial set of labels.
+    const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
+    const response = await fetch(labelsURL);
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
+    //Save the initial set of labels.
+    const data = await response.json();
+    labels = labels.concat(data.map((label: { name: string }) => label.name));
+
+    //Check if the response header indicates more than 1 page of labels.
+    const headerLinks = response.headers.get("Link");
+    if (headerLinks) {
+      const lastLink = headerLinks.split(/<(.*?)>/g).filter(link => link.includes("https://"))[1];
+      let numPages = parseInt(lastLink.substring(lastLink.lastIndexOf("=") + 1));
+      console.log(numPages);
+      //Fetch all pages of labels.
+      for (let i = 2; i < numPages; i++) {
+        const response = await fetch(labelsURL + "?page=" + i);
+        if (!response.ok) {
+          return { errorCode: response.status };
+        }
+        const data = await response.json();
+        labels = labels.concat(data.map((label: { name: string }) => label.name));
+      }
+    }
+    return { labels: labels };
   } catch (error) {
     return { errorCode: 500 };
   }
