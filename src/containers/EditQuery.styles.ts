@@ -1,5 +1,4 @@
 import { mergeStyleSets } from "@uifabric/styling";
-import { AutoScroll } from "@uifabric/utilities";
 
 export const rootTokenGap = {
   childrenGap: 14

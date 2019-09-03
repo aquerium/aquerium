@@ -88,8 +88,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           lastUpdated: 0,
           tasks: [],
           url: ""
-          // customViews: [],
-          // sortBy: "author-date-desc"
         }
   };
 
