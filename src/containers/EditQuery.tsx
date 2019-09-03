@@ -84,7 +84,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           id: "",
           name: "",
           lastUpdated: 0,
-          reasonableCount: "0",
+          reasonableCount: 0,
           tasks: [],
           url: ""
         }
@@ -209,7 +209,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Reasonable Task Count"
-                defaultValue={this.state.selections.reasonableCount}
+                defaultValue={this.state.selections.reasonableCount.toString()}
                 validateOnFocusIn
                 validateOnFocusOut
                 onGetErrorMessage={this._checkReasonableCountSelection}
@@ -473,7 +473,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return "Invalid number entered for reasonable task count.";
     }
     value = value.trim();
-    const updatedSelections = update(this.state.selections, { reasonableCount: { $set: value } });
+    const updatedSelections = update(this.state.selections, {
+      reasonableCount: { $set: parseInt(value) }
+    });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
 }
