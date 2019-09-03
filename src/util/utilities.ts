@@ -23,7 +23,6 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
       num: item.number,
       title: item.title,
       type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
-      state: "open",
       createdAt: item.created_at.substring(0, 10),
       updatedAt: item.updated_at.substring(0, 10),
       url: item.html_url,

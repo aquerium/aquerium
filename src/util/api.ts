@@ -1,5 +1,5 @@
 import fetch from "isomorphic-fetch";
-import { IQuery, IUserInfo } from "../state";
+import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
 import { emoji } from "../util";
 import Octokit from "@octokit/rest";
@@ -141,7 +141,7 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
 export async function getRepoLabels(
   // TODO: Take in user: IUserInfo
   repo: string
-): Promise<{ labels?: string[]; errorCode?: number }> {
+): Promise<{ labels?: ILabel[]; errorCode?: number }> {
   try {
     // const octokit = new Octokit({ auth: "" }); // TODO: Inside the quotes should be user.token
     // const options = octokit.issues.listLabelsForRepo.endpoint.merge({
@@ -150,7 +150,7 @@ export async function getRepoLabels(
     // });
     // const labels = await octokit.paginate(options);
     // return { labels: labels.map(label => label.name) };
-    let labels: string[] = [];
+    let labels: ILabel[] = [];
     //Fetch initial set of labels.
     const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
     const response = await fetch(labelsURL);
@@ -159,7 +159,12 @@ export async function getRepoLabels(
     }
     //Save the initial set of labels.
     const data = await response.json();
-    labels = labels.concat(data.map((label: { name: string }) => label.name));
+    labels = labels.concat(
+      data.map((label: { name: string; color: string }) => ({
+        name: label.name,
+        color: label.color
+      }))
+    );
 
     //Check if the response header indicates more than 1 page of labels.
     const headerLinks = response.headers.get("Link");
@@ -175,7 +180,12 @@ export async function getRepoLabels(
           return { errorCode: response.status };
         }
         const data = await response.json();
-        labels = labels.concat(data.map((label: { name: string }) => label.name));
+        labels = labels.concat(
+          data.map((label: { name: string; color: string }) => ({
+            name: label.name,
+            color: label.color
+          }))
+        );
       }
     }
     return { labels: labels };

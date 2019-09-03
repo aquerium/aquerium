@@ -1,5 +1,3 @@
-import { ITag } from "office-ui-fabric-react";
-
 /**
  * @interface
  * This interface defines the state object.
@@ -42,8 +40,6 @@ export interface ITask {
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
-  /** State of a task only be "open" or "closed". */
-  state: "open" | "closed";
   /** Time stamp for creation. */
   createdAt: string;
   /** Time stamp for last update. */
@@ -82,7 +78,7 @@ export interface IQuery {
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
   /** The array of labels that are rendered across the app. */
-  labelsToRender?: string[];
+  labelsToRender: ILabel[];
   /** Number of days before an issue goes stale. */
   stalenessIssue: number;
   /** Number of days before a pr goes stale. */
@@ -93,6 +89,8 @@ export interface IQuery {
   tasks: ITask[];
   /** The URL for the github page containing this query. */
   url: string;
+  /** An array that keeps track of the fields a user wishes to view on the task list tile. */
+  customViews: string[];
 }
 
 /**

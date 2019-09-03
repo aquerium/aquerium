@@ -94,7 +94,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           tasks: [],
           labels: [],
           labelsToRender: [],
-          url: ""
+          url: "",
+          customViews: ["author", "repo", "createdAt"]
         },
     validInputs: [true, true, true, true, true]
   };
@@ -235,9 +236,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TagPicker
                 selectedItems={
                   this.state.selections.labelsToRender
-                    ? this.state.selections.labelsToRender.map(item => ({
-                        key: item,
-                        name: item
+                    ? this.state.selections.labelsToRender.map(label => ({
+                        key: label.name + "/#" + label.color,
+                        name: label.name
                       }))
                     : []
                 }
@@ -453,7 +454,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     //Fetch new labels.
     const result = await getRepoLabels(this.state.selections.repo);
     if (!result.labels) return;
-    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({ key: item, name: item }));
+    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({
+      key: item.name + "/#" + item.color,
+      name: item.name
+    }));
     this.setState({
       labelSuggestions: updatedLabelSuggestions
     });
@@ -597,20 +601,24 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _validateInput = (input: string) => {
     if (!this._nameRegex.test(input)) return ValidationState.invalid;
     return !this.state.selections.labelsToRender ||
-      this.state.selections.labelsToRender.indexOf(input) < 0
+      this.state.selections.labelsToRender.map(label => label.name).indexOf(input) < 0
       ? ValidationState.valid
       : ValidationState.invalid;
   };
 
   private _genericItem(input: string, validationState: number) {
-    const newItem = { key: input, name: input };
+    //Default to a gray tone/background for this label.
+    const newItem = { key: input + "/#A9A9A9", name: input };
     return newItem;
   }
 
   private _onChangeSelectedLabels = (items?: ITag[]) => {
     if (!items) return;
     let newSelectedLabels = items.map(label => label.name);
-    let newEmojifiedSelectedLabels = items.map(label => emoji.emojify(label.name));
+    let newEmojifiedSelectedLabels = items.map(item => ({
+      name: emoji.emojify(item.name),
+      color: item.key.substring(item.key.lastIndexOf("#") + 1)
+    }));
     const updatedSelections = update(this.state.selections, {
       labels: { $set: newSelectedLabels },
       labelsToRender: { $set: newEmojifiedSelectedLabels }
