@@ -9,7 +9,8 @@ import {
   MessageBarType,
   MessageBarButton,
   Dropdown,
-  IDropdownOption
+  IDropdownOption,
+  CommandBar
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
@@ -17,9 +18,9 @@ import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
-  actionIcons,
   typeOptions,
-  reviewStatusOptions
+  reviewStatusOptions,
+  commandBarStyles
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 
@@ -99,42 +100,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-            <Stack
-              horizontal
-              verticalAlign="center"
-              horizontalAlign="space-evenly"
-              className={EditQueryUIClassNames.topBar}
-            >
-              <ActionButton
-                iconProps={actionIcons.back.name}
-                styles={actionIcons.back.styles}
-                text="Back"
-                onClick={this.props.toHome}
+            <div className={EditQueryUIClassNames.commandBarContainer}>
+              <CommandBar
+                styles={commandBarStyles}
+                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
               />
-              {this.state.selections.id === "" ? (
-                <ActionButton
-                  iconProps={actionIcons.add.name}
-                  styles={actionIcons.add.styles}
-                  text="Add"
-                  onClick={this._setMessageBarAddOrEdit}
-                />
-              ) : (
-                <ActionButton
-                  iconProps={actionIcons.update.name}
-                  styles={actionIcons.update.styles}
-                  text="Update"
-                  onClick={this._setMessageBarAddOrEdit}
-                />
-              )}
-              <ActionButton
-                iconProps={actionIcons.remove.name}
-                styles={actionIcons.remove.styles}
-                text="Remove"
-                onClick={this._setMessageBarRemove}
-              />
-            </Stack>
+            </div>
           )}
-
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -282,29 +254,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    if (this.state.inputStatus === InputStatuses.successfulEdit && this.state.selections.name) {
-      this.setState({
-        messageType: MessageBarType.warning,
-        message:
-          "Are you sure you want to " +
-          (this.state.selections.id === "" ? "add" : "update") +
-          " this query?",
-        actions: (
-          <div>
-            <MessageBarButton text="Yes" onClick={this._addOrEditQuery} />
-            {/* Else discard changes and go back to home screen. */}
-            <MessageBarButton text="No" onClick={this._onDismissMessageBar} />
-          </div>
-        ),
-        renderMessageBar: true
-      });
-    } else {
+    if (this.state.inputStatus !== InputStatuses.successfulEdit || !this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.severeWarning,
         message: "Ensure query edits are valid!",
         actions: undefined,
         renderMessageBar: true
       });
+    } else {
+      this._addOrEditQuery();
     }
   };
 
@@ -328,6 +286,67 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       renderMessageBar: true
     });
   };
+
+  private _addItems = [
+    {
+      key: "cancel",
+      name: "Cancel",
+      ariaLabel: "Cancel",
+      iconProps: { iconName: "Cancel" },
+      onClick: this.props.toHome,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Gray" }
+      }
+    },
+    {
+      key: "add",
+      name: "Add",
+      ariaLabel: "Add",
+      iconProps: { iconName: "Add" },
+      onClick: this._setMessageBarAddOrEdit,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Green" }
+      }
+    }
+  ];
+
+  private _updateItems = [
+    {
+      key: "Cancel",
+      name: "Cancel",
+      ariaLabel: "Cancel",
+      iconProps: { iconName: "Cancel" },
+      onClick: this.props.toHome,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Gray" }
+      }
+    },
+    {
+      key: "update",
+      name: "Update",
+      ariaLabel: "Update",
+      iconProps: { iconName: "Save", color: "Green" },
+      onClick: this._setMessageBarAddOrEdit,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Green" }
+      }
+    },
+    {
+      key: "remove",
+      name: "Remove",
+      ariaLabel: "Remove",
+      iconProps: { iconName: "Trash", color: "Red" },
+      onClick: this._setMessageBarRemove,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Red" }
+      }
+    }
+  ];
 
   private _onRemove = (): void => {
     const queryID: string = this.state.selections.id;
