@@ -27,13 +27,10 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         const newMap = JSON.parse(JSON.stringify(map));
         for (const key in map) {
           const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
-          if (
-            responseItems.tasks &&
-            JSON.stringify(responseItems.tasks) !== JSON.stringify(map[key].tasks)
-          ) {
+          if (responseItems.tasks) {
             newMap[key].tasks = responseItems.tasks;
+            badge += responseItems.tasks.length - newMap[key].reasonableCount;
           }
-          badge += responseItems.tasks.length - +newMap[key].reasonableCount;
         }
 
         const badgeText = badge < 0 ? "0" : badge.toString();
