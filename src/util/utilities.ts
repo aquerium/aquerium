@@ -1,6 +1,10 @@
-import { IQuery, ITask, IUserInfo } from "../state";
+import { IQuery, ITask, ILabel, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
+import { isLabeledStatement } from "@babel/types";
+
+/** Emoji object to help render emojis correctly throughout the app. */
+export const emoji = require("node-emoji");
 
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
@@ -19,17 +23,25 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
     const task: ITask = {
       num: item.number,
       title: item.title,
+      body: item.body,
       type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
       createdAt: item.created_at.substring(0, 10),
       updatedAt: item.updated_at.substring(0, 10),
       url: item.html_url,
       repo: item.repository_url.split("https://api.github.com/repos/")[1],
       author: item.user.login,
-      assignees: [],
-      labels: []
+      assignees: item.assignees.map(assignee => assignee.login),
+      labels: item.labels.map(
+        ({ name, color }) =>
+          ({
+            name,
+            color
+          } as ILabel)
+      )
     };
     tasks.push(task);
   });
+
   return { tasks: tasks };
 }
 

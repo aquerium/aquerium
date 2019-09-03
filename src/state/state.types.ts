@@ -18,6 +18,18 @@ export interface IState {
 }
 
 /**
+ * @interface
+ * This interface represents a single label, withc its name and color.
+ */
+export interface ILabel {
+  /** The name of the label. */
+  name: string;
+  /** The color provided by GitHub and/or a repository. */
+  color: string;
+}
+
+/**
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -27,6 +39,8 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
+  /** The body of the ITask, adding further information about the task. */
+  body: string;
   /** The assignees of the task. */
   assignees: string[];
   /** The repo the task is a member of. */
@@ -34,7 +48,7 @@ export interface ITask {
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
   /** Array of labels further classifying the task. */
-  labels: string[];
+  labels: ILabel[];
   /** Time stamp for creation. */
   createdAt: string;
   /** Time stamp for last update. */
@@ -63,14 +77,16 @@ export interface IQuery {
   mentions?: string;
   /** OPTIONAL The current review status for tasks in the query. */
   reviewStatus?:
-  | "No reviews"
-  | "Review required"
-  | "Approved review"
-  | "Changes requested"
-  | "Reviewed by you"
-  | "Awaiting review from you";
+    | "No reviews"
+    | "Review required"
+    | "Approved review"
+    | "Changes requested"
+    | "Reviewed by you"
+    | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
+  /** The array of labels that are rendered across the app. */
+  labelsToRender: string[];
   /** Number of days before an issue goes stale. */
   stalenessIssue: number;
   /** Number of days before a pr goes stale. */
