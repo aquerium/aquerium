@@ -12,11 +12,11 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
-      toError(resp.errorCode, query);
+      toError(resp.errorCode, query)(dispatch);
       return;
     }
     // We have a valid task array, and need to store it in our new query.
@@ -28,7 +28,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      toError(resp.errorCode, query);
+      toError(resp.errorCode, query)(dispatch);
       return;
     }
     dispatch(updateMap(newList));
@@ -51,12 +51,12 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      toError(response.errorCode);
+      toError(response.errorCode)(dispatch);
       return;
     }
     dispatch(updateMap(newList));
