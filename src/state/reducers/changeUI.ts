@@ -7,7 +7,6 @@ const DEFAULT_STATE: IState["changeUI"] = {
   currUI: "Login",
   currQuery: undefined,
   isHomeLoading: false,
-  isLoginLoading: false
 };
 
 /**
@@ -32,9 +31,7 @@ export const changeUI = (
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
       return update(state, {
-        currUI: { $set: "QueryList" }, currQuery: { $set: query }, isHomeLoading: {
-          $set: false
-        }, isLoginLoading: { $set: false }
+        currUI: { $set: "QueryList" }, currQuery: { $set: query }, isHomeLoading: { $set: false }
       });
     }
     case "HOME": {
@@ -45,12 +42,6 @@ export const changeUI = (
     }
     case "HOME_LOADING_FALSE": {
       return update(state, { isHomeLoading: { $set: false } });
-    }
-    case "LOGIN_LOADING_TRUE": {
-      return update(state, { isLoginLoading: { $set: true } });
-    }
-    case "LOGIN_LOADING_FALSE": {
-      return update(state, { isLoginLoading: { $set: false } });
     }
     case "ERROR": {
       const { errorCode, query } = action as changeUIErrorAction;

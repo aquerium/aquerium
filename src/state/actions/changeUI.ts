@@ -227,6 +227,16 @@ const goToHome = () => ({
   type: "HOME"
 });
 
+/*
+ * Action creator to send the user to the Error UI.
+ */
+const goToError = (errorCode?: number, query?: IQuery) => ({
+  type: "ERROR",
+  errorCode,
+  query
+});
+
+
 /**
  * Action creator to toggle the isHomeLoading setting to true.
  */
@@ -255,13 +265,10 @@ export const setLoginLoadingFalse = () => ({
   type: "LOGIN_LOADING_FALSE"
 });
 
-//export const toLoadingPage = () => ({
-
-/*
- * Action creator to send the user to the Error UI.
+/**
+ * Action creator to send the user to the Loading UI.
  */
-const goToError = (errorCode?: number, query?: IQuery) => ({
-  type: "ERROR",
-  errorCode,
-  query
+export const toLoadingPage = () => ({
+  type: "LOADING"
 });
+
