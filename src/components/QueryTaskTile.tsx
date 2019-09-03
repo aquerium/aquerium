@@ -36,10 +36,10 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
     beforeText?: string,
     afterText?: string
   ) => {
-    return optionIndices.get(prop) > -1 || !info ? (
+    return optionIndices.get(prop) > -1 ? (
       <span>
         {beforeText}
-        <b>{info}</b>
+        <b>{prop === "labels" && !info ? "None yet" : info}</b>
         {afterText}
       </span>
     ) : null;
