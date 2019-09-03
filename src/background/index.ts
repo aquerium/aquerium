@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.alarms.onAlarm.addListener(async alarm => {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
-    if (result.token !== "" && result.username != "" && result.gistID != "") {
+    if (result.token && result.username && result.gistID) {
       const user: IUserInfo = {
         token: result.token,
         username: result.username,
