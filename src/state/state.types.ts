@@ -63,20 +63,18 @@ export interface IQuery {
   mentions?: string;
   /** OPTIONAL The current review status for tasks in the query. */
   reviewStatus?:
-  | "No reviews"
-  | "Review required"
-  | "Approved review"
-  | "Changes requested"
-  | "Reviewed by you"
-  | "Awaiting review from you";
+    | "No reviews"
+    | "Review required"
+    | "Approved review"
+    | "Changes requested"
+    | "Reviewed by you"
+    | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
-  /** Number of days before an issue goes stale. */
-  stalenessIssue: number;
-  /** Number of days before a pr goes stale. */
-  stalenessPull: number;
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
+  /** The number of tasks in a query that if exceeded, would be considered unreasonable. */
+  reasonableCount: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
   /** The URL for the github page containing this query. */

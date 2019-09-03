@@ -21,7 +21,7 @@ import { getLoginLoadingPhrase } from "../misc/loadingPhrases"
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
-  src: "GlitterboxLogo2.png",
+  src: "logo.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 175,
@@ -110,6 +110,7 @@ function LoginUIComponent(props: ILoginProps) {
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
           errorMessage={props.invalidPAT ? "This PAT is invalid or expired." : ""}
+          type="password"
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>

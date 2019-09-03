@@ -44,7 +44,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
 
 /**
  * Returns the queryMap object in the user's gist file.
- * @param user IUserInfo object with the user's relevant information.
+ * @param user Contains the user's relevant information.
  */
 export async function getQueryMapObj(
   user: IUserInfo
@@ -62,7 +62,7 @@ export async function getQueryMapObj(
 
 /**
  * Updates the user's gist contents with an updated queryMap object.
- * @param user IUserInfo object with the user's relevant information.
+ * @param user Contains the user's relevant information.
  * @param queryMap Contains the user's queries in a dictionary.
  */
 export async function updateGist(
