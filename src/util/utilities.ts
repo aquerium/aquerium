@@ -1,4 +1,4 @@
-import { IQuery, ITask, ILabel, IUserInfo } from "../state";
+import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
 
