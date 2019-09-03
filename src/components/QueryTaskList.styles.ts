@@ -33,7 +33,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     display: "grid",
     gridTemplateColumns: "1fr",
     gridAutoRows: "1fr",
-    gridGap: "14px",
+    gridGap: "15px",
     textAlign: "center",
     boxSizing: "border-box",
     padding: "12px 18px 18px 20px"
@@ -42,7 +42,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     hoveringAndShading,
     {
       width: "507px",
-      height: "94px",
+      height: "95px",
       textAlign: "left",
       outline: "none",
       border: "none",

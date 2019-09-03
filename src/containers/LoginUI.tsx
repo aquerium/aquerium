@@ -100,6 +100,7 @@ function LoginUIComponent(props: ILoginProps) {
         <TextField
           placeholder="Enter your GitHub PAT"
           required
+          type="password"
           styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
