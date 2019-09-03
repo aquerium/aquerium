@@ -1,5 +1,5 @@
 import * as React from "react";
-import { clearTokenLogout, toEditQuery } from "../state";
+import { clearTokenLogout, toEditQuery, IQuery } from "../state";
 import { Image, Stack, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
@@ -16,10 +16,15 @@ interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
   /** A function linked with the action creator to send the user to the EditQueryUI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
+
+  function onClickToEditQuery() {
+    props.toEditQuery();
+  };
+
   const menuProps = {
     items: [
       {
@@ -28,7 +33,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         iconProps: {
           iconName: "Add"
         },
-        onClick: props.toEditQuery
+        onClick: onClickToEditQuery
       },
       {
         key: "sign out",

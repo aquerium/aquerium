@@ -1,5 +1,6 @@
+/*global chrome*/
 import update from "immutability-helper";
-import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction } from "../actions/changeUI";
+import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction, changeUIEditQueryAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
 const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
@@ -10,7 +11,7 @@ const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
  */
 export const changeUI = (
   state: IState["changeUI"] = DEFAULT_STATE,
-  action: changeUIAction | changeUIErrorAction
+  action: changeUIAction | changeUIQueryTaskListAction | changeUIEditQueryAction
 ) => {
   switch (action.type) {
     case "LOGIN": {
@@ -20,7 +21,8 @@ export const changeUI = (
       return update(state, { currUI: { $set: "Login" } });
     }
     case "EDIT": {
-      return update(state, { currUI: { $set: "EditQuery" } });
+      const { query } = action as changeUIEditQueryAction;
+      return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query } });
     }
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;

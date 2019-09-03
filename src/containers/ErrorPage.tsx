@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack, Text, Icon, ActionButton } from "office-ui-fabric-react";
 import { connect } from "react-redux";
-import { IState, toHome, logout, toEditQuery } from "../state";
+import { IState, toHome, clearTokenLogout, toEditQuery, IQuery } from "../state";
 
 // The error message sent if an error occured regarding user credentials.
 const FAILED_CREDENTIALS_ERROR =
@@ -32,14 +32,17 @@ interface IErrorPageProps {
   errorCode?: number;
   /** This function calls an action that takes the user to the Home UI. */
   toHome: () => void;
-  /** This function calls an action to send the user to the Login UI. */
-  logout: () => void;
+  /** This function calls an action to send the user to the Login UI, also clearing their PAT. */
+  clearTokenLogout: () => void;
   /** This function calls an action to send the user to the Edit Query UI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
+  /** The optional IQuery attatched to an error. */
+  currQuery?: IQuery;
 }
 
 const mapStateToProps = (state: IState) => ({
-  errorCode: state.changeUI.errorCode
+  errorCode: state.changeUI.errorCode,
+  currQuery: state.changeUI.currQuery
 });
 
 const errorIconStyles = { styles: { root: { fontSize: 50, color: "#8f191b" } } };
@@ -57,6 +60,9 @@ const returnIconStyles = {
 };
 
 function ErrorPageView(props: IErrorPageProps) {
+  function onClickToEditQuery() {
+    props.toEditQuery(props.currQuery);
+  }
   // Uses ternary logic to determine what the error message should be.
   // If error code is undefined or does not exist in the error code arrays, the generic message is returned.
   // Else, either of the other error messages is selected.
@@ -79,7 +85,7 @@ function ErrorPageView(props: IErrorPageProps) {
         iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : errorMessage === BAD_QUERY_MESSAGE ? iconEditProps : iconLogoutProps}
         text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : errorMessage === BAD_QUERY_MESSAGE ? "Return to your Query" : "Return to Login"}
         styles={returnIconStyles}
-        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : errorMessage === BAD_QUERY_MESSAGE ? props.toEditQuery : props.logout}
+        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : errorMessage === BAD_QUERY_MESSAGE ? onClickToEditQuery : props.clearTokenLogout}
       />
     </Stack>
   );
@@ -87,7 +93,7 @@ function ErrorPageView(props: IErrorPageProps) {
 
 const action = {
   toHome,
-  logout,
+  clearTokenLogout,
   toEditQuery
 };
 

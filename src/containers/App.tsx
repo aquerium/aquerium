@@ -102,6 +102,7 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
+
   public componentDidMount(): void {
     this.props.login();
   }

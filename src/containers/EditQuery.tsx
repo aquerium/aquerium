@@ -1,3 +1,4 @@
+/*global chrome*/
 import React from "react";
 import update from "immutability-helper";
 import {
@@ -15,7 +16,7 @@ import {
   CommandBar
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, removeQuery, IState, addOrEditQuery } from "../state";
+import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList } from "../state";
 import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
@@ -66,6 +67,8 @@ interface IEditQueryUIProps {
   currQuery?: IQuery;
   /** Action that sends the user back to the HomeUI. */
   toHome: () => void;
+  /** Action that sends the user back to the QueryList UI. */
+  toQueryList: (query: IQuery) => void;
   /** Action that tells redux and the Gist to modify the current query. */
   addOrEditQuery: (query: IQuery) => void;
   /** Action that tells redux and the Gist to remove the current query. */
@@ -78,6 +81,7 @@ const mapStateToProps = (state: IState) => {
   };
 };
 
+
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
     inputStatus: InputStatuses.successfulEdit,
@@ -88,16 +92,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-          id: "",
-          name: "",
-          lastUpdated: 0,
-          reasonableCount: 0,
-          tasks: [],
-          labels: [],
-          labelsToRender: [],
-          url: "",
-          customViews: ["author", "createdAt", "repo", "labels"]
-        }
+        id: "",
+        name: "",
+        lastUpdated: 0,
+        reasonableCount: 0,
+        tasks: [],
+        labels: [],
+        labelsToRender: [],
+        url: "",
+        customViews: ["author", "createdAt", "repo", "labels"]
+      }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
@@ -112,6 +116,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     { key: "createdAt", text: "Date Created" }
   ];
 
+  private _onClickToQueryList = (): void => {
+    this.props.toQueryList(this.state.selections);
+  }
   public render = (): JSX.Element => {
     return (
       <>
@@ -119,13 +126,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-            <div className={EditQueryUIClassNames.commandBarContainer}>
-              <CommandBar
-                styles={commandBarStyles}
-                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-              />
-            </div>
-          )}
+              <div className={EditQueryUIClassNames.commandBarContainer}>
+                <CommandBar
+                  styles={commandBarStyles}
+                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+                />
+              </div>
+            )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -346,7 +353,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
-      onClick: this.props.toHome,
+      onClick: this._onClickToQueryList,
       buttonStyles: {
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
         icon: { fontSize: 20, color: "Gray" }
@@ -401,6 +408,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       value = value.trim();
       const updatedSelections = update(this.state.selections, { name: { $set: value } });
       this.setState({ selections: updatedSelections, inputStatus: newStatus });
+      chrome.storage.sync.set({ query: this.state.selections });
     }
   };
 
@@ -425,6 +433,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     });
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkRepoSelection = (
@@ -437,6 +446,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { repo: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkAssigneeSelection = (
@@ -449,6 +459,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkAuthorSelection = (
@@ -461,6 +472,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { author: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkMentionSelection = (
@@ -473,6 +485,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     value = value.trim();
     const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setReviewStatusSelection = (
@@ -488,6 +501,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       reviewStatus: { $set: newKey as IQuery["reviewStatus"] }
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
@@ -496,6 +510,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     const updatedSelections = update(this.state.selections, { lastUpdated: { $set: input } });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setLabelsSelection = (items: string[]): void => {
@@ -508,6 +523,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       labelsToRender: { $set: emojified }
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _checkReasonableCountSelection = (
@@ -522,6 +538,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       reasonableCount: { $set: value ? parseInt(value) : 0 }
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
+    chrome.storage.sync.set({ query: this.state.selections });
   };
 
   private _setCustomViews = (
@@ -551,7 +568,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 const action = {
   toHome,
   addOrEditQuery,
-  removeQuery
+  removeQuery,
+  toQueryList
 };
 
 export const EditQuery = connect(
