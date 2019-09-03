@@ -1,14 +1,6 @@
 import * as React from "react";
 import { clearTokenLogout, toEditQuery } from "../state";
-import {
-  Image,
-  Stack,
-  Link,
-  CommandBarButton,
-  Text,
-  ActionButton,
-  CommandBar
-} from "office-ui-fabric-react";
+import { Image, Stack, Link, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
@@ -59,7 +51,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
     >
       <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} />
       <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
-        <Image {...imageProps as any} title="My GitHub Home" />
+        <Image {...(imageProps as any)} title="My GitHub Home" />
       </Link>
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
