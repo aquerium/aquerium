@@ -4,7 +4,7 @@ import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
 import { emoji } from "../util";
-import { gitLabelStyles } from "./GitLabel.Styles";
+import { gitLabelStyles } from "./GitLabel.styles";
 
 interface IQueryTaskTile {
   /** A single ITask to be rendered. */
@@ -26,12 +26,17 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
   const options = ["type", "author", "repo", "createdAt", "lastUpdated", "assignees", "labels"];
   const optionIndices = new Map();
-  for (let option of options) {
+  for (const option of options) {
     optionIndices.set(option, customViews.indexOf(option));
   }
 
-  const renderInfoElement = (index: number, info: any, beforeText?: string, afterText?: string) => {
-    return index > -1 ? (
+  const renderInfoElement = (
+    prop: string,
+    info: string[] | string | JSX.Element[] | null,
+    beforeText?: string,
+    afterText?: string
+  ) => {
+    return optionIndices.get(prop) > -1 || !info ? (
       <span>
         {beforeText}
         <b>{info}</b>
@@ -65,25 +70,21 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
           optionIndices.get("author") > -1 ||
           optionIndices.get("repo") > -1) && (
           <Text className={QueryTaskClassNames.basicInfo} nowrap block>
-            #{task.num} {renderInfoElement(optionIndices.get("type"), task.type, " (", ") ")}
-            {renderInfoElement(optionIndices.get("author"), task.author, "by ", " ")}
-            {renderInfoElement(optionIndices.get("repo"), task.repo, "in ", " ")}
+            #{task.num} {renderInfoElement("type", task.type, " (", ") ")}
+            {renderInfoElement("author", task.author, "by ", " ")}
+            {renderInfoElement("repo", task.repo, "in ", " ")}
           </Text>
         )}
         {(optionIndices.get("createdAt") > -1 || optionIndices.get("lastUpdated") > -1) && (
           <Text className={QueryTaskClassNames.basicInfo} nowrap block>
-            {renderInfoElement(optionIndices.get("createdAt"), task.createdAt, "Opened: ", " ")}
-            {renderInfoElement(optionIndices.get("lastUpdated"), task.updatedAt, "Last updated: ")}
+            {renderInfoElement("createdAt", task.createdAt, "Opened: ", " ")}
+            {renderInfoElement("lastUpdated", task.updatedAt, "Last updated: ")}
           </Text>
         )}
         {(optionIndices.get("assignees") > -1 || optionIndices.get("labels") > -1) && (
           <Text className={QueryTaskClassNames.labels} nowrap block>
-            {renderInfoElement(
-              optionIndices.get("assignees"),
-              task.assignees.join(", "),
-              "Assigned to: "
-            )}
-            {renderInfoElement(optionIndices.get("labels"), emojifiedLabels, "Labels: ")}
+            {renderInfoElement("assignees", task.assignees.join(", "), "Assigned to: ")}
+            {renderInfoElement("labels", emojifiedLabels, "Labels: ")}
           </Text>
         )}
       </Stack>

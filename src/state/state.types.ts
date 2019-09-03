@@ -18,7 +18,7 @@ export interface IState {
 }
 
 /**
- * This interface represents a single label, withc its name and color.
+ * This interface represents a single label, with its name and color.
  */
 export interface ILabel {
   /** The name of the label. */

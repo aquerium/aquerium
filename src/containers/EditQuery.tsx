@@ -527,7 +527,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _setLabelsSelection = (items: string[]): void => {
     let emojified = [];
-    for (let label of items) {
+    for (const label of items) {
       emojified.push(emoji.emojify(label));
     }
     const updatedSelections = update(this.state.selections, {

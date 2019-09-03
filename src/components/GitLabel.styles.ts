@@ -17,6 +17,7 @@ export const gitLabelStyles = (backgroundColor: string) => {
         b: parseInt(rgbResult[3], 16)
       }
     : null;
+
   // Styles based on inspecting the element on a GitHub label example.
   return mergeStyleSets({
     label: {

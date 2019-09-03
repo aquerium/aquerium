@@ -1,7 +1,6 @@
 import { IQuery, ITask, ILabel, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import fetch from "isomorphic-fetch";
-import { isLabeledStatement } from "@babel/types";
 
 /** Emoji object to help render emojis correctly throughout the app. */
 export const emoji = require("node-emoji");
