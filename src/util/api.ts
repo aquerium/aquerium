@@ -148,6 +148,7 @@ export async function getRepoLabels(
     // });
     // const labels = await octokit.paginate(options);
     // return { labels: labels.map(label => label.name) };
+
     let labels: ILabel[] = [];
     //Fetch initial set of labels.
     const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
