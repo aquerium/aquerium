@@ -596,7 +596,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   // Private helper functions for dealing with picker (for repo labels).
   private _validateInput = (input: string) => {
     if (!this._nameRegex.test(input)) return ValidationState.invalid;
-    return !this.state.selections.labels || this.state.selections.labels.indexOf(input) < 0
+    return !this.state.selections.labelsToRender ||
+      this.state.selections.labelsToRender.indexOf(input) < 0
       ? ValidationState.valid
       : ValidationState.invalid;
   };
@@ -608,13 +609,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _onChangeSelectedLabels = (items?: ITag[]) => {
     if (!items) return;
-    let newSelectedLabels = [];
-    let newEmojifiedSelectedLabels = [];
-    for (let item of items) {
-      let emojified = emoji.emojify(item.name);
-      newEmojifiedSelectedLabels.push(emojified);
-      newSelectedLabels.push(item.name);
-    }
+    let newSelectedLabels = items.map(label => label.name);
+    let newEmojifiedSelectedLabels = items.map(label => emoji.emojify(label.name));
     const updatedSelections = update(this.state.selections, {
       labels: { $set: newSelectedLabels },
       labelsToRender: { $set: newEmojifiedSelectedLabels }
