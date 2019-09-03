@@ -181,3 +181,7 @@ export const setLoginLoadingTrue = () => ({
 export const setLoginLoadingFalse = () => ({
   type: "LOGIN_LOADING_FALSE"
 });
+
+export const toLoadingPage = () => ({
+
+});

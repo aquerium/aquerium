@@ -113,7 +113,7 @@ function LoginUIComponent(props: ILoginProps) {
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
-      {props.isLoginLoading && (
+      {/* {props.isLoginLoading && (
         <div>
           <Spinner
             label={getLoginLoadingPhrase()}
@@ -123,7 +123,7 @@ function LoginUIComponent(props: ILoginProps) {
             className={LoginUIClassNames.spinner}
           />
         </div>
-      )}
+      )} */}
       <Link
         className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"

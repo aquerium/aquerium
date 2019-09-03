@@ -9,6 +9,7 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
+import { LoadingPage } from "../components/LoadingPage";
 
 initializeIcons();
 
@@ -119,6 +120,9 @@ class AppView extends React.Component<IAppViewProps> {
       }
       case "QueryList": {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
+      }
+      case "Loading": {
+        return <LoadingPage loadingMessage={"poop"} />;
       }
       default: {
         return <LoginUI />;
