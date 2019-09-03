@@ -36,7 +36,8 @@ chrome.alarms.onAlarm.addListener(async alarm => {
           badge += responseItems.tasks.length - +newMap[key].reasonableCount;
         }
 
-        chrome.browserAction.setBadgeText({ text: badge.toString() });
+        const badgeText = badge < 0 ? "0" : badge.toString();
+        chrome.browserAction.setBadgeText({ text: badgeText });
         if (JSON.stringify(map) !== JSON.stringify(newMap)) {
           await updateGist(user, newMap);
         }
