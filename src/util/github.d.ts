@@ -37,7 +37,7 @@ export interface IIssue {
   user: {
     login: string;
   };
-  labels: [ILabel];
+  labels: ILabel[];
   assignees: [{ login: string }];
 }
 
