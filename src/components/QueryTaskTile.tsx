@@ -32,7 +32,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
 
   const renderInfoElement = (
     prop: string,
-    info: string[] | string | JSX.Element[] | null,
+    info: string | JSX.Element[] | null,
     beforeText?: string,
     afterText?: string
   ) => {

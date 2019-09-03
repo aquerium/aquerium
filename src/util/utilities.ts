@@ -30,13 +30,10 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
       repo: item.repository_url.split("https://api.github.com/repos/")[1],
       author: item.user.login,
       assignees: item.assignees.map(assignee => assignee.login),
-      labels: item.labels.map(
-        ({ name, color }) =>
-          ({
-            name,
-            color
-          } as ILabel)
-      )
+      labels: item.labels.map(({ name, color }) => ({
+        name,
+        color
+      }))
     };
     tasks.push(task);
   });
