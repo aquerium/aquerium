@@ -1,6 +1,6 @@
 /*global chrome*/
 import update from "immutability-helper";
-import { changeUIAction, changeUIQueryTaskListAction, changeUIEditQueryAction } from "../actions/changeUI";
+import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction, changeUIEditQueryAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
 const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
@@ -25,7 +25,7 @@ export const changeUI = (
     case "EDIT": { //when should we update state
       const { query } = action as changeUIEditQueryAction
       chrome.storage.sync.set({ currUI: "EditQuery" });
-      return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query} });
+      return update(state, { currUI: { $set: "EditQuery" }, currQuery: { $set: query } });
     }
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
@@ -35,6 +35,14 @@ export const changeUI = (
     case "HOME": {
       chrome.storage.sync.set({ currUI: "Home" });
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
+    }
+    case "ERROR": {
+      const { errorCode, query } = action as changeUIErrorAction;
+      return update(state, {
+        currUI: { $set: "ErrorPage" },
+        errorCode: { $set: errorCode },
+        currQuery: { $set: query }
+      });
     }
     default:
       return state;

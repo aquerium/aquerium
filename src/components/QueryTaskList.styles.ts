@@ -59,7 +59,6 @@ export const QueryTaskClassNames = mergeStyleSets({
     whiteSpace: "nowrap",
     display: "block",
     textDecorationLine: "none",
-    transform: "translateY(15%)",
     selectors: {
       "&:hover": { color: "#b64e00" },
       "&:active": { color: "8a3c00" }

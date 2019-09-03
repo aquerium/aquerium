@@ -4,29 +4,6 @@ export const rootTokenGap = {
   childrenGap: 14
 };
 
-export const actionIcons = {
-  back: {
-    name: { iconName: "Back" },
-    styles: { root: { fontSize: 20 }, icon: { fontSize: 25, color: "black" } }
-  },
-  save: {
-    name: { iconName: "CheckMark" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 32, color: "green" } }
-  },
-  remove: {
-    name: { iconName: "Trash" },
-    styles: { root: { color: "red", fontSize: 20 }, icon: { fontSize: 25, color: "red" } }
-  },
-  add: {
-    name: { iconName: "Add" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  },
-  update: {
-    name: { iconName: "Save" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  }
-};
-
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
     padding: "0px 0px 10px 40px",
@@ -44,8 +21,15 @@ export const EditQueryUIClassNames = mergeStyleSets({
     textAlign: "center",
     transform: "translateX(-6px)"
   },
-  topBar: { height: "50px" }
+  commandBarContainer: {
+    height: "50px",
+    textAlign: "center",
+    margin: "0 auto"
+  }
 });
+export const commandBarStyles = {
+  root: { backgroundColor: "rgba(240, 240, 240, 0.7)" }
+};
 
 export const typeOptions = [
   { key: "issue", text: "Only Issues" },
