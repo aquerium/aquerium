@@ -12,7 +12,7 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function (dispatch: Dispatch, getState: () => IState) {
+  return async function(dispatch: Dispatch, getState: () => IState) {
     const { user, queryList } = getState();
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
@@ -51,7 +51,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function (dispatch: Dispatch, getState: () => IState) {
+  return async function(dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);

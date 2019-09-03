@@ -1,6 +1,6 @@
 import { getId } from "@uifabric/utilities";
 import React from "react";
-import { Stack, ActionButton, TooltipHost, Link, CommandBarButton } from "office-ui-fabric-react";
+import { Stack, TooltipHost, Link, CommandBarButton } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "../components/QueryTaskList.styles";
 import { IQuery, toEditQuery, toHome } from "../state";
 import { connect } from "react-redux";

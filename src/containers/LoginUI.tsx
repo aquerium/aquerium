@@ -100,11 +100,11 @@ function LoginUIComponent(props: ILoginProps) {
         <TextField
           placeholder="Enter your GitHub PAT"
           required
+          type="password"
           styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
           errorMessage={props.invalidPAT ? "This PAT is invalid or expired." : ""}
-          type="password"
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
