@@ -1,7 +1,7 @@
 import fetch from "isomorphic-fetch";
 import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
-import Octokit from "@octokit/rest";
+import { emoji } from ".";
 
 const GIST_NAME = "aquerium_helper.json";
 const GIST_DESCRIP = "helper gist for Aquerium";
@@ -160,7 +160,7 @@ export async function getRepoLabels(
     const data = await response.json();
     labels = labels.concat(
       data.map((label: { name: string; color: string }) => ({
-        name: label.name,
+        name: emoji.replace(label.name, (emoji: { key: string }) => `:${emoji.key}:`),
         color: label.color
       }))
     );
@@ -187,6 +187,7 @@ export async function getRepoLabels(
         );
       }
     }
+    console.log(labels);
     return { labels: labels };
   } catch (error) {
     return { errorCode: 500 };
