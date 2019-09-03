@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import { Dispatch } from "redux";
 import { createUid, getQueryURLEndpoint, getQueryTasks, getQueryURLHTML, updateGist } from "../../util";
 import { setHomeLoadingTrue, setHomeLoadingFalse } from "./";
+import { toError } from "../actions";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
@@ -18,7 +19,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
       dispatch(setHomeLoadingFalse());
-      // TODO: add error response.
+      dispatch(toError(resp.errorCode, query));
       return;
     }
     // We have a valid task array, and need to store it in our new query.
@@ -30,8 +31,8 @@ export const addOrEditQuery = (query: IQuery) => {
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      // TODO: add error response.
       dispatch(setHomeLoadingFalse());
+      dispatch(toError(resp.errorCode, query));
       return;
     } else {
       dispatch(updateMap(newList));
@@ -63,8 +64,8 @@ export const removeQuery = (queryID: string) => {
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);
     if (response.errorCode) {
-      // TODO: add error response.
       dispatch(setHomeLoadingFalse());
+      dispatch(toError(response.errorCode));
       return;
     }
     dispatch(updateMap(newList));
@@ -88,7 +89,7 @@ export const refreshMap = () => {
         const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
         const response = await updateGist(user, newList);
         if (response.errorCode) {
-          // TODO: add error response.
+          dispatch(toError(response.errorCode));
           dispatch(setHomeLoadingFalse());
           return;
         }
@@ -98,7 +99,7 @@ export const refreshMap = () => {
           dispatch(updateMap(newList));
         }, delayInMilliseconds);
       } else {
-        //TODO add error handling
+        dispatch(toError(responseItems.errorCode));
         dispatch(setHomeLoadingFalse());
         return;
       }

@@ -10,6 +10,7 @@ import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
 import { LoadingPage } from "../components/LoadingPage";
+import { ErrorPage } from "../containers/ErrorPage";
 
 initializeIcons();
 
@@ -117,6 +118,9 @@ class AppView extends React.Component<IAppViewProps> {
       }
       case "EditQuery": {
         return <EditQuery />;
+      }
+      case "ErrorPage": {
+        return <ErrorPage />;
       }
       case "QueryList": {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;

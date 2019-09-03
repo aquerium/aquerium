@@ -16,6 +16,11 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
+ * The action type for changing to the error UI.
+ */
+export type changeUIErrorAction = { type: string; errorCode?: number, query?: IQuery };
+
+/**
  * The action type for changing to the QueryTaskList UI.
  */
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
@@ -48,7 +53,11 @@ function loginOnApplicationMount(dispatch: Dispatch) {
       const user = createIUserInfo(result.token, result.username, result.gistID);
       const response = await getQueryMapObj(user);
       if (response.queryMap) {
-        loginQueryMapExists(user, dispatch, response.queryMap);
+        dispatch(storeUserInfo(user));
+        dispatch(updateMap(response.queryMap));
+        dispatch(toHome());
+      } else {
+        dispatch(toError(response.errorCode));
       }
     }
     dispatch(setLoginLoadingFalse());
@@ -72,10 +81,8 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
         if (responseGist.user) {
-          chrome.storage.sync.set(responseGist.user);
           loginQueryMapExists(responseGist.user, dispatch, {});
         } else {
-          dispatch(setLoginLoadingFalse());
           dispatch(setIsInvalidPAT(true));
         }
       }
@@ -97,10 +104,8 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
 async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
   const responseMap = await getQueryMapObj(user);
   if (responseMap.queryMap) {
-    chrome.storage.sync.set(user);
     loginQueryMapExists(user, dispatch, responseMap.queryMap);
   } else {
-    dispatch(setLoginLoadingFalse());
     dispatch(setIsInvalidPAT(true));
   }
 }
@@ -182,6 +187,13 @@ export const setLoginLoadingFalse = () => ({
   type: "LOGIN_LOADING_FALSE"
 });
 
-export const toLoadingPage = () => ({
+//export const toLoadingPage = () => ({
 
+/*
+ * Action creator to send the user to the Error UI.
+ */
+export const toError = (errorCode?: number, query?: IQuery) => ({
+  type: "ERROR",
+  errorCode,
+  query
 });

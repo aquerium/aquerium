@@ -17,7 +17,7 @@ import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
 import { getLoginLoadingPhrase } from "../misc/loadingPhrases"
 
-//Value corresponding to enter key.
+// Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
@@ -135,12 +135,12 @@ function LoginUIComponent(props: ILoginProps) {
   );
 }
 
-const action = {
+const actions = {
   login,
   setIsInvalidPAT
 };
 
 export const LoginUI = connect(
   mapStateToProps,
-  action
+  actions
 )(LoginUIComponent);
