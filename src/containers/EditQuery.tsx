@@ -98,7 +98,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _onClickToQueryList = (): void => {
     this.props.toQueryList(this.state.selections);
   }
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
   public render = (): JSX.Element => {
     return (
       <>
