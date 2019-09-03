@@ -16,6 +16,11 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
+ * The action type for changing to the error UI.
+ */
+export type changeUIErrorAction = { type: string; errorCode?: number, query?: IQuery };
+
+/**
  * The action type for changing to the QueryTaskList UI.
  */
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
@@ -50,6 +55,8 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(storeUserInfo(user));
         dispatch(updateMap(response.queryMap));
         dispatch(toHome());
+      } else {
+        dispatch(toError(response.errorCode));
       }
     }
   });
@@ -70,12 +77,10 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       } else {
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
-        if (responseGist.user === undefined) {
-          // If the response from createGIST is invalid.
-          dispatch(setIsInvalidPAT(true));
-        } else {
-          // Store this user's info in local storage and in redux.
+        if (responseGist.user) {
           loginQueryMapExists(responseGist.user, dispatch, {});
+        } else {
+          dispatch(setIsInvalidPAT(true));
         }
       }
     }
@@ -95,12 +100,10 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
 // Helper function that logs in an existing user.
 async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
   const responseMap = await getQueryMapObj(user);
-  if (responseMap.queryMap === undefined) {
-    // If queryMap is undefined, this user has invalid credentials.
-    dispatch(setIsInvalidPAT(true));
-  } else {
-    // Else, the user's querymap already exists.
+  if (responseMap.queryMap) {
     loginQueryMapExists(user, dispatch, responseMap.queryMap);
+  } else {
+    dispatch(setIsInvalidPAT(true));
   }
 }
 
@@ -149,4 +152,13 @@ export const toQueryList = (query: IQuery) => ({
  */
 export const toHome = () => ({
   type: "HOME"
+});
+
+/**
+ * Action creator to send the user to the Error UI.
+ */
+export const toError = (errorCode?: number, query?: IQuery) => ({
+  type: "ERROR",
+  errorCode,
+  query
 });

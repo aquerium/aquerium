@@ -1,5 +1,4 @@
 /**
- * @interface
  * This interface defines the state object.
  */
 export interface IState {
@@ -7,15 +6,18 @@ export interface IState {
   queryList: queryListType;
   /** Stores information pertaining to the UI being displayed. */
   changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+    /** Stores the various possible UI's that can be displayed. */
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList" | "ErrorPage";
+    /** The current query to display if the user is on a UI that needs query info. */
     currQuery?: IQuery;
+    /** An error code that will be sent to the error UI to determine which features will be displayed. */
+    errorCode?: number;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
 }
 
 /**
- * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -42,7 +44,6 @@ export interface ITask {
 }
 
 /**
- *
  * This interface represents a single query.
  */
 export interface IQuery {
@@ -62,12 +63,12 @@ export interface IQuery {
   mentions?: string;
   /** OPTIONAL The current review status for tasks in the query. */
   reviewStatus?:
-    | "No reviews"
-    | "Review required"
-    | "Approved review"
-    | "Changes requested"
-    | "Reviewed by you"
-    | "Awaiting review from you";
+  | "No reviews"
+  | "Review required"
+  | "Approved review"
+  | "Changes requested"
+  | "Reviewed by you"
+  | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
   /** Number of days before an issue goes stale. */
@@ -85,7 +86,6 @@ export interface IQuery {
 }
 
 /**
- * @interface
  * Contains relevant information for the authenticated user.
  */
 export interface IUserInfo {

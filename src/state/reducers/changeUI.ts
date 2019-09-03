@@ -1,5 +1,5 @@
 import update from "immutability-helper";
-import { changeUIAction, changeUIQueryTaskListAction } from "../actions/changeUI";
+import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction } from "../actions/changeUI";
 import { IState } from "../state.types";
 
 const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
@@ -10,7 +10,7 @@ const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
  */
 export const changeUI = (
   state: IState["changeUI"] = DEFAULT_STATE,
-  action: changeUIAction | changeUIQueryTaskListAction
+  action: changeUIAction | changeUIErrorAction
 ) => {
   switch (action.type) {
     case "LOGIN": {
@@ -28,6 +28,14 @@ export const changeUI = (
     }
     case "HOME": {
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
+    }
+    case "ERROR": {
+      const { errorCode, query } = action as changeUIErrorAction;
+      return update(state, {
+        currUI: { $set: "ErrorPage" },
+        errorCode: { $set: errorCode },
+        currQuery: { $set: query }
+      });
     }
     default:
       return state;

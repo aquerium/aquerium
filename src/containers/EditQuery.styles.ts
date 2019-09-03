@@ -4,29 +4,6 @@ export const rootTokenGap = {
   childrenGap: 14
 };
 
-export const actionIcons = {
-  back: {
-    name: { iconName: "Back" },
-    styles: { root: { fontSize: 20 }, icon: { fontSize: 25, color: "black" } }
-  },
-  save: {
-    name: { iconName: "CheckMark" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 32, color: "green" } }
-  },
-  remove: {
-    name: { iconName: "Trash" },
-    styles: { root: { color: "red", fontSize: 20 }, icon: { fontSize: 25, color: "red" } }
-  },
-  add: {
-    name: { iconName: "Add" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  },
-  update: {
-    name: { iconName: "Save" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  }
-};
-
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
     padding: "0px 0px 20px 40px",
@@ -46,8 +23,17 @@ export const EditQueryUIClassNames = mergeStyleSets({
   },
   topBar: { height: "50px" },
   separatorIcon: { fontSize: "26px", background: "rgba(240,240,240,1)" },
-  separator: { width: "482px" }
+  separator: { width: "482px" },
+  commandBarContainer: {
+    height: "50px",
+    textAlign: "center",
+    margin: "0 auto"
+  }
 });
+
+export const commandBarStyles = {
+  root: { backgroundColor: "rgba(240, 240, 240, 0.7)" }
+};
 
 export const typeDropdown = {
   subComponentStyles: { label: {}, panel: { root: { height: "118px" } } }

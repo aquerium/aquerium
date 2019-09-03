@@ -9,6 +9,7 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
+import { ErrorPage } from "../containers/ErrorPage";
 
 initializeIcons();
 
@@ -119,6 +120,9 @@ class AppView extends React.Component<IAppViewProps> {
       }
       case "EditQuery": {
         return <EditQuery />;
+      }
+      case "ErrorPage": {
+        return <ErrorPage />;
       }
       case "QueryList": {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
