@@ -1,15 +1,23 @@
 import * as React from "react";
 import { clearTokenLogout, toEditQuery } from "../state";
-import { Image, Stack, Link, CommandBarButton, Text, ActionButton } from "office-ui-fabric-react";
+import {
+  Image,
+  Stack,
+  Link,
+  CommandBarButton,
+  Text,
+  ActionButton,
+  CommandBar
+} from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
   TopBarIconsUIClassNames,
-  getMenuIconName,
   menuIconSize,
   imageProps,
   refreshIcon,
-  refreshIconStyles
+  refreshIconStyles,
+  getMenuIconProps
 } from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
@@ -49,11 +57,11 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       tokens={topBarItemGap}
       className={TopBarIconsUIClassNames.topBar}
     >
-      <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
+      <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} />
       <Image {...(imageProps as any)} title="My GitHub Home" />
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
-        menuIconProps={getMenuIconName}
+        menuIconProps={getMenuIconProps}
         title="Options"
         className={TopBarIconsUIClassNames.menu}
         styles={menuIconSize}

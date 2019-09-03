@@ -9,8 +9,9 @@ export const imageProps: IImageProps = {
   height: 40
 };
 
-export const getMenuIconName = {
-  iconName: "More"
+export const getMenuIconProps = {
+  iconName: "More",
+  ariaLabel: "More"
 };
 
 export const menuIconSize = {
@@ -20,10 +21,14 @@ export const menuIconSize = {
 };
 
 export const refreshIcon = {
-  iconName: "Refresh"
+  iconName: "Refresh",
+  ariaLabel: "Refresh"
 };
 
-export const refreshIconStyles = { icon: { fontSize: 22 } };
+export const refreshIconStyles = {
+  icon: { fontSize: 22 },
+  root: { width: "40px", height: "40px", background: "transparent" }
+};
 
 export const topBarItemGap = { childrenGap: 20 };
 
@@ -40,6 +45,8 @@ export const TopBarIconsUIClassNames = mergeStyleSets({
   },
   menu: {
     right: 10,
-    backgroundColor: "rgba(240, 240, 240, 0.7)"
+    backgroundColor: "rgba(240, 240, 240, 0.7)",
+    width: 40,
+    height: 40
   }
 });

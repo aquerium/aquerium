@@ -117,7 +117,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   queryTaskCount: {
     fontSize: 80,
-    fontFamily: "Segoe UI Light",
     color: "#004d7c"
   },
   basicInfo: {
@@ -131,7 +130,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     maxWidth: 290,
     fontSize: 24,
     textDecoration: "none",
-    fontFamily: "Segoe UI Light",
     color: "#794500",
     selectors: {
       "&:hover": { textDecorationLine: "none" }
