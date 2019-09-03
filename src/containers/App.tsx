@@ -61,7 +61,10 @@ const scopedSettings = {
   },
   Dropdown: {
     styles: {
-      title: [fieldGroupStyles, { padding: "2px" }]
+      title: [
+        fieldGroupStyles,
+        { paddingRight: "20px", whiteSpace: "nowrap", textOverflow: "ellipsis" }
+      ]
     }
   },
   MessageBar: {
@@ -76,7 +79,7 @@ const scopedSettings = {
     }
   },
   Slider: {
-    styles: { container: { width: 450 } }
+    styles: { container: { width: 465 } }
   },
   Link: {
     target: "_blank"

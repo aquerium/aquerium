@@ -68,11 +68,13 @@ function loginOnApplicationMount(dispatch: Dispatch) {
               toQueryList(resultQuery.query)(dispatch);
             } else if (resultQuery.currUI === "EditQuery") {
               toEditQuery(resultQuery.query)(dispatch);
+            } else {
+              toHome()(dispatch);
             };
-            return;
-          };
+          } else {
+            toHome()(dispatch);
+          }
         });
-        toHome()(dispatch)
       } else {
         dispatch(setLoginLoadingFalse());
         toError(response.errorCode)(dispatch);

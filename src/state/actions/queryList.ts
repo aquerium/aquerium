@@ -19,7 +19,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
     if (resp.errorCode || !resp.tasks) {
       dispatch(setHomeLoadingFalse());
-      toError(resp.errorCode, query);
+      toError(resp.errorCode, query)(dispatch);
       return;
     }
     // We have a valid task array, and need to store it in our new query.
@@ -32,7 +32,7 @@ export const addOrEditQuery = (query: IQuery) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       dispatch(setHomeLoadingFalse());
-      toError(resp.errorCode, query);
+      toError(resp.errorCode, query)(dispatch);
       return;
     } else {
       dispatch(updateMap(newList));
@@ -65,7 +65,7 @@ export const removeQuery = (queryID: string) => {
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       dispatch(setHomeLoadingFalse());
-      toError(response.errorCode);
+      toError(response.errorCode)(dispatch);
       return;
     }
     dispatch(updateMap(newList));

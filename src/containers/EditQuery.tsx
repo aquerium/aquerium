@@ -10,6 +10,9 @@ import {
   MessageBarButton,
   Dropdown,
   IDropdownOption,
+  Separator,
+  Icon,
+  ResponsiveMode,
   CommandBar
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
@@ -20,9 +23,14 @@ import {
   rootTokenGap,
   typeOptions,
   reviewStatusOptions,
+  separatorContentStyles,
+  customizeViewDropdown,
+  typeDropdown,
+  reviewStatusDropdown,
   commandBarStyles
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
+import { emoji } from "../util";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated. */
@@ -89,12 +97,25 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         lastUpdated: 0,
         reasonableCount: 0,
         tasks: [],
-        url: ""
+        labels: [],
+        labelsToRender: [],
+        url: "",
+        customViews: ["author", "createdAt", "repo", "labels"]
       }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:]+( *[a-z0-9-_.\\/+&#@:]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
   private _numberRegex = /^[0-9]*$/i;
+  private _customViewsOptions = [
+    { key: "type", text: "Type of tasks" },
+    { key: "repo", text: "Repo" },
+    { key: "assignees", text: "Assignees" },
+    { key: "author", text: "Author" },
+    { key: "labels", text: "Labels" },
+    { key: "lastUpdated", text: "Date Last Updated" },
+    { key: "createdAt", text: "Date Created" }
+  ];
+
   private _onClickToQueryList = (): void => {
     this.props.toQueryList(this.state.selections);
   }
@@ -128,6 +149,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             />
             <Stack horizontal horizontalAlign="center">
               <Dropdown
+                styles={typeDropdown}
+                responsiveMode={ResponsiveMode.large}
                 required
                 onChange={this._setTypeSelection}
                 label="Type of tasks"
@@ -143,9 +166,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkRepoSelection}
               />
-              {description([
-                "List a repository from which to track Issues and/or Pull Requests."
-              ])()}
+              {description("List a repository from which to track Issues and/or Pull Requests.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -155,7 +176,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkAssigneeSelection}
               />
-              {description(["Track Issues and/or Pull Requests assigned to a specific user."])()}
+              {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -165,7 +186,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkAuthorSelection}
               />
-              {description(["Track Issues and/or Pull Requests opened by a specific user."])()}
+              {description("Track Issues and/or Pull Requests opened by a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -175,10 +196,12 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkMentionSelection}
               />
-              {description(["Track Issues and/or Pull Requests that mention a specific user."])()}
+              {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Dropdown
+                styles={reviewStatusDropdown}
+                responsiveMode={ResponsiveMode.large}
                 disabled={!this.state.enableReviewStatusField}
                 onChange={this._setReviewStatusSelection}
                 label="Review Status"
@@ -189,27 +212,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 }
                 options={reviewStatusOptions}
               />
-              {description(["Track Pull Requests with the single selected review requirement."])()}
+              {description("Track Pull Requests with the single selected review requirement.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <MultiSelect
                 label="Repo Labels"
                 onChange={this._setLabelsSelection}
-                items={this.state.selections.labels || []}
+                items={this.state.selections.labelsToRender || []}
               />
-              {description(["The GitHub labels assigned to particular tasks."])()}
-            </Stack>
-            <Stack horizontal horizontalAlign="center">
-              <Slider
-                label="Last Updated"
-                onChange={this._setLastUpdatedSelection}
-                min={0}
-                defaultValue={this.state.selections.lastUpdated}
-                max={31}
-              />
-              {description([
-                "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
-              ])()}
+              {description("The GitHub labels assigned to particular tasks.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
@@ -219,9 +230,38 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._checkReasonableCountSelection}
               />
-              {description([
+              {description(
                 "The number of tasks in this query that if exceeded, would be considered unreasonable."
-              ])()}
+              )()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Slider
+                label="Last Updated"
+                onChange={this._setLastUpdatedSelection}
+                min={0}
+                defaultValue={this.state.selections.lastUpdated}
+                max={31}
+              />
+              {description(
+                "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
+              )()}
+            </Stack>
+            <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
+              <Icon iconName="RedEye" className={EditQueryUIClassNames.separatorIcon} />
+            </Separator>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                styles={customizeViewDropdown}
+                responsiveMode={ResponsiveMode.large}
+                label="Customize Task Tile Fields"
+                multiSelect
+                selectedKeys={this.state.selections.customViews}
+                options={this._customViewsOptions}
+                onChange={this._setCustomViews}
+              />
+              {description(
+                "Select the fields you wish to prioritize while viewing the task list."
+              )()}
             </Stack>
           </Stack>
         </Stack>
@@ -474,7 +514,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setLabelsSelection = (items: string[]): void => {
-    const updatedSelections = update(this.state.selections, { labels: { $set: items } });
+    let emojified = [];
+    for (const label of items) {
+      emojified.push(emoji.emojify(label));
+    }
+    const updatedSelections = update(this.state.selections, {
+      labels: { $set: items },
+      labelsToRender: { $set: emojified }
+    });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
     chrome.storage.sync.set({ query: this.state.selections });
   };
@@ -492,6 +539,29 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
     chrome.storage.sync.set({ query: this.state.selections });
+  };
+
+  private _setCustomViews = (
+    event: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+    index?: number
+  ): void => {
+    if (!item) {
+      return;
+    }
+    const newSelections = [...this.state.selections.customViews];
+    if (item.selected) {
+      newSelections.push(item.key as string);
+    } else {
+      const currIndex = newSelections.indexOf(item.key as string);
+      if (currIndex > -1) {
+        newSelections.splice(currIndex, 1);
+      }
+    }
+    const updatedSelections = update(this.state.selections, {
+      customViews: { $set: newSelections }
+    });
+    this.setState({ selections: updatedSelections });
   };
 }
 
