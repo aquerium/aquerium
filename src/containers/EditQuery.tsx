@@ -474,7 +474,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     value = value.trim();
     const updatedSelections = update(this.state.selections, {
-      reasonableCount: { $set: parseInt(value) }
+      reasonableCount: { $set: value ? parseInt(value) : 0 }
     });
     this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
   };
