@@ -164,11 +164,12 @@ export async function getRepoLabels(
     //Check if the response header indicates more than 1 page of labels.
     const headerLinks = response.headers.get("Link");
     if (headerLinks) {
+      //Filter the Link header and extract the second url, which has the amount of pages.
       const lastLink = headerLinks.split(/<(.*?)>/g).filter(link => link.includes("https://"))[1];
       let numPages = parseInt(lastLink.substring(lastLink.lastIndexOf("=") + 1));
-      console.log(numPages);
+
       //Fetch all pages of labels.
-      for (let i = 2; i < numPages; i++) {
+      for (let i = 2; i <= numPages; i++) {
         const response = await fetch(labelsURL + "?page=" + i);
         if (!response.ok) {
           return { errorCode: response.status };
