@@ -451,7 +451,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
     if (value && !this._numberRegex.test(value)) {
       this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid input for reasonable count.";
+      return "Invalid number entered for reasonable count.";
     }
     value = value.trim();
     const updatedSelections = update(this.state.selections, { reasonableCount: { $set: value } });
