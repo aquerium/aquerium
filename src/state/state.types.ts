@@ -86,12 +86,10 @@ export interface IQuery {
   labels?: string[];
   /** The array of labels that are rendered across the app. */
   labelsToRender: string[];
-  /** Number of days before an issue goes stale. */
-  stalenessIssue: number;
-  /** Number of days before a pr goes stale. */
-  stalenessPull: number;
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
+  /** The number of tasks in a query that if exceeded, would be considered unreasonable. */
+  reasonableCount: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
   /** The URL for the github page containing this query. */
