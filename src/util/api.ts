@@ -158,6 +158,7 @@ export async function getRepoLabels(
     }
     //Save the initial set of labels.
     const data = await response.json();
+
     labels = labels.concat(
       data.map((label: { name: string; color: string }) => ({
         name: emoji.replace(label.name, (emoji: { key: string }) => `:${emoji.key}:`),
@@ -179,6 +180,11 @@ export async function getRepoLabels(
           return { errorCode: response.status };
         }
         const data = await response.json();
+        for (const label of data) {
+          console.log(
+            "Label: " + emoji.replace(label.name, (emoji: { key: string }) => `:${emoji.key}:`)
+          );
+        }
         labels = labels.concat(
           data.map((label: { name: string; color: string }) => ({
             name: label.name,
@@ -187,7 +193,6 @@ export async function getRepoLabels(
         );
       }
     }
-    console.log(labels);
     return { labels: labels };
   } catch (error) {
     return { errorCode: 500 };

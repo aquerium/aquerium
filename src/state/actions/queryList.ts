@@ -21,7 +21,7 @@ export const addOrEditQuery = (query: IQuery) => {
       return;
     }
     // We have a valid task array, and need to store it in our new query.
-    const newQuery = update(query.id == "" ? getQueryNewID(queryList, query) : query, {
+    const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks },
       url: { $set: getQueryURLHTML(user, query) }
     });
