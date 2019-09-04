@@ -18,7 +18,7 @@ export async function getQueryTasks(url: string): Promise<{ tasks?: ITask[]; err
   const { items = [] } = JSON.parse(responseText);
 
   const tasks: ITask[] = [];
-  items.forEach(function(item: IIssue | IPull) {
+  items.forEach(function (item: IIssue | IPull) {
     const task: ITask = {
       num: item.number,
       title: item.title,
@@ -73,7 +73,7 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.mentions ? "%20mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
-    query.labels.forEach(function(label) {
+    query.labels.forEach(function (label) {
       qualifiers += "%20label:%22" + label + "%22";
     });
   }
