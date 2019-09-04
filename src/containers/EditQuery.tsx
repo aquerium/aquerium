@@ -61,8 +61,10 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
-  /** Boolean denoting valid inputs for a given input field. The indices, in order, are query title, repo, author, assignee, mentions and reasonable count. */
-  validInputs: boolean[];
+  /** Dictionary denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
+  validInputs: {
+    [key: string]: boolean;
+  };
 }
 
 interface IEditQueryUIProps {
@@ -103,7 +105,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           url: "",
           customViews: ["author", "createdAt", "repo", "labels"]
         },
-    validInputs: [true, true, true, true, true, true]
+    validInputs: {
+      name: true,
+      repo: true,
+      author: true,
+      assignee: true,
+      mentions: true,
+      reasonableCount: true
+    }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
@@ -146,7 +155,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               placeholder="Please enter a title"
               onChange={this._onChangeTitle}
               defaultValue={this.state.selections.name}
-              errorMessage={!this.state.validInputs[0] ? "Invalid query name" : ""}
+              errorMessage={!this.state.validInputs.name ? "Invalid query name" : ""}
               required
             />
             <Stack horizontal horizontalAlign="center">
@@ -173,7 +182,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
-                errorMessage={!this.state.validInputs[1] ? "Invalid repo name" : ""}
+                errorMessage={!this.state.validInputs.repo ? "Invalid repo name" : ""}
               />
               {description("List a repository from which to track Issues and/or Pull Requests.")()}
             </Stack>
@@ -182,7 +191,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Assignee"
                 onChange={this._onChangeAssignee}
                 defaultValue={this.state.selections.assignee}
-                errorMessage={!this.state.validInputs[3] ? "Invalid assignee name" : ""}
+                errorMessage={!this.state.validInputs.assignee ? "Invalid assignee name" : ""}
               />
               {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
             </Stack>
@@ -191,7 +200,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Author"
                 onChange={this._onChangeAuthor}
                 defaultValue={this.state.selections.author}
-                errorMessage={!this.state.validInputs[2] ? "Invalid author name" : ""}
+                errorMessage={!this.state.validInputs.author ? "Invalid author name" : ""}
               />
               {description("Track Issues and/or Pull Requests opened by a specific user.")()}
             </Stack>
@@ -200,7 +209,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Mention"
                 onChange={this._onChangeMentions}
                 defaultValue={this.state.selections.mentions}
-                errorMessage={!this.state.validInputs[4] ? "Invalid name" : ""}
+                errorMessage={!this.state.validInputs.mentions ? "Invalid name" : ""}
               />
               {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
@@ -229,7 +238,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                     : "0"
                 }
                 errorMessage={
-                  !this.state.validInputs[5]
+                  !this.state.validInputs.reas
                     ? "Invalid number entered for reasonable task count."
                     : ""
                 }
@@ -325,7 +334,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    if (this.state.validInputs.indexOf(false) > -1 || !this.state.selections.name) {
+    let validEdits = true;
+    const fields = ["name", "repo", "author", "assignee", "mentions", "reasonableCount"];
+    for (const field of fields) {
+      if (!this.state.validInputs.field) {
+        validEdits = false;
+        break;
+      }
+    }
+    if (!validEdits || !this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.severeWarning,
         message: "Ensure query edits are valid!",
@@ -438,9 +455,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[0] = false;
+      currInputs.name = false;
       this.setState({ validInputs: currInputs });
-    } else currInputs[0] = true;
+    } else currInputs.name = true;
     newValue = newValue ? newValue.trim() : "";
     const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
     this.setState({ selections: updatedSelections, validInputs: currInputs });
@@ -453,17 +470,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     if (!newValue) {
       let currInputs = this.state.validInputs;
-      currInputs[1] = true;
+      currInputs.repo = true;
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[1] = false;
+      currInputs.repo = false;
       this.setState({ validInputs: currInputs });
       newValue = newValue.trim();
       return;
     }
-    currInputs[1] = true;
+    currInputs.repo = true;
     const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -532,17 +549,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     if (!newValue) {
       let currInputs = this.state.validInputs;
-      currInputs[2] = true;
+      currInputs.author = true;
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[2] = false;
+      currInputs.author = false;
       this.setState({ validInputs: currInputs });
       newValue = newValue.trim();
       return;
     }
-    currInputs[2] = true;
+    currInputs.author = true;
     const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -557,17 +574,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     if (!newValue) {
       let currInputs = this.state.validInputs;
-      currInputs[3] = true;
+      currInputs.assignee = true;
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[3] = false;
+      currInputs.assignee = false;
       this.setState({ validInputs: currInputs });
       newValue = newValue.trim();
       return;
     }
-    currInputs[3] = true;
+    currInputs.assignee = true;
     const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -582,17 +599,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     if (!newValue) {
       let currInputs = this.state.validInputs;
-      currInputs[4] = true;
+      currInputs.mentions = true;
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
-      currInputs[4] = false;
+      currInputs.mentions = false;
       this.setState({ validInputs: currInputs });
       newValue = newValue.trim();
       return;
     }
-    currInputs[4] = true;
+    currInputs.mentions = true;
     const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
     this.setState({
       selections: updatedSelections,
@@ -632,9 +649,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     let currInputs = this.state.validInputs;
     if (newValue && !this._numberRegex.test(newValue)) {
-      currInputs[5] = false;
+      currInputs.reasonableCount = false;
     } else {
-      currInputs[5] = true;
+      currInputs.reasonableCount = true;
     }
     const updatedSelections = update(this.state.selections, {
       reasonableCount: { $set: newValue ? parseInt(newValue.trim()) : 0 }
