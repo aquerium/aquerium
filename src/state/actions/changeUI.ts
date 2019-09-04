@@ -79,7 +79,6 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         toError(response.errorCode)(dispatch);
       };
     } else {
-      console.log("big ruh roh");
       dispatch(goToLogout());
     }
   });
