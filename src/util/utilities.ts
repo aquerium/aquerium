@@ -117,7 +117,7 @@ function getRefDate(daysRef: number): string {
 /**
  * Takes in a url string and, if emojis/characters are present, ensures a valid URL
  * with the correct URL encoding.
- * @param queryUrl
+ * @param queryUrl The URL to a given GitHub query.
  */
 export const normalizedURL = (queryUrl: string): string => {
   // Inspired by the solution on:

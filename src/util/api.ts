@@ -119,35 +119,17 @@ export async function checkForGist(token: string): Promise<{ gist?: IGist; error
   }
 }
 
-// Reads from the user's gist and returns the gist contents.
-async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
-  try {
-    const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
-      {
-        headers: new Headers({
-          "If-None-Match": ""
-        })
-      }
-    );
-    if (!response.ok) {
-      return { errorCode: response.status };
-    }
-    const responseJSON = await response.json();
-    return { gist: responseJSON };
-  } catch (error) {
-    console.error(error);
-    return { errorCode: 500 };
-  }
-}
-
+/**
+ * This function interacts with the GitHub API in order to
+ * fetch valid labels from a valid repo.
+ * @param repo The repo to attempt to fetch labels from.
+ */
 export async function getRepoLabels(
-  // TODO: Take in user: IUserInfo
   repo: string
 ): Promise<{ labels?: ILabel[]; errorCode?: number }> {
   try {
     let labels: ILabel[] = [];
-    //Fetch initial set of labels.
+    // Fetch initial set of labels.
     const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
     const response = await fetch(labelsURL, {
       headers: { Accept: "application/vnd.github.symmetra-preview+json" }
@@ -155,7 +137,7 @@ export async function getRepoLabels(
     if (!response.ok) {
       return { errorCode: response.status };
     }
-    //Save the initial set of labels.
+    // Save the initial set of labels.
     const data = await response.json();
     labels = labels.concat(
       data.map((label: { name: string; color: string }) => ({
@@ -164,14 +146,14 @@ export async function getRepoLabels(
       }))
     );
 
-    //Check if the response header indicates more than 1 page of labels.
+    // Check if the response header indicates more than 1 page of labels.
     const headerLinks = response.headers.get("Link");
     if (headerLinks) {
       //Filter the Link header and extract the second url, which has the amount of pages.
       const lastLink = headerLinks.split(/<(.*?)>/g).filter(link => link.includes("https://"))[1];
       let numPages = parseInt(lastLink.substring(lastLink.lastIndexOf("=") + 1));
 
-      //Fetch all pages of labels.
+      // Fetch all pages of labels.
       for (let i = 2; i <= numPages; i++) {
         const response = await fetch(labelsURL + "?page=" + i, {
           headers: { Accept: "application/vnd.github.symmetra-preview+json" }
@@ -190,6 +172,28 @@ export async function getRepoLabels(
     }
     return { labels: labels };
   } catch (error) {
+    return { errorCode: 500 };
+  }
+}
+
+// Reads from the user's gist and returns the gist contents.
+async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
+  try {
+    const response = await fetch(
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
+      {
+        headers: new Headers({
+          "If-None-Match": ""
+        })
+      }
+    );
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
+    const responseJSON = await response.json();
+    return { gist: responseJSON };
+  } catch (error) {
+    console.error(error);
     return { errorCode: 500 };
   }
 }

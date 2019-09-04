@@ -78,8 +78,6 @@ const scopedSettings = {
           overflowY: "auto"
         }
       ]
-      // input: { maxHeight: 60, overflowY: "auto" },
-      // itemsWrapper: { maxHeight: "60px", overflowY: "auto", background: "#ffffff" }
     }
   },
   MessageBar: {
