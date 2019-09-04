@@ -5,7 +5,8 @@ import { Stack, Text, Separator } from "office-ui-fabric-react";
 import {
   QueryTileClassNames,
   gridStackStyle,
-  separatorStyles
+  separatorStyles,
+  queryTileFrontBackStyles
 } from "../components/QueryTile.styles";
 
 interface IQueryTileProps {
@@ -22,7 +23,9 @@ function QueryTileView(props: IQueryTileProps) {
   }
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
-      <div className={QueryTileClassNames.queryFront}>
+      <div
+        className={queryTileFrontBackStyles(query.reasonableCount, query.tasks.length).queryFront}
+      >
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text className={QueryTileClassNames.queryName} nowrap block>
             {query.name}
@@ -32,7 +35,9 @@ function QueryTileView(props: IQueryTileProps) {
           </Text>
         </Stack>
       </div>
-      <button className={QueryTileClassNames.queryBack}>
+      <button
+        className={queryTileFrontBackStyles(query.reasonableCount, query.tasks.length).queryBack}
+      >
         <Stack verticalAlign="space-around">
           <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
