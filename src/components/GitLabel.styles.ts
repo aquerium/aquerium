@@ -36,6 +36,10 @@ export const gitLabelStyles = (backgroundColor: string) => {
   });
 };
 
+/**
+ * Returns either white or black for a font color, depending on the contrast.
+ * @param rgbValue The RGB value of the  background color.
+ */
 export const textColorContrast = (
   rgbValue: { r: number; g: number; b: number; a?: number } | null
 ): string => {

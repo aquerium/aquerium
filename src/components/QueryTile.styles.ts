@@ -121,7 +121,7 @@ export const queryTileFrontStyles = (reasonableCount: number, numTasksOpen: numb
         height: "100%",
         background:
           reasonableCount > 0 && numTasksOpen - reasonableCount > 0
-            ? "rgba(255, 0, 0, " + alphaColor.toString() + ")"
+            ? "rgba(255, 0, 0, " + alphaColor + ")"
             : "#f8f8f8",
         backfaceVisibility: "hidden",
         textAlign: "center",
