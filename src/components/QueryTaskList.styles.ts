@@ -36,12 +36,12 @@ export const QueryTaskClassNames = mergeStyleSets({
     gridGap: "15px",
     textAlign: "center",
     boxSizing: "border-box",
-    padding: "12px 18px 18px 15px"
+    padding: "12px 19px 18px 19px"
   },
   taskTile: [
     hoveringAndShading,
     {
-      width: "507px",
+      width: "510px",
       height: "94px",
       textAlign: "left",
       outline: "none",
