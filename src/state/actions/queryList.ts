@@ -118,11 +118,8 @@ export const refreshMap = () => {
           toError(responseGist.errorCode)(dispatch);
         }
       }
-      const delayInMilliseconds = 700;
-      setTimeout(function () {
-        dispatch(setHomeLoadingFalse());
-        dispatch(updateMap(newMap));
-      }, delayInMilliseconds);
+      dispatch(setHomeLoadingFalse());
+      dispatch(updateMap(newMap));
     }
   }
 }
