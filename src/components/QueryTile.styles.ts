@@ -97,7 +97,7 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
  * @param numTasksOpen The amount of open tasks open in the query.
  */
 export const queryTileFrontBackStyles = (reasonableCount: number, numTasksOpen: number) => {
-  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.8);
+  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
   return mergeStyleSets({
     queryFront: [
       hoveringAndShading,
