@@ -51,6 +51,9 @@ export const changeUI = (
         currQuery: { $set: query }
       });
     }
+    case "LOADING": {
+      return update(state, { currUI: { $set: "Loading" } });
+    }
     default:
       return state;
   }

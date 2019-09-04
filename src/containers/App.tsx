@@ -130,7 +130,7 @@ class AppView extends React.Component<IAppViewProps> {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
       }
       case "Loading": {
-        return <LoadingPage loadingMessage={"poop"} />;
+        return <LoadingPage loadingMessage={"loading..."} />;
       }
       default: {
         return <LoginUI />;

@@ -40,7 +40,7 @@ export type changeUIEditQueryAction = { type: string; query?: IQuery };
  */
 export const login = (currPAT?: string) => {
   return async function (dispatch: Dispatch) {
-    dispatch(setLoginLoadingTrue());
+    dispatch(toLoadingPage());
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
       loginViaPAT(dispatch, currPAT);
@@ -76,16 +76,17 @@ function loginOnApplicationMount(dispatch: Dispatch) {
           }
         });
       } else {
-        dispatch(setLoginLoadingFalse());
         toError(response.errorCode)(dispatch);
       };
-    };
+    } else {
+      console.log("big ruh roh");
+      dispatch(goToLogout());
+    }
   });
 };
 
 // Helper function to attempt to log a user in via their PAT.
 function loginViaPAT(dispatch: Dispatch, PAT: string) {
-  dispatch(setLoginLoadingTrue());
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
@@ -102,6 +103,7 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
         if (responseGist.user) {
           loginQueryMapExists(responseGist.user, dispatch, {});
         } else {
+          dispatch(goToLogout());
           dispatch(setIsInvalidPAT(true));
         };
       };
@@ -125,14 +127,15 @@ async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<v
   if (responseMap.queryMap) {
     loginQueryMapExists(user, dispatch, responseMap.queryMap);
   } else {
+    dispatch(goToLogout());
     dispatch(setIsInvalidPAT(true));
   };
 };
 
 // Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
+  chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
-  dispatch(setLoginLoadingFalse());
   toHome()(dispatch);
   dispatch(setHomeLoadingTrue());
   dispatch(updateMap(map));
@@ -238,7 +241,6 @@ const goToError = (errorCode?: number, query?: IQuery) => ({
   query
 });
 
-
 /**
  * Action creator to toggle the isHomeLoading setting to true.
  */
@@ -251,20 +253,6 @@ export const setHomeLoadingTrue = () => ({
  */
 export const setHomeLoadingFalse = () => ({
   type: "HOME_LOADING_FALSE"
-});
-
-/**
- * Action creator to toggle the isLoginLoading setting to true.
- */
-export const setLoginLoadingTrue = () => ({
-  type: "LOGIN_LOADING_TRUE"
-});
-
-/**
- * Action creator to toggle the isLoginLoading setting to false.
- */
-export const setLoginLoadingFalse = () => ({
-  type: "LOGIN_LOADING_FALSE"
 });
 
 /**

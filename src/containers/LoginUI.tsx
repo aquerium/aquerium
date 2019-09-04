@@ -15,7 +15,6 @@ import {
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
-import { getLoginLoadingPhrase } from "../misc/loadingPhrases"
 
 // Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
@@ -35,14 +34,11 @@ interface ILoginProps {
   setIsInvalidPAT: (isInvalid: boolean) => void;
   /** A boolean that stores whether the PAT is invalid. Defaults to false, but set to true if the PAT doesn't successfully return a valid query map object. */
   invalidPAT: boolean;
-  /** A boolean that stores whether the user is currently attempting to log in. */
-  isLoginLoading: boolean;
 }
 
 const mapStateToProps = (state: IState) => {
   return {
     invalidPAT: state.user.invalidPAT,
-    isLoginLoading: state.changeUI.isLoginLoading
   };
 };
 
