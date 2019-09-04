@@ -6,7 +6,7 @@ import { IState } from "../state.types";
 const DEFAULT_STATE: IState["changeUI"] = {
   currUI: "Login",
   currQuery: undefined,
-  isHomeLoading: false,
+  isHomeLoading: false
 };
 
 /**

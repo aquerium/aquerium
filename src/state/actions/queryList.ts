@@ -1,3 +1,4 @@
+/*global chrome*/
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
@@ -35,9 +36,14 @@ export const addOrEditQuery = (query: IQuery) => {
       toError(resp.errorCode, query)(dispatch);
       return;
     } else {
-      dispatch(updateMap(newList));
       dispatch(setHomeLoadingFalse());
     }
+    chrome.browserAction.getBadgeText({}, function (res: string) {
+      const oldOverFlow = query.tasks.length - query.reasonableCount;
+      const overFlow = newQuery.tasks.length - newQuery.reasonableCount;
+      const newBadgeText = query.id === "" ? Number(res) + overFlow : Number(res) + (overFlow - oldOverFlow);
+      chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+    });
     dispatch(updateMap(newList));
   };
 };
@@ -68,8 +74,14 @@ export const removeQuery = (queryID: string) => {
       toError(response.errorCode)(dispatch);
       return;
     }
-    dispatch(updateMap(newList));
+    chrome.browserAction.getBadgeText({}, function (res: string) {
+      const query = queryList[queryID];
+      const overFlow = query.tasks.length - query.reasonableCount;
+      const newBadgeText = (Number(res) - overFlow) < 0 ? 0 : (Number(res) - overFlow);
+      chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+    });
     dispatch(setHomeLoadingFalse());
+    dispatch(updateMap(newList));
   };
 };
 
@@ -80,33 +92,41 @@ export const refreshMap = () => {
   return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
-    for (const key in queryList) {
-      const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
-      if (responseItems.tasks) {
-        const newQuery = update(queryList[key], {
-          tasks: { $set: responseItems.tasks }
-        });
-        const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
-        const response = await updateGist(user, newList);
-        if (response.errorCode) {
-          toError(response.errorCode)(dispatch);
-          dispatch(setHomeLoadingFalse());
-          return;
+    let badge = 0;
+    if (queryList) {
+      const newMap = JSON.parse(JSON.stringify(queryList));
+      for (const key in queryList) {
+        const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
+        if (responseItems.tasks) {
+          // Set the contents with the most updated query result.
+          newMap[key].tasks = responseItems.tasks;
+          // Add the number of "unreasonable" tasks to the badge count.
+          badge += responseItems.tasks.length - newMap[key].reasonableCount;
         }
-        const delayInMilliseconds = 700;
-        setTimeout(function () {
+        else {
           dispatch(setHomeLoadingFalse());
-          dispatch(updateMap(newList));
-        }, delayInMilliseconds);
-      } else {
-        toError(responseItems.errorCode)(dispatch);
-        dispatch(setHomeLoadingFalse());
-        return;
+          toError(responseItems.errorCode)(dispatch);
+        }
       }
+      const badgeText = badge < 0 ? "0" : badge.toString(); // Prevents displaying negative badges.
+      chrome.browserAction.setBadgeText({ text: badgeText });
+      // Call updateGist if there were indeed updates to the user's query results.
+      if (JSON.stringify(queryList) !== JSON.stringify(newMap)) {
+        const responseGist = await updateGist(user, newMap);
+        if (responseGist.errorCode) {
+          dispatch(setHomeLoadingFalse());
+          toError(responseGist.errorCode)(dispatch);
+        }
+      }
+      const delayInMilliseconds = 700;
+      setTimeout(function () {
+        dispatch(setHomeLoadingFalse());
+        dispatch(updateMap(newMap));
+      }, delayInMilliseconds);
     }
-    dispatch(setHomeLoadingFalse());
-  };
-};
+  }
+}
+
 
 /**
  * Action creator to replace the current queryList with the attatched queryList.

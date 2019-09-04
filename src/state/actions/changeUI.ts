@@ -1,9 +1,9 @@
 /* global chrome */
-import { IUserInfo, IQuery, queryListType } from "../state.types";
+import { IUserInfo, IQuery, queryListType, IState } from "../state.types";
 import { getQueryMapObj, createGist, checkForGist } from "../../util";
 import { Dispatch } from "redux";
 import { setIsInvalidPAT, storeUserInfo } from "../actions";
-import { updateMap } from "./queryList";
+import { updateMap, refreshMap } from "./queryList";
 
 /**
  * The action type for changing UI.
@@ -39,21 +39,21 @@ export type changeUIEditQueryAction = { type: string; query?: IQuery };
  * @param currPAT the token entered by the user when they log in. If login is called from componentDidMount, this field will be empty.
  */
 export const login = (currPAT?: string) => {
-  return async function (dispatch: Dispatch) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(toLoadingPage());
     if (currPAT) {
       // Called when the user is logging in from LoginUI with a PAT.
-      loginViaPAT(dispatch, currPAT);
+      loginViaPAT(dispatch, getState, currPAT);
     } else {
       // Called when the user opens the application.
-      loginOnApplicationMount(dispatch);
+      loginOnApplicationMount(dispatch, getState);
     };
   };
 };
 
 // Helper function to attempt to log a user in when the extension is first opened.
 // Checks for valid credentials and loads the appropriate map if they are approved.
-function loginOnApplicationMount(dispatch: Dispatch) {
+function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
   chrome.storage.sync.get(["token", "username", "gistID"], async result => {
     if (result.token && result.username && result.gistID) {
       const user = createIUserInfo(result.token, result.username, result.gistID);
@@ -85,22 +85,22 @@ function loginOnApplicationMount(dispatch: Dispatch) {
 };
 
 // Helper function to attempt to log a user in via their PAT.
-function loginViaPAT(dispatch: Dispatch, PAT: string) {
+function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
   chrome.storage.sync.get(["username", "gistID"], async result => {
     if (result.username && result.gistID) {
       const user = createIUserInfo(PAT, result.username, result.gistID);
-      await loginExistingUser(dispatch, user);
+      await loginExistingUser(dispatch, getState, user);
     } else {
       const response = await checkForGist(PAT);
       // If there already is a gist for this account, then update local storage.
       if (response.gist && response.gist.owner && response.gist.id) {
         const user = createIUserInfo(PAT, response.gist.owner.login, response.gist.id);
-        await loginExistingUser(dispatch, user);
+        await loginExistingUser(dispatch, getState, user);
       } else {
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
         if (responseGist.user) {
-          loginQueryMapExists(responseGist.user, dispatch, {});
+          loginQueryMapExists(responseGist.user, dispatch, getState, {});
         } else {
           dispatch(goToLogout());
           dispatch(setIsInvalidPAT(true));
@@ -121,10 +121,10 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
 };
 
 // Helper function that logs in an existing user.
-async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
+async function loginExistingUser(dispatch: Dispatch, getState: () => IState, user: IUserInfo): Promise<void> {
   const responseMap = await getQueryMapObj(user);
   if (responseMap.queryMap) {
-    loginQueryMapExists(user, dispatch, responseMap.queryMap);
+    loginQueryMapExists(user, dispatch, getState, responseMap.queryMap);
   } else {
     dispatch(goToLogout());
     dispatch(setIsInvalidPAT(true));
@@ -132,13 +132,12 @@ async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<v
 };
 
 // Helper function that stores a user's information and goes to the HomeUI.
-function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
+function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, getState: () => IState, map: queryListType) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
   toHome()(dispatch);
-  dispatch(setHomeLoadingTrue());
   dispatch(updateMap(map));
-  dispatch(setHomeLoadingFalse());
+  refreshMap()(dispatch, getState);
 }
 
 /**

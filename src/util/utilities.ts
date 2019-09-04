@@ -64,6 +64,15 @@ export function getQueryURLHTML(user: IUserInfo, query: IQuery): string {
   );
 }
 
+/**
+ * Generate a unque id for the query.
+ */
+export const createUid = (): string => {
+  return Math.random()
+    .toString(36)
+    .substring(2, 15);
+};
+
 function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   let qualifiers = "%20is:open";
   qualifiers += query.type ? "%20is:" + query.type : "";
@@ -114,11 +123,4 @@ function getRefDate(daysRef: number): string {
   return dateRef.getFullYear() + "-" + mmStr + "-" + ddStr;
 }
 
-/**
- * Generate a unque id for the query.
- */
-export const createUid = (): string => {
-  return Math.random()
-    .toString(36)
-    .substring(2, 15);
-};
+
