@@ -146,14 +146,6 @@ export async function getRepoLabels(
   repo: string
 ): Promise<{ labels?: ILabel[]; errorCode?: number }> {
   try {
-    // const octokit = new Octokit({ auth: "" }); // TODO: Inside the quotes should be user.token
-    // const options = octokit.issues.listLabelsForRepo.endpoint.merge({
-    //   owner: repo.substr(0, repo.indexOf("/")),
-    //   repo: repo.substr(repo.indexOf("/") + 1)
-    // });
-    // const labels = await octokit.paginate(options);
-    // return { labels: labels.map(label => label.name) };
-
     let labels: ILabel[] = [];
     //Fetch initial set of labels.
     const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
