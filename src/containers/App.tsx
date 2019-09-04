@@ -68,9 +68,18 @@ const scopedSettings = {
   },
   TagPicker: {
     styles: {
-      root: { maxWidth: "465px" },
-      input: fieldGroupStyles,
-      itemsWrapper: { maxHeight: "60px", overflowY: "auto" }
+      text: [
+        hoveringAndShading,
+        {
+          width: "465px",
+          maxWidth: "465px",
+          maxHeight: "92px",
+          background: "white",
+          overflowY: "auto"
+        }
+      ]
+      // input: { maxHeight: 60, overflowY: "auto" },
+      // itemsWrapper: { maxHeight: "60px", overflowY: "auto", background: "#ffffff" }
     }
   },
   MessageBar: {
@@ -109,7 +118,6 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-
   public componentDidMount(): void {
     this.props.login();
   }
