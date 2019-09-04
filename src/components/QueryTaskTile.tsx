@@ -63,7 +63,6 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {task.title}
           </a>
         </TooltipHost>
-        <div className={QueryTaskClassNames.infoIcon}>{description(task.body)()}</div>
       </div>
       <Stack
         verticalAlign="space-around"
