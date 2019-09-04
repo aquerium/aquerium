@@ -35,9 +35,7 @@ function QueryTileView(props: IQueryTileProps) {
           </Text>
         </Stack>
       </div>
-      <button
-        className={queryTileFrontBackStyles(query.reasonableCount, query.tasks.length).queryBack}
-      >
+      <button className={QueryTileClassNames.queryBack}>
         <Stack verticalAlign="space-around">
           <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>

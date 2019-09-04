@@ -13,6 +13,8 @@ interface IQueryTile {
   listContainer: string;
   /** A single tile for a query. */
   queryTile: string;
+  /** The styles for the back of the query tile, where the info is populated. */
+  queryBack: string;
   /** The styles for the query title. */
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
@@ -54,6 +56,36 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     width: "250px",
     height: "250px"
   },
+  queryBack: [
+    hoveringAndShading,
+    {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      outline: "none",
+      float: "center",
+
+      border: "none",
+      background: "#f8f8f8",
+      backfaceVisibility: "auto",
+      overflowY: "auto",
+      overflowX: "hidden",
+      opacity: 0,
+      cursor: "pointer",
+      selectors: {
+        "&:hover": {
+          animation: "fadeinout linear forwards",
+          opacity: 1,
+          background: "#f8f8f8"
+        },
+        "&:active": {
+          transition: "0.1s",
+          border: "2px solid #005ba1"
+        }
+      },
+      transition: "0.5s ease-in-out"
+    }
+  ],
   queryName: {
     padding: "35px 0 0 0",
     overflow: "hidden",
@@ -116,36 +148,6 @@ export const queryTileFrontBackStyles = (reasonableCount: number, numTasksOpen: 
             animation: "fadeinout linear forwards"
           }
         }
-      }
-    ],
-    queryBack: [
-      hoveringAndShading,
-      {
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        outline: "none",
-        float: "center",
-
-        border: "none",
-        background: "#f8f8f8",
-        backfaceVisibility: "auto",
-        overflowY: "auto",
-        overflowX: "hidden",
-        opacity: 0,
-        cursor: "pointer",
-        selectors: {
-          "&:hover": {
-            animation: "fadeinout linear forwards",
-            opacity: 1,
-            background: "#f8f8f8"
-          },
-          "&:active": {
-            transition: "0.1s",
-            border: "2px solid #005ba1"
-          }
-        },
-        transition: "0.5s ease-in-out"
       }
     ]
   });
