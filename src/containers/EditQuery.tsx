@@ -338,15 +338,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
-    // const updatedSelections = update(this.state.selections, {
-    //   labelsToRender: {
-    //     $set: this.state.selections.labelsToRender.map(label => ({
-    //       name: emoji.emojify(label.name),
-    //       color: label.color
-    //     }))
-    //   }
-    // });
-    // this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };
@@ -369,9 +360,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _addItems = [
     {
-      key: "update",
-      name: "Update",
-      ariaLabel: "Update",
+      key: "add",
+      name: "Save",
+      ariaLabel: "Save Query",
       iconProps: { iconName: "Save", color: "Green" },
       onClick: this._setMessageBarAddOrEdit,
       buttonStyles: {
@@ -380,7 +371,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     },
     {
-      key: "cancel",
+      key: "return",
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
@@ -394,7 +385,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _updateItems = [
     {
-      key: "Cancel",
+      key: "cancel",
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
@@ -452,10 +443,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     } else currInputs[0] = true;
     newValue = newValue ? newValue.trim() : "";
     const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
-    this.setState({ selections: updatedSelections });
-    this.setState({
-      validInputs: currInputs
-    });
+    this.setState({ selections: updatedSelections, validInputs: currInputs });
     chrome.storage.local.set({ query: this.state.selections });
   };
 

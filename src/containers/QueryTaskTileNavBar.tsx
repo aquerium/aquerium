@@ -29,7 +29,7 @@ function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
     root: { width: "40px", height: "40px", background: "transparent" }
   };
 
-  const topBarStyles = { root: { transform: "translateY(10%)" } };
+  const topBarStyles = { root: { transform: "translateY(5%)", paddingBottom: 3 } };
 
   const tooltipId = getId("text-tooltip");
   const calloutGapSpace = { gapSpace: 0 };
