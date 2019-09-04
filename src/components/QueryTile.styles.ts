@@ -48,15 +48,15 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gridAutoRows: "1fr",
-    gridGap: "19px",
-    gridAutoColumns: "19px",
+    gridGap: "20px",
+    gridAutoColumns: "20px",
     boxSizing: "border-box",
-    padding: "19px"
+    padding: "22px"
   },
   queryTile: {
     position: "relative",
-    width: "250px",
-    height: "250px"
+    width: "247px",
+    height: "247px"
   },
   queryFront: [
     hoveringAndShading,
