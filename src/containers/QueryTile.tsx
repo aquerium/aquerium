@@ -19,7 +19,10 @@ interface IQueryTileProps {
 function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
   const emojifiedAndColoredLabels = query.labelsToRender.map(label => (
-    <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+    <span
+      className={gitLabelStyles(label.color).label}
+      key={label.name + label.color}
+    >
       {label.name}
     </span>
   ));
@@ -29,7 +32,11 @@ function QueryTileView(props: IQueryTileProps) {
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={QueryTileClassNames.queryFront}>
-        <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
+        <Stack
+          horizontalAlign="center"
+          verticalAlign="space-evenly"
+          styles={gridStackStyle}
+        >
           <Text className={QueryTileClassNames.queryName} nowrap block>
             {query.name}
           </Text>
@@ -40,8 +47,12 @@ function QueryTileView(props: IQueryTileProps) {
       </div>
       <button className={QueryTileClassNames.queryBack}>
         <Stack verticalAlign="space-around">
-          <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
-          <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
+          <Text className={QueryTileClassNames.basicInfoQueryName}>
+            {query.name}
+          </Text>
+          <Separator styles={separatorStyles}>
+            {query.tasks.length.toString()} open tasks
+          </Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>
             {query.type
@@ -90,6 +101,12 @@ function QueryTileView(props: IQueryTileProps) {
           {query.lastUpdated && (
             <Text className={QueryTileClassNames.basicInfo}>
               <b>Last Updated:</b> {query.lastUpdated} days ago
+              <br />
+            </Text>
+          )}
+          {query.reasonableCount && (
+            <Text className={QueryTileClassNames.basicInfo}>
+              <b>Reasonable Count:</b> {query.reasonableCount} open tasks
               <br />
             </Text>
           )}

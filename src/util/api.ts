@@ -44,7 +44,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
 
 /**
  * Returns the queryMap object in the user's gist file.
- * @param user IUserInfo object with the user's relevant information.
+ * @param user Contains the user's relevant information.
  */
 export async function getQueryMapObj(
   user: IUserInfo
@@ -62,7 +62,7 @@ export async function getQueryMapObj(
 
 /**
  * Updates the user's gist contents with an updated queryMap object.
- * @param user IUserInfo object with the user's relevant information.
+ * @param user Contains the user's relevant information.
  * @param queryMap Contains the user's queries in a dictionary.
  */
 export async function updateGist(
@@ -123,7 +123,12 @@ export async function checkForGist(token: string): Promise<{ gist?: IGist; error
 async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
   try {
     const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token
+      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
+      {
+        headers: new Headers({
+          "If-None-Match": ""
+        })
+      }
     );
     if (!response.ok) {
       return { errorCode: response.status };

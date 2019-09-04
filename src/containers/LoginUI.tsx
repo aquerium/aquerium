@@ -14,11 +14,11 @@ import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
 import { connect } from "react-redux";
 
-//Value corresponding to enter key.
+// Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
 const imageProps: IImageProps = {
-  src: "GlitterboxLogo2.png",
+  src: "logo.png",
   imageFit: ImageFit.centerContain,
   maximizeFrame: true,
   width: 175,
@@ -100,6 +100,7 @@ function LoginUIComponent(props: ILoginProps) {
         <TextField
           placeholder="Enter your GitHub PAT"
           required
+          type="password"
           styles={getTextFieldStyles(props.invalidPAT)}
           onChange={updateCurrPAT}
           onKeyDown={onKeyDown(onLogin)}
@@ -118,12 +119,12 @@ function LoginUIComponent(props: ILoginProps) {
   );
 }
 
-const action = {
+const actions = {
   login,
   setIsInvalidPAT
 };
 
 export const LoginUI = connect(
   mapStateToProps,
-  action
+  actions
 )(LoginUIComponent);

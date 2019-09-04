@@ -9,6 +9,7 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
+import { ErrorPage } from "../containers/ErrorPage";
 
 initializeIcons();
 
@@ -59,7 +60,10 @@ const scopedSettings = {
   },
   Dropdown: {
     styles: {
-      title: [fieldGroupStyles, { padding: "2px" }]
+      title: [
+        fieldGroupStyles,
+        { paddingRight: "20px", whiteSpace: "nowrap", textOverflow: "ellipsis" }
+      ]
     }
   },
   TagPicker: {
@@ -81,7 +85,7 @@ const scopedSettings = {
     }
   },
   Slider: {
-    styles: { container: { width: 450 } }
+    styles: { container: { width: 465 } }
   },
   Link: {
     target: "_blank"
@@ -105,6 +109,7 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
+
   public componentDidMount(): void {
     this.props.login();
   }
@@ -123,6 +128,9 @@ class AppView extends React.Component<IAppViewProps> {
       }
       case "EditQuery": {
         return <EditQuery />;
+      }
+      case "ErrorPage": {
+        return <ErrorPage />;
       }
       case "QueryList": {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;

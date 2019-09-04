@@ -1,6 +1,6 @@
 import { getId } from "@uifabric/utilities";
 import React from "react";
-import { Stack, ActionButton, TooltipHost, Link } from "office-ui-fabric-react";
+import { Stack, TooltipHost, Link, CommandBarButton } from "office-ui-fabric-react";
 import { QueryTaskClassNames } from "../components/QueryTaskList.styles";
 import { IQuery, toEditQuery, toHome } from "../state";
 import { connect } from "react-redux";
@@ -10,22 +10,33 @@ interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
   query: IQuery;
   /** A function that calls the action to go to the Edit Query UI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
   /** A function that calls the action to go to the Home UI. */
   toHome: () => void;
 }
 
 function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
+  function onClickToEditQuery() {
+    props.toEditQuery(query);
+  }
   const { query } = props;
-  const iconProps = { back: { iconName: "Back" }, edit: { iconName: "Edit" } };
-  const iconSize = { icon: { fontSize: 22 } };
+  const iconProps = {
+    back: { iconName: "Back", name: "Back" },
+    edit: { iconName: "Edit", name: "Edit" }
+  };
+  const iconSize = {
+    icon: { fontSize: 22 },
+    root: { width: "40px", height: "40px", background: "transparent" }
+  };
+
+  const topBarStyles = { root: { transform: "translateY(10%)" } };
 
   const tooltipId = getId("text-tooltip");
   const calloutGapSpace = { gapSpace: 0 };
 
   return (
-    <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-      <ActionButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
+    <Stack horizontal horizontalAlign="space-around" verticalAlign="center" styles={topBarStyles}>
+      <CommandBarButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
       <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
         <Link
           href={normalizedURL(query.url)}
@@ -39,7 +50,7 @@ function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
           {query.name}
         </Link>
       </TooltipHost>
-      <ActionButton iconProps={iconProps.edit} styles={iconSize} onClick={props.toEditQuery} />
+      <CommandBarButton iconProps={iconProps.edit} styles={iconSize} onClick={onClickToEditQuery} />
     </Stack>
   );
 }

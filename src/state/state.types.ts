@@ -1,5 +1,4 @@
 /**
- * @interface
  * This interface defines the state object.
  */
 export interface IState {
@@ -7,11 +6,25 @@ export interface IState {
   queryList: queryListType;
   /** Stores information pertaining to the UI being displayed. */
   changeUI: {
-    currUI: "Home" | "Login" | "EditQuery" | "QueryList";
+    /** Stores the various possible UI's that can be displayed. */
+    currUI: "Home" | "Login" | "EditQuery" | "QueryList" | "ErrorPage";
+    /** The current query to display if the user is on a UI that needs query info. */
     currQuery?: IQuery;
+    /** An error code that will be sent to the error UI to determine which features will be displayed. */
+    errorCode?: number;
   };
   /** Stores a user's personal data. */
   user: IUserInfo;
+}
+
+/**
+ * This interface represents a single label, with its name and color.
+ */
+export interface ILabel {
+  /** The name of the label. */
+  name: string;
+  /** The color provided by GitHub and/or a repository. */
+  color: string;
 }
 
 /**
@@ -36,10 +49,16 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
+  /** The body of the ITask, adding further information about the task. */
+  body: string;
+  /** The assignees of the task. */
+  assignees: string[];
   /** The repo the task is a member of. */
   repo: string;
   /** Type can only be of "issue" or pull request, "pr". */
   type: "issue" | "pr";
+  /** Array of labels further classifying the task. */
+  labels: ILabel[];
   /** Time stamp for creation. */
   createdAt: string;
   /** Time stamp for last update. */
@@ -49,7 +68,6 @@ export interface ITask {
 }
 
 /**
- *
  * This interface represents a single query.
  */
 export interface IQuery {
@@ -77,14 +95,17 @@ export interface IQuery {
     | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
   labels?: string[];
-  /** The array of labels that are rendered across the app. */
+  /**
+   * The array of labels that are rendered across the app. Different from labels, since labels
+   * are part of the query that the API will make and labelsToRender contain ILabel objects,
+   * which include the label name and the label color (defaults to gray).
+   *
+   */
   labelsToRender: ILabel[];
-  /** Number of days before an issue goes stale. */
-  stalenessIssue: number;
-  /** Number of days before a pr goes stale. */
-  stalenessPull: number;
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
+  /** The number of tasks in a query that, if exceeded, would be considered unreasonable. */
+  reasonableCount: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
   /** The URL for the github page containing this query. */
@@ -94,7 +115,6 @@ export interface IQuery {
 }
 
 /**
- * @interface
  * Contains relevant information for the authenticated user.
  */
 export interface IUserInfo {

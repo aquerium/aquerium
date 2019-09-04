@@ -1,25 +1,30 @@
 import * as React from "react";
-import { clearTokenLogout, toEditQuery } from "../state";
-import { Image, Stack, Link, CommandBarButton, Text, ActionButton } from "office-ui-fabric-react";
+import { clearTokenLogout, toEditQuery, IQuery } from "../state";
+import { Image, Stack, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
   topBarItemGap,
   TopBarIconsUIClassNames,
-  getMenuIconName,
   menuIconSize,
   imageProps,
   refreshIcon,
-  refreshIconStyles
+  refreshIconStyles,
+  getMenuIconProps
 } from "./TopBarIcons.styles";
 
 interface ITopBarIconsProps {
   /** A function linked with the action creator to log the user out, which also clears the user's PAT from local storage. */
   clearTokenLogout: () => void;
   /** A function linked with the action creator to send the user to the EditQueryUI. */
-  toEditQuery: () => void;
+  toEditQuery: (query?: IQuery) => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
+
+  function onClickToEditQuery() {
+    props.toEditQuery();
+  };
+
   const menuProps = {
     items: [
       {
@@ -28,7 +33,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         iconProps: {
           iconName: "Add"
         },
-        onClick: props.toEditQuery
+        onClick: onClickToEditQuery
       },
       {
         key: "sign out",
@@ -49,13 +54,11 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       tokens={topBarItemGap}
       className={TopBarIconsUIClassNames.topBar}
     >
-      <ActionButton iconProps={refreshIcon} styles={refreshIconStyles} />
-      <Link href="https://github.com" target="_blank" className={TopBarIconsUIClassNames.logo}>
-        <Image {...(imageProps as any)} title="My GitHub Home" />
-      </Link>
+      <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} />
+      <Image className={TopBarIconsUIClassNames.logo} {...(imageProps as any)} title="Aquerium" />
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
-        menuIconProps={getMenuIconName}
+        menuIconProps={getMenuIconProps}
         title="Options"
         className={TopBarIconsUIClassNames.menu}
         styles={menuIconSize}

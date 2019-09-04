@@ -16,9 +16,20 @@ export type changeUIAction = { type: string };
 export type changeUILoginAction = { type: string; user: IUserInfo };
 
 /**
+ * The action type for changing to the error UI.
+ */
+export type changeUIErrorAction = { type: string; errorCode?: number, query?: IQuery };
+
+/**
  * The action type for changing to the QueryTaskList UI.
  */
 export type changeUIQueryTaskListAction = { type: string; query: IQuery };
+
+/**
+ * The action type for changing to the EditQuery UI.
+ */
+export type changeUIEditQueryAction = { type: string; query?: IQuery };
+
 
 /**
  * Action creator to send the user from login UI to Home UI.
@@ -35,7 +46,7 @@ export const login = (currPAT?: string) => {
     } else {
       // Called when the user opens the application.
       loginOnApplicationMount(dispatch);
-    }
+    };
   };
 };
 
@@ -49,11 +60,26 @@ function loginOnApplicationMount(dispatch: Dispatch) {
       if (response.queryMap) {
         dispatch(storeUserInfo(user));
         dispatch(updateMap(response.queryMap));
-        dispatch(toHome());
-      }
-    }
+        // We check to see if the user had any cached data in local storage.
+        chrome.storage.sync.get(["currUI", "query"], resultQuery => {
+          if (resultQuery.query && resultQuery.currUI) {
+            if (resultQuery.currUI === "QueryList") {
+              toQueryList(resultQuery.query)(dispatch);
+            } else if (resultQuery.currUI === "EditQuery") {
+              toEditQuery(resultQuery.query)(dispatch);
+            } else {
+              toHome()(dispatch);
+            };
+          } else {
+            toHome()(dispatch);
+          }
+        });
+      } else {
+        toError(response.errorCode)(dispatch);
+      };
+    };
   });
-}
+};
 
 // Helper function to attempt to log a user in via their PAT.
 function loginViaPAT(dispatch: Dispatch, PAT: string) {
@@ -70,17 +96,15 @@ function loginViaPAT(dispatch: Dispatch, PAT: string) {
       } else {
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
-        if (responseGist.user === undefined) {
-          // If the response from createGIST is invalid.
-          dispatch(setIsInvalidPAT(true));
-        } else {
-          // Store this user's info in local storage and in redux.
+        if (responseGist.user) {
           loginQueryMapExists(responseGist.user, dispatch, {});
-        }
-      }
-    }
+        } else {
+          dispatch(setIsInvalidPAT(true));
+        };
+      };
+    };
   });
-}
+};
 
 // Helper function that creates an IUserInfo.
 function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
@@ -90,63 +114,121 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
     gistID: newGistID,
     invalidPAT: false
   };
-}
+};
 
 // Helper function that logs in an existing user.
 async function loginExistingUser(dispatch: Dispatch, user: IUserInfo): Promise<void> {
   const responseMap = await getQueryMapObj(user);
-  if (responseMap.queryMap === undefined) {
-    // If queryMap is undefined, this user has invalid credentials.
-    dispatch(setIsInvalidPAT(true));
-  } else {
-    // Else, the user's querymap already exists.
+  if (responseMap.queryMap) {
     loginQueryMapExists(user, dispatch, responseMap.queryMap);
-  }
-}
+  } else {
+    dispatch(setIsInvalidPAT(true));
+  };
+};
 
 // Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryListType) {
   chrome.storage.sync.set(user);
   dispatch(storeUserInfo(user));
   dispatch(updateMap(map));
-  dispatch(toHome());
-}
+  toHome()(dispatch);
+};
 
 /**
  * Action creator to clear a user's stored token and then logout.
  */
 export const clearTokenLogout = () => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ token: "" });
-    dispatch(logout());
+    chrome.storage.sync.set({ token: "", currUI: "Login" });
+    dispatch(goToLogout());
+  };
+};
+
+/**
+ * Sets local storage to reflect the updated UI and then calls the goToLogout action.
+ */
+export const logout = () => {
+  return function (dispatch: Dispatch) {
+    chrome.storage.sync.set({ currUI: "Login" });
+    dispatch(goToLogout());
+  };
+};
+
+/**
+ * Sets local storage to reflect the updated UI and then calls the goToEditQuery action.
+ */
+export const toEditQuery = (query?: IQuery) => {
+  return function (dispatch: Dispatch) {
+    chrome.storage.sync.set({ currUI: "EditQuery" });
+    dispatch(goToEditQuery(query));
+  };
+};
+
+/**
+ * Sets local storage to reflect the updated UI and then calls the goToQueryList action.
+ */
+export const toQueryList = (query: IQuery) => {
+  return function (dispatch: Dispatch) {
+    chrome.storage.sync.set({ currUI: "QueryList", query: query });
+    dispatch(goToQueryList(query));
+  };
+};
+
+/**
+ * Sets local storage to reflect the updated UI and then calls the goToHome action.
+ */
+export const toHome = () => {
+  return function (dispatch: Dispatch) {
+    chrome.storage.sync.set({ currUI: "Home" });
+    dispatch(goToHome());
+  };
+};
+
+/**
+ * Sets local storage to reflect the updated UI and then calls the goToError action.
+ */
+export const toError = (errorCode?: number, query?: IQuery) => {
+  return function (dispatch: Dispatch) {
+    chrome.storage.sync.set({ currUI: "ErrorPage" });
+    dispatch(goToError(errorCode, query));
   };
 };
 
 /**
  * Action creator to send the user from home UI to Login UI.
  */
-export const logout = () => ({
+const goToLogout = () => ({
   type: "LOGOUT"
 });
 
 /**
  * Action creator to send the user to Edit Query UI.
  */
-export const toEditQuery = () => ({
-  type: "EDIT"
+const goToEditQuery = (query?: IQuery) => ({
+  type: "EDIT",
+  query
 });
 
 /**
  * Action creator to send the user to the QueryList UI.
  */
-export const toQueryList = (query: IQuery) => ({
+const goToQueryList = (query: IQuery) => ({
   type: "QUERY",
   query
 });
 
 /**
- * Action creator to send the user to Home UI
+ * Action creator to send the user to Home UI.
  */
-export const toHome = () => ({
+const goToHome = () => ({
   type: "HOME"
+});
+
+/**
+ * Action creator to send the user to the Error UI.
+ */
+const goToError = (errorCode?: number, query?: IQuery) => ({
+  type: "ERROR",
+  errorCode,
+  query
 });

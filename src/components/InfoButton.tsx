@@ -14,7 +14,7 @@ interface IInfoButtonState {
 
 interface IInfoButtonProps extends ITextFieldProps {
   /** Array with text to be displayed. */
-  calloutText: string[];
+  calloutText: string;
   /** Whether the info button must be translated up a number of pixels. */
   translate?: boolean;
 }
@@ -22,18 +22,22 @@ interface IInfoButtonProps extends ITextFieldProps {
 const InfoButtonStyles = mergeStyleSets({
   icon: {
     selectors: {
-      "&:hover": { background: "transparent" }
+      "&:hover": { background: "transparent" },
+      "&:active": { background: "transparent" }
     },
     background: "transparent",
     borderRadius: 25
   },
   callout: {
-    padding: 10,
-    maxWidth: 150
+    padding: 10
   },
   textDiv: {
     textAlign: "center",
-    fontSize: 16
+    fontSize: 16,
+    width: "100%",
+    maxWidth: "400px",
+    overflowY: "auto",
+    maxHeight: "400px"
   }
 });
 
@@ -77,12 +81,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
             role="alertdialog"
           >
             <div id={this._descriptionId} className={InfoButtonStyles.textDiv}>
-              {this.props.calloutText.map(text => (
-                <span>
-                  {text}
-                  <br />
-                </span>
-              ))}
+              {this.props.calloutText}
             </div>
           </Callout>
         )}
@@ -91,7 +90,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   }
 }
 
-export const description = (description: string[], translate?: boolean) => {
+export const description = (description: string, translate?: boolean) => {
   return (props?: ITextFieldProps): JSX.Element => {
     return <InfoButton {...props} calloutText={description} translate={translate || false} />;
   };

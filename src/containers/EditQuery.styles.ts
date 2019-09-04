@@ -6,29 +6,6 @@ export const rootTokenGap = {
 
 export const bridgeLabelGap = { root: { transform: "translateY(-14px)" } };
 
-export const actionIcons = {
-  back: {
-    name: { iconName: "Back" },
-    styles: { root: { fontSize: 20 }, icon: { fontSize: 25, color: "black" } }
-  },
-  save: {
-    name: { iconName: "CheckMark" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 32, color: "green" } }
-  },
-  remove: {
-    name: { iconName: "Trash" },
-    styles: { root: { color: "red", fontSize: 20 }, icon: { fontSize: 25, color: "red" } }
-  },
-  add: {
-    name: { iconName: "Add" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  },
-  update: {
-    name: { iconName: "Save" },
-    styles: { root: { color: "green", fontSize: 20 }, icon: { fontSize: 25, color: "green" } }
-  }
-};
-
 export const caretStyles = {
   rootHovered: { background: "transparent" },
   icon: { background: "transparent" },
@@ -39,7 +16,7 @@ export const optionsContainer = { optionsContainer: { maxHeight: "400px" } };
 
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
-    padding: "0px 0px 10px 40px",
+    padding: "0px 0px 20px 40px",
     color: "#1b3e74",
     height: "550px",
     width: "100%",
@@ -54,8 +31,35 @@ export const EditQueryUIClassNames = mergeStyleSets({
     textAlign: "center",
     transform: "translateX(-6px)"
   },
-  topBar: { height: "50px" }
+  topBar: { height: "50px" },
+  separatorIcon: { fontSize: "26px", background: "rgba(240,240,240,1)" },
+  separator: { width: "482px" },
+  commandBarContainer: {
+    height: "50px",
+    textAlign: "center",
+    margin: "0 auto"
+  }
 });
+
+export const commandBarStyles = {
+  root: { backgroundColor: "rgba(240, 240, 240, 0.7)" }
+};
+
+export const typeDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "118px" } } }
+};
+
+export const customizeViewDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "334px" } } }
+};
+
+export const reviewStatusDropdown = {
+  subComponentStyles: { label: {}, panel: { root: { height: "262px" } } }
+};
+
+export const separatorContentStyles = {
+  content: { background: "rgba(240,240,240,1)" }
+};
 
 export const typeOptions = [
   { key: "issue", text: "Only Issues" },
