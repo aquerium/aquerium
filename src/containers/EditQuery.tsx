@@ -230,7 +230,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 onGetErrorMessage={this._checkReasonableCountSelection}
               />
               {description(
-                "The number of tasks in this query that if exceeded, would be considered unreasonable."
+                "The number of tasks in this query that if exceeded, would be considered unreasonable. " +
+                  "As tasks accumluate above reasonable count, the background of the query tile will turn more red in order to warn you."
               )()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
