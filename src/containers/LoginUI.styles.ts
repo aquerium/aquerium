@@ -25,11 +25,6 @@ export const LoginUIClassNames = mergeStyleSets({
     position: "absolute",
     bottom: 30
   },
-  spinner: {
-    textAlign: "center",
-    transform: "translateY(150px)",
-    color: "#004d7c"
-  },
   loginFields: {
     position: "absolute",
     top: 330

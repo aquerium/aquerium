@@ -9,8 +9,6 @@ import {
   Link,
   PrimaryButton,
   ITextFieldStyleProps,
-  Spinner,
-  SpinnerSize
 } from "office-ui-fabric-react";
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
@@ -110,17 +108,6 @@ function LoginUIComponent(props: ILoginProps) {
         />
         <PrimaryButton text="Submit" allowDisabledFocus={true} onClick={onLogin} />
       </Stack>
-      {/* {props.isLoginLoading && (
-        <div>
-          <Spinner
-            label={getLoginLoadingPhrase()}
-            ariaLive="assertive"
-            labelPosition="left"
-            size={SpinnerSize.small}
-            className={LoginUIClassNames.spinner}
-          />
-        </div>
-      )} */}
       <Link
         className={LoginUIClassNames.patLink}
         href="https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"

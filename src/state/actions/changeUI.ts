@@ -62,7 +62,7 @@ function loginOnApplicationMount(dispatch: Dispatch) {
         dispatch(storeUserInfo(user));
         dispatch(updateMap(response.queryMap));
         // We check to see if the user had any cached data in local storage.
-        chrome.storage.sync.get(["currUI", "query"], resultQuery => {
+        chrome.storage.local.get(["currUI", "query"], resultQuery => {
           if (resultQuery.query && resultQuery.currUI) {
             if (resultQuery.currUI === "QueryList") {
               toQueryList(resultQuery.query)(dispatch);
@@ -146,7 +146,8 @@ function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, map: queryList
  */
 export const clearTokenLogout = () => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ token: "", currUI: "Login" });
+    chrome.storage.sync.set({ token: "" });
+    chrome.storage.local.set({ currUI: "Login" });
     dispatch(goToLogout());
   };
 };
@@ -156,7 +157,7 @@ export const clearTokenLogout = () => {
  */
 export const logout = () => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ currUI: "Login" });
+    chrome.storage.local.set({ currUI: "Login" });
     dispatch(goToLogout());
   };
 };
@@ -166,7 +167,7 @@ export const logout = () => {
  */
 export const toEditQuery = (query?: IQuery) => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ currUI: "EditQuery" });
+    chrome.storage.local.set({ currUI: "EditQuery" });
     dispatch(goToEditQuery(query));
   };
 };
@@ -176,7 +177,7 @@ export const toEditQuery = (query?: IQuery) => {
  */
 export const toQueryList = (query: IQuery) => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ currUI: "QueryList", query: query });
+    chrome.storage.local.set({ currUI: "QueryList", query: query });
     dispatch(goToQueryList(query));
   };
 };
@@ -186,7 +187,7 @@ export const toQueryList = (query: IQuery) => {
  */
 export const toHome = () => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ currUI: "Home" });
+    chrome.storage.local.set({ currUI: "Home" });
     dispatch(goToHome());
   };
 };
@@ -196,7 +197,7 @@ export const toHome = () => {
  */
 export const toError = (errorCode?: number, query?: IQuery) => {
   return function (dispatch: Dispatch) {
-    chrome.storage.sync.set({ currUI: "ErrorPage" });
+    chrome.storage.local.set({ currUI: "ErrorPage" });
     dispatch(goToError(errorCode, query));
   };
 };
