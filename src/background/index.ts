@@ -9,6 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
     invalidPAT: false
   });
   chrome.alarms.create("refresh", { periodInMinutes: 5 });
+  chrome.alarms.create("reasonable count", { periodInMinutes: 1 });
 });
 
 chrome.alarms.onAlarm.addListener(async alarm => {
@@ -42,6 +43,9 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         if (JSON.stringify(map) !== JSON.stringify(newMap)) {
           await updateGist(user, newMap);
         }
+      }
+      if (alarm.name === "reasonable count") {
+        chrome.notifications.create({ type: "basic", title: "This is a notification" })
       }
     }
   });
