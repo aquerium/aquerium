@@ -51,7 +51,7 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     gridGap: "20px",
     gridAutoColumns: "20px",
     boxSizing: "border-box",
-    padding: "22px"
+    padding: "14px 22px 22px 22px"
   },
   queryTile: {
     position: "relative",
@@ -121,13 +121,14 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   basicInfo: {
     fontSize: 16,
-    paddingBottom: 10
+    paddingBottom: 5,
+    display: "inline-block"
   },
   basicInfoQueryName: {
     textAlign: "center",
     bottom: 10,
     width: "100%",
-    maxWidth: 290,
+    display: "inline-block",
     fontSize: 24,
     textDecoration: "none",
     color: "#794500",
