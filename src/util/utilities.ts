@@ -74,7 +74,7 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
     query.labels.forEach(function(label) {
-      qualifiers += "%20label:%22" + label + "%22";
+      qualifiers += "%20label:%22" + label.name + "%22";
     });
   }
   qualifiers += query.lastUpdated ? "%20updated:<=" + getRefDate(query.lastUpdated) : "";

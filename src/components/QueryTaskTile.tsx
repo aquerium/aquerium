@@ -87,7 +87,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
         )}
         {(optionIndices.get("assignees") > -1 || optionIndices.get("labels") > -1) && (
           <Text className={QueryTaskClassNames.labels} nowrap block>
-            {renderInfoElement("assignees", task.assignees.join(", "), "Assigned to: ")}
+            {renderInfoElement("assignees", task.assignees.join(", "), "Assigned to: ", " ")}
             {renderInfoElement("labels", emojifiedLabels, "Labels: ")}
           </Text>
         )}

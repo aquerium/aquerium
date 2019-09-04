@@ -15,27 +15,27 @@ import {
   IBasePicker,
   ValidationState,
   Label,
-  IPickerItemProps, Separator,
+  Separator,
   Icon,
   ResponsiveMode,
   CommandBar
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList } from "../state";
-import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
   typeOptions,
   reviewStatusOptions,
-  bridgeLabelGap,commandBarStyles,separatorContentStyles,
+  bridgeLabelGap,
+  commandBarStyles,
+  separatorContentStyles,
   customizeViewDropdown,
   typeDropdown,
-  reviewStatusDropdown,
+  reviewStatusDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 import { getRepoLabels } from "../util/api";
-import { emoji } from "../util";
 
 /** Value corresponding to enter key. */
 const ENTER_KEYCODE = 13;
@@ -84,7 +84,6 @@ const mapStateToProps = (state: IState) => {
   };
 };
 
-
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
     messageType: MessageBarType.success,
@@ -95,17 +94,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-        id: "",
-        name: "",
-        lastUpdated: 0,
-        reasonableCount: 0,
-        tasks: [],
-        labels: [],
-        labelsToRender: [],
-        url: "",
-        customViews: ["author", "createdAt", "repo", "labels"]
-      },
-      validInputs: [true, true, true, true, true, true]
+          id: "",
+          name: "",
+          lastUpdated: 0,
+          reasonableCount: 0,
+          tasks: [],
+          labels: [],
+          url: "",
+          customViews: ["author", "createdAt", "repo", "labels"]
+        },
+    validInputs: [true, true, true, true, true, true]
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
@@ -123,7 +121,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _onClickToQueryList = (): void => {
     this.props.toQueryList(this.state.selections);
-  }
+  };
   public render = (): JSX.Element => {
     return (
       <>
@@ -131,13 +129,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-              <div className={EditQueryUIClassNames.commandBarContainer}>
-                <CommandBar
-                  styles={commandBarStyles}
-                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-                />
-              </div>
-            )}
+            <div className={EditQueryUIClassNames.commandBarContainer}>
+              <CommandBar
+                styles={commandBarStyles}
+                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+              />
+            </div>
+          )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -222,12 +220,31 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description("Track Pull Requests with the single selected review requirement.")()}
             </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Reasonable Task Count"
+                defaultValue={
+                  this.state.selections.reasonableCount
+                    ? this.state.selections.reasonableCount.toString()
+                    : "0"
+                }
+                errorMessage={
+                  !this.state.validInputs[5]
+                    ? "Invalid number entered for reasonable task count."
+                    : ""
+                }
+                onChange={this._checkReasonableCountSelection}
+              />
+              {description(
+                "The number of tasks in this query that if exceeded, would be considered unreasonable."
+              )()}
+            </Stack>
             <Label>Labels</Label>
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
               <TagPicker
                 selectedItems={
-                  this.state.selections.labelsToRender
-                    ? this.state.selections.labelsToRender.map(label => ({
+                  this.state.selections.labels
+                    ? this.state.selections.labels.map(label => ({
                         key: label.name + "/#" + label.color,
                         name: label.name
                       }))
@@ -252,20 +269,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 }}
               />
               {description("The GitHub labels assigned to particular tasks.", true)()}
-            </Stack>
-            </Stack>
-            <Stack horizontal horizontalAlign="center">
-              <TextField
-                label="Reasonable Task Count"
-                defaultValue={this.state.selections.reasonableCount.toString()}
-                validateOnFocusIn
-                validateOnFocusOut
-                errorMessage={!this.state.validInputs[5] ? "Invalid number entered for reasonable task count." : ""}
-                onChange={this._checkReasonableCountSelection}
-              />
-              {description(
-                "The number of tasks in this query that if exceeded, would be considered unreasonable."
-              )()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -302,7 +305,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
-
   private _renderMessageBar = (): JSX.Element => {
     return (
       <Stack
@@ -336,6 +338,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
+    // const updatedSelections = update(this.state.selections, {
+    //   labelsToRender: {
+    //     $set: this.state.selections.labelsToRender.map(label => ({
+    //       name: emoji.emojify(label.name),
+    //       color: label.color
+    //     }))
+    //   }
+    // });
+    // this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };
@@ -358,6 +369,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _addItems = [
     {
+      key: "update",
+      name: "Update",
+      ariaLabel: "Update",
+      iconProps: { iconName: "Save", color: "Green" },
+      onClick: this._setMessageBarAddOrEdit,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Green" }
+      }
+    },
+    {
       key: "cancel",
       name: "Cancel",
       ariaLabel: "Cancel",
@@ -366,17 +388,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       buttonStyles: {
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
         icon: { fontSize: 20, color: "Gray" }
-      }
-    },
-    {
-      key: "add",
-      name: "Add",
-      ariaLabel: "Add",
-      iconProps: { iconName: "Add" },
-      onClick: this._setMessageBarAddOrEdit,
-      buttonStyles: {
-        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
-        icon: { fontSize: 20, color: "Green" }
       }
     }
   ];
@@ -438,22 +449,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs[0] = false;
       this.setState({ validInputs: currInputs });
-      return;
-    }
-    currInputs[0] = true;
-    if (!newValue) {
-      currInputs[0] = false;
-    } else {
-      newValue = newValue.trim();
-      let emojified: string = emoji.emojify(newValue);
-      if (emojified) newValue = emojified;
-      const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
-      this.setState({ selections: updatedSelections });
-    }
+    } else currInputs[0] = true;
+    newValue = newValue ? newValue.trim() : "";
+    const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
+    this.setState({ selections: updatedSelections });
     this.setState({
       validInputs: currInputs
     });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _onChangeRepo = (
@@ -479,7 +482,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       labelSuggestions: [],
       validInputs: currInputs
     });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _validateAndFindRepoLabelsOnEnter = (
@@ -532,7 +535,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     });
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _onChangeAuthor = (
@@ -557,7 +560,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       selections: updatedSelections,
       validInputs: currInputs
     });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _onChangeAssignee = (
@@ -582,7 +585,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       selections: updatedSelections,
       validInputs: currInputs
     });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _onChangeMentions = (
@@ -607,7 +610,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       selections: updatedSelections,
       validInputs: currInputs
     });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setReviewStatusSelection = (
@@ -623,7 +626,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       reviewStatus: { $set: newKey as IQuery["reviewStatus"] }
     });
     this.setState({ selections: updatedSelections });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
@@ -632,23 +635,24 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     const updatedSelections = update(this.state.selections, { lastUpdated: { $set: input } });
     this.setState({ selections: updatedSelections });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _checkReasonableCountSelection =  (
+  private _checkReasonableCountSelection = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
     let currInputs = this.state.validInputs;
     if (newValue && !this._numberRegex.test(newValue)) {
       currInputs[5] = false;
+    } else {
+      currInputs[5] = true;
     }
-    currInputs[5] = true;
     const updatedSelections = update(this.state.selections, {
       reasonableCount: { $set: newValue ? parseInt(newValue.trim()) : 0 }
     });
     this.setState({ selections: updatedSelections, validInputs: currInputs });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setCustomViews = (
@@ -672,15 +676,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       customViews: { $set: newSelections }
     });
     this.setState({ selections: updatedSelections });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
-
 
   // Private helper functions for dealing with picker (for repo labels).
   private _validateInput = (input: string) => {
     if (!this._nameRegex.test(input)) return ValidationState.invalid;
-    return !this.state.selections.labelsToRender ||
-      this.state.selections.labelsToRender.map(label => label.name).indexOf(input) < 0
+    return !this.state.selections.labels ||
+      this.state.selections.labels.map(label => label.name).indexOf(input) < 0
       ? ValidationState.valid
       : ValidationState.invalid;
   };
@@ -693,17 +696,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _onChangeSelectedLabels = (items?: ITag[]) => {
     if (!items) return;
-    let newSelectedLabels = items.map(label => label.name);
-    let newEmojifiedSelectedLabels = items.map(item => ({
-      name: emoji.emojify(item.name),
+    let newSelectedLabels = items.map(item => ({
+      name: item.name,
       color: item.key.substring(item.key.lastIndexOf("#") + 1)
     }));
     const updatedSelections = update(this.state.selections, {
-      labels: { $set: newSelectedLabels },
-      labelsToRender: { $set: newEmojifiedSelectedLabels }
+      labels: { $set: newSelectedLabels }
     });
     this.setState({ selections: updatedSelections });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _getTextFromItem(item: ITag): string {

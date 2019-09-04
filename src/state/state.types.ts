@@ -94,14 +94,7 @@ export interface IQuery {
     | "Reviewed by you"
     | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
-  labels?: string[];
-  /**
-   * The array of labels that are rendered across the app. Different from labels, since labels
-   * are part of the query that the API will make and labelsToRender contain ILabel objects,
-   * which include the label name and the label color (defaults to gray).
-   *
-   */
-  labelsToRender: ILabel[];
+  labels?: ILabel[];
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
   /** The number of tasks in a query that, if exceeded, would be considered unreasonable. */

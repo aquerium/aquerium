@@ -64,7 +64,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     display: "block",
     textDecorationLine: "none",
     selectors: {
-      "&:hover": { color: "#b64e00" },
+      "&:hover": { color: "#b64e00", textDecorationLine: "none" },
       "&:active": { color: "8a3c00", textDecorationLine: "none" }
     },
     width: "100%",

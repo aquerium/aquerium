@@ -8,6 +8,7 @@ import {
   separatorStyles
 } from "../components/QueryTile.styles";
 import { gitLabelStyles } from "../components/GitLabelStyles";
+import { emoji } from "../util";
 
 interface IQueryTileProps {
   /** A single IQuery to be rendered. */
@@ -18,25 +19,20 @@ interface IQueryTileProps {
 
 function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
-  const emojifiedAndColoredLabels = query.labelsToRender.map(label => (
-    <span
-      className={gitLabelStyles(label.color).label}
-      key={label.name + label.color}
-    >
-      {label.name}
-    </span>
-  ));
+  const emojifiedAndColoredLabels = query.labels
+    ? query.labels.map(label => (
+        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+          {emoji.emojify(label.name)}
+        </span>
+      ))
+    : null;
   function onClickToQueryList() {
     props.toQueryList(query);
   }
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={QueryTileClassNames.queryFront}>
-        <Stack
-          horizontalAlign="center"
-          verticalAlign="space-evenly"
-          styles={gridStackStyle}
-        >
+        <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text className={QueryTileClassNames.queryName} nowrap block>
             {query.name}
           </Text>
@@ -47,12 +43,8 @@ function QueryTileView(props: IQueryTileProps) {
       </div>
       <button className={QueryTileClassNames.queryBack}>
         <Stack verticalAlign="space-around">
-          <Text className={QueryTileClassNames.basicInfoQueryName}>
-            {query.name}
-          </Text>
-          <Separator styles={separatorStyles}>
-            {query.tasks.length.toString()} open tasks
-          </Separator>
+          <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
+          <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>
             {query.type
@@ -92,7 +84,7 @@ function QueryTileView(props: IQueryTileProps) {
               <br />
             </Text>
           )}
-          {query.labelsToRender && query.labelsToRender.length > 0 && (
+          {query.labels && query.labels.length > 0 && (
             <Text className={QueryTileClassNames.basicInfo}>
               <b>Labels:</b> {emojifiedAndColoredLabels}
               <br />
