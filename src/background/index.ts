@@ -45,7 +45,12 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         }
       }
       if (alarm.name === "reasonable count") {
-        chrome.notifications.create({ type: "basic", title: "This is a notification" })
+        chrome.notifications.create({
+          type: "basic",
+          title: "Primary Title",
+          message: "Primary message to display",
+          iconUrl: "logo.png"
+        });
       }
     }
   });
