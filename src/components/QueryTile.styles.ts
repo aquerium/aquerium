@@ -1,5 +1,6 @@
-import { mergeStyleSets } from "@uifabric/styling";
+import { mergeStyleSets, mergeStyles } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShading.styles";
+import { textColorContrast } from "./GitLabel.styles";
 
 /**
  * Interface for grid styling.
@@ -15,10 +16,6 @@ interface IQueryTile {
   queryTile: string;
   /** The styles for the back of the query tile, where the info is populated. */
   queryBack: string;
-  /** The styles for the query title. */
-  queryName: string;
-  /** The styles for the number of tasks assigned to this query. */
-  queryTaskCount: string;
   /** The font size for the query details. */
   basicInfo: string;
   /** The styles for the query name on the back of the query tile. */
@@ -86,21 +83,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       transition: "0.5s ease-in-out"
     }
   ],
-  queryName: {
-    padding: "35px 0 0 0",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    width: "100%",
-    maxWidth: "240px",
-    height: "100%",
-    maxHeight: "100px",
-    fontSize: 24,
-    color: "#794500"
-  },
-  queryTaskCount: {
-    fontSize: 80,
-    color: "#004d7c"
-  },
   basicInfo: {
     fontSize: 16,
     paddingBottom: 10
@@ -120,7 +102,7 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
 });
 
 /**
- * Returns the styles for the front and back of a given query tile,
+ * Returns the styles for the front of a given query tile (including the title and count),
  * after calculating if there are most tasks open than the reasonable count and,
  * if so, changing the background of the tile to some shade of red. The shade of red
  * get progressively more intense as the number of open tasks exceeds the reasonable
@@ -128,10 +110,10 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
  * @param reasonableCount Reasonable count set for the query by the user.
  * @param numTasksOpen The amount of open tasks open in the query.
  */
-export const queryTileFrontBackStyles = (reasonableCount: number, numTasksOpen: number) => {
+export const queryTileFrontStyles = (reasonableCount: number, numTasksOpen: number) => {
   const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
   return mergeStyleSets({
-    queryFront: [
+    queryTile: [
       hoveringAndShading,
       {
         position: "absolute",
@@ -149,6 +131,21 @@ export const queryTileFrontBackStyles = (reasonableCount: number, numTasksOpen: 
           }
         }
       }
-    ]
+    ],
+    queryName: {
+      padding: "35px 0 0 0",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      width: "100%",
+      maxWidth: "240px",
+      height: "100%",
+      maxHeight: "100px",
+      fontSize: 24,
+      color: alphaColor > 0.5 ? "#ffffff" : "#794500"
+    },
+    queryTaskCount: {
+      fontSize: 80,
+      color: alphaColor > 0.5 ? "#ffffff" : "#004d7c"
+    }
   });
 };

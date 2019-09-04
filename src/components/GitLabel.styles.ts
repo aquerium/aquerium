@@ -23,10 +23,7 @@ export const gitLabelStyles = (backgroundColor: string) => {
     label: {
       backgroundColor: "#" + backgroundColor,
       // Color contrasting algorithm from https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color.
-      color:
-        rgbValue && rgbValue.r * 0.299 + rgbValue.g * 0.587 + rgbValue.b * 0.114 > 186
-          ? "#000000"
-          : "#ffffff",
+      color: textColorContrast(rgbValue),
       borderRadius: "2px",
       boxShadow: "inset 0 -1px 0 rgba(27,31,35,.12)",
       fontSize: "12px",
@@ -37,4 +34,12 @@ export const gitLabelStyles = (backgroundColor: string) => {
       margin: "2px"
     }
   });
+};
+
+export const textColorContrast = (
+  rgbValue: { r: number; g: number; b: number; a?: number } | null
+): string => {
+  return rgbValue && rgbValue.r * 0.299 + rgbValue.g * 0.587 + rgbValue.b * 0.114 > 186
+    ? "#000000"
+    : "#ffffff";
 };

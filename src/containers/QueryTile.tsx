@@ -6,7 +6,7 @@ import {
   QueryTileClassNames,
   gridStackStyle,
   separatorStyles,
-  queryTileFrontBackStyles
+  queryTileFrontStyles
 } from "../components/QueryTile.styles";
 
 interface IQueryTileProps {
@@ -23,14 +23,20 @@ function QueryTileView(props: IQueryTileProps) {
   }
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
-      <div
-        className={queryTileFrontBackStyles(query.reasonableCount, query.tasks.length).queryFront}
-      >
+      <div className={queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryTile}>
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
-          <Text className={QueryTileClassNames.queryName} nowrap block>
+          <Text
+            className={queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryName}
+            nowrap
+            block
+          >
             {query.name}
           </Text>
-          <Text className={QueryTileClassNames.queryTaskCount}>
+          <Text
+            className={
+              queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryTaskCount
+            }
+          >
             {query.tasks.length.toString()}
           </Text>
         </Stack>
