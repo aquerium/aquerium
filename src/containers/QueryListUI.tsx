@@ -9,6 +9,7 @@ import { getHomeLoadingPhrase } from "../misc/loadingPhrases";
 interface IQueryListUIProps {
   /** The queryList map that is passed in, element at a time, to be rendered by QueryTile. */
   queryList: queryListType;
+  /** A boolean that stores whether or not home UI is in loading phase. */
   isHomeLoading: boolean;
 }
 

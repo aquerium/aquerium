@@ -8,7 +8,7 @@ import {
   TextField,
   Link,
   PrimaryButton,
-  ITextFieldStyleProps,
+  ITextFieldStyleProps
 } from "office-ui-fabric-react";
 import { login, setIsInvalidPAT, IState } from "../state";
 import { LoginUIClassNames } from "./LoginUI.styles";
@@ -36,7 +36,7 @@ interface ILoginProps {
 
 const mapStateToProps = (state: IState) => {
   return {
-    invalidPAT: state.user.invalidPAT,
+    invalidPAT: state.user.invalidPAT
   };
 };
 
