@@ -40,7 +40,8 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
       <span>
         {beforeText}
         <b>
-          {(prop === "labels" || prop === "assignees" || prop === "lastUpdated") && !info
+          {(prop === "labels" || prop === "assignees" || prop === "lastUpdated") &&
+          (!info || info.length === 0)
             ? "None yet"
             : info}
         </b>
