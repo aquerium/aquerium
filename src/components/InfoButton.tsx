@@ -13,7 +13,7 @@ interface IInfoButtonState {
 }
 
 interface IInfoButtonProps extends ITextFieldProps {
-  /** Array with text to be displayed. */
+  /** String with text to be displayed. */
   calloutText: string;
   /** Whether the info button must be translated up a number of pixels. */
   translate?: boolean;

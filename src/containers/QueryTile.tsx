@@ -7,7 +7,7 @@ import {
   gridStackStyle,
   separatorStyles
 } from "../components/QueryTile.styles";
-import { gitLabelStyles } from "../components/GitLabelStyles";
+import { gitLabelStyles } from "../components/GitLabel.styles";
 import { emoji } from "../util";
 
 interface IQueryTileProps {
