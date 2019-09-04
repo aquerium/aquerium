@@ -22,12 +22,12 @@ function QueryListComponent(props: IQueryListUIProps) {
           ))}
         </div>
       ) : (
-        <Spinner
-          label={getHomeLoadingPhrase()}
-          size={SpinnerSize.large}
-          className={QueryTileClassNames.spinner}
-        />
-      )}
+          <Spinner
+            label={getHomeLoadingPhrase()}
+            size={SpinnerSize.large}
+            className={QueryTileClassNames.spinner}
+          />
+        )}
     </div>
   );
 }
