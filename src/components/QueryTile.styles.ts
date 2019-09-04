@@ -37,7 +37,7 @@ export const separatorStyles = {
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
-    height: "557px",
+    height: "550px",
     width: "100%",
     overflow: "hidden",
     selectors: {
