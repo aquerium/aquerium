@@ -717,8 +717,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _typeInPicker = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
     return filterText
       ? this.state.labelSuggestions
-          .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) === 0)
-          .filter(tag => !this._listContainsDocument(tag, tagList))
+          .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) //Find all tags that contain filterText.
+          .filter(tag => !this._listContainsDocument(tag, tagList)) //Find all tags that are not already selected.
       : [];
   };
 }
