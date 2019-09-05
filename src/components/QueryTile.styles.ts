@@ -17,6 +17,12 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  /** The styles for the text telling the user to add a query when there are currently none. */
+  addAQuery: string;
+  /** The styles for the button that the user selects to add a query when there are currently none. */
+  addButton: string;
+  /** The styles for the homeUI spinner. */
+  spinner: string;
   /** The styles for the front of the query tile. */
   queryFront: string;
   /** The styles for the back of the query tile (i.e. query details). */
@@ -117,7 +123,24 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   queryTaskCount: {
     fontSize: 80,
+    fontFamily: "Segoe UI Light",
+    color: "#605e5c"
+  },
+  spinner: {
+    textAlign: "center",
+    padding: "140px 0",
     color: "#004d7c"
+  },
+  addButton: {
+    width: "60px",
+    height: "60px",
+    transform: "translate(230px, 230px)",
+    background: "transparent"
+  },
+  addAQuery: {
+    fontSize: 24,
+    transform: "translate(195px, 230px)",
+    color: "#605e5c"
   },
   basicInfo: {
     fontSize: 16,
