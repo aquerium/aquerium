@@ -16,23 +16,13 @@ import emoji from "node-emoji";
 interface IQueryTileProps {
   /** A single IQuery to be rendered. */
   currQuery: IQuery;
-}
-
-interface IViewProps extends IQueryTileProps {
   /** Action creator that sends user to queryListUI. */
   toQueryList: (query: IQuery) => void;
   /** Action creator that toggles the marked as read flag. */
   toggleFlag: (query: IQuery) => void;
 }
 
-const mapStateToProps = (state: IState, ownProps: IQueryTileProps) => {
-  const { currQuery } = ownProps;
-  return {
-    markedAsRead: state.queryList[currQuery.id].markedAsRead
-  };
-};
-
-function QueryTileView(props: IViewProps) {
+function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
   const emojifiedAndColoredLabels = query.labels
     ? query.labels.map(label => (
@@ -153,6 +143,6 @@ const action = {
 };
 
 export const QueryTile = connect(
-  mapStateToProps,
+  undefined,
   action
 )(QueryTileView);
