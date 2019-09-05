@@ -4,6 +4,16 @@ export const rootTokenGap = {
   childrenGap: 14
 };
 
+export const bridgeLabelGap = { root: { transform: "translateY(-14px)" } };
+
+export const caretStyles = {
+  rootHovered: { background: "transparent" },
+  icon: { background: "transparent" },
+  rootPressed: { background: "transparent" }
+};
+
+export const optionsContainer = { optionsContainer: { maxHeight: "400px" } };
+
 export const EditQueryUIClassNames = mergeStyleSets({
   fieldsRoot: {
     padding: "0px 0px 20px 40px",

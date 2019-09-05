@@ -10,6 +10,11 @@ import {
   MessageBarButton,
   Dropdown,
   IDropdownOption,
+  TagPicker,
+  ITag,
+  IBasePicker,
+  ValidationState,
+  Label,
   Separator,
   Icon,
   ResponsiveMode,
@@ -17,31 +22,37 @@ import {
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
 import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList } from "../state";
-import { MultiSelect } from "../components/MultiSelect";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
   typeOptions,
   reviewStatusOptions,
+  bridgeLabelGap,
+  commandBarStyles,
   separatorContentStyles,
   customizeViewDropdown,
   typeDropdown,
-  reviewStatusDropdown,
-  commandBarStyles
+  reviewStatusDropdown
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
-import { emoji } from "../util";
+import { getRepoLabels } from "../util/api";
 
-enum InputStatuses {
-  /** Value indicating that the input has been validated. */
-  successfulEdit = 0,
-  /** Value indicating that the current user input is not valid. */
-  invalidEdit
+// Value corresponding to enter key.
+const ENTER_KEYCODE = 13;
+
+/**
+ * Interface to track whether a user input is valid.
+ */
+interface IInputField {
+  name: boolean;
+  repo: boolean;
+  assignee: boolean;
+  mentions: boolean;
+  author: boolean;
+  reasonableCount: boolean;
 }
 
 interface IEditQueryUIState {
-  /** Tracks the state of changes the user is making to a query's settings. */
-  inputStatus: InputStatuses;
   /**
    * Tracks the the type of message that should be rendered,
    * given the action the user wants to take and the status of the query's settings.
@@ -55,11 +66,15 @@ interface IEditQueryUIState {
   renderMessageBar: boolean;
   /** Whether the review status field is enabled or not, depending on if PR's are in the query. */
   enableReviewStatusField: boolean;
+  /** A list of the suggested labels, given a valid repo has been typed. */
+  labelSuggestions: ITag[];
   /**
    * The current selections the user is making to a query, which will be used to either construct
    * a new query or edit an existing one.
    */
   selections: IQuery;
+  /** List denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
+  validInputs: IInputField;
 }
 
 interface IEditQueryUIProps {
@@ -83,11 +98,11 @@ const mapStateToProps = (state: IState) => {
 
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
-    inputStatus: InputStatuses.successfulEdit,
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
     enableReviewStatusField: true,
+    labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
@@ -97,15 +112,23 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           reasonableCount: 0,
           tasks: [],
           labels: [],
-          labelsToRender: [],
           url: "",
           customViews: ["author", "createdAt", "repo", "labels"],
           markedAsRead: false
-        }
+        },
+    validInputs: {
+      name: true,
+      repo: true,
+      assignee: true,
+      mentions: true,
+      author: true,
+      reasonableCount: true
+    }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()"'[\]]+( *[a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
   private _numberRegex = /^[0-9]*$/i;
+  private _picker = React.createRef<IBasePicker<ITag>>();
   private _customViewsOptions = [
     { key: "type", text: "Type of tasks" },
     { key: "repo", text: "Repo" },
@@ -116,9 +139,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     { key: "createdAt", text: "Date Created" }
   ];
 
-  private _onClickToQueryList = (): void => {
-    this.props.toQueryList(this.state.selections);
-  };
   public render = (): JSX.Element => {
     return (
       <>
@@ -141,10 +161,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <TextField
               label="Your query title"
               placeholder="Please enter a title"
+              onChange={this._onChangeTitle}
               defaultValue={this.state.selections.name}
-              validateOnFocusIn
-              validateOnFocusOut
-              onGetErrorMessage={this._checkNameSelection}
+              errorMessage={!this.state.validInputs.name ? "Invalid query name" : ""}
               required
             />
             <Stack horizontal horizontalAlign="center">
@@ -161,40 +180,44 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Repo"
-                defaultValue={this.state.selections.repo}
-                validateOnFocusIn
+                description={
+                  this.state.labelSuggestions.length > 0 && this.state.selections.repo
+                    ? "Label suggestions for " + this.state.selections.repo + " available below."
+                    : "No label suggestions available below."
+                }
+                onChange={this._onChangeRepo}
+                onKeyDown={this._validateAndFindRepoLabelsOnEnter}
                 validateOnFocusOut
-                onGetErrorMessage={this._checkRepoSelection}
+                onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
+                defaultValue={this.state.selections.repo}
+                errorMessage={!this.state.validInputs ? "Invalid repo name" : ""}
               />
               {description("List a repository from which to track Issues and/or Pull Requests.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Assignee"
+                onChange={this._onChangeAssignee}
                 defaultValue={this.state.selections.assignee}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkAssigneeSelection}
+                errorMessage={!this.state.validInputs.assignee ? "Invalid assignee name" : ""}
               />
               {description("Track Issues and/or Pull Requests assigned to a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Author"
+                onChange={this._onChangeAuthor}
                 defaultValue={this.state.selections.author}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkAuthorSelection}
+                errorMessage={!this.state.validInputs.author ? "Invalid author name" : ""}
               />
               {description("Track Issues and/or Pull Requests opened by a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Mention"
+                onChange={this._onChangeMentions}
                 defaultValue={this.state.selections.mentions}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkMentionSelection}
+                errorMessage={!this.state.validInputs.mentions ? "Invalid name" : ""}
               />
               {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
@@ -215,25 +238,49 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               {description("Track Pull Requests with the single selected review requirement.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
-              <MultiSelect
-                label="Repo Labels"
-                onChange={this._setLabelsSelection}
-                items={this.state.selections.labelsToRender || []}
-              />
-              {description("The GitHub labels assigned to particular tasks.")()}
-            </Stack>
-            <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Reasonable Task Count"
                 defaultValue={this.state.selections.reasonableCount.toString()}
                 validateOnFocusIn
                 validateOnFocusOut
-                onGetErrorMessage={this._checkReasonableCountSelection}
+                onChange={this._onChangeReasonableCountSelection}
+                errorMessage={!this.state.validInputs.reasonableCount ? "Invalid number input" : ""}
               />
               {description(
-                "The number of tasks in this query that if exceeded, would be considered unreasonable. " +
-                  "As tasks accumluate above reasonable count, the background of the query tile will turn more red in order to warn you."
+                "The number of tasks in this query that, if exceeded, would be considered unreasonable. " +
+                  "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
               )()}
+            </Stack>
+            <Label>Labels</Label>
+            <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
+              <TagPicker
+                selectedItems={
+                  this.state.selections.labels
+                    ? this.state.selections.labels.map(label => ({
+                        key: label.name + "/#" + label.color,
+                        name: label.name
+                      }))
+                    : []
+                }
+                componentRef={this._picker}
+                onValidateInput={this._validateInput}
+                createGenericItem={this._genericItem}
+                onResolveSuggestions={this._typeInPicker}
+                onItemSelected={this._onItemSelected}
+                onChange={this._onChangeSelectedLabels}
+                getTextFromItem={this._getTextFromItem}
+                pickerSuggestionsProps={{
+                  suggestionsHeaderText:
+                    this.state.labelSuggestions.length > 0
+                      ? "Suggested labels from " + this.state.selections.repo
+                      : "No suggestions available",
+                  noResultsFoundText:
+                    this.state.labelSuggestions.length > 0
+                      ? "Type to find suggestions"
+                      : "Add custom labels"
+                }}
+              />
+              {description("The GitHub labels assigned to particular tasks.", true)()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -270,6 +317,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
+  private _onClickToQueryList = (): void => {
+    this.props.toQueryList(this.state.selections);
+  };
+
   private _renderMessageBar = (): JSX.Element => {
     return (
       <Stack
@@ -290,7 +341,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _setMessageBarAddOrEdit = (): void => {
-    if (this.state.inputStatus !== InputStatuses.successfulEdit || !this.state.selections.name) {
+    let validEdits = true;
+    for (const field in this.state.validInputs) {
+      if (!field) {
+        validEdits = false;
+        break;
+      }
+    }
+
+    if (!validEdits || !this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.severeWarning,
         message: "Ensure query edits are valid!",
@@ -303,6 +362,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
+    const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
+    this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };
@@ -325,7 +386,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _addItems = [
     {
-      key: "cancelAdd",
+      key: "add",
+      name: "Save",
+      ariaLabel: "Save Query",
+      iconProps: { iconName: "Save", color: "Green" },
+      onClick: this._setMessageBarAddOrEdit,
+      buttonStyles: {
+        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
+        icon: { fontSize: 20, color: "Green" }
+      }
+    },
+    {
+      key: "return",
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
@@ -334,23 +406,12 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
         icon: { fontSize: 20, color: "Gray" }
       }
-    },
-    {
-      key: "add",
-      name: "Add",
-      ariaLabel: "Add",
-      iconProps: { iconName: "Add" },
-      onClick: this._setMessageBarAddOrEdit,
-      buttonStyles: {
-        root: { fontSize: 16, backgroundColor: "rgba(240, 240, 240, 0.7)" },
-        icon: { fontSize: 20, color: "Green" }
-      }
     }
   ];
 
   private _updateItems = [
     {
-      key: "cancelUpdate",
+      key: "cancel",
       name: "Cancel",
       ariaLabel: "Cancel",
       iconProps: { iconName: "Cancel" },
@@ -397,20 +458,80 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ renderMessageBar: false });
   };
 
-  private _checkNameSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid query name.";
+  private _onChangeTitle = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input.
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.name = false;
+      this.setState({ validInputs: currInputs });
     } else {
-      let newStatus = InputStatuses.successfulEdit;
-      if (!value) newStatus = InputStatuses.invalidEdit;
-      value = value.trim();
-      const updatedSelections = update(this.state.selections, { name: { $set: value } });
-      this.setState({ selections: updatedSelections, inputStatus: newStatus });
-      chrome.storage.sync.set({ query: this.state.selections });
+      currInputs.name = true;
     }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
+    this.setState({ selections: updatedSelections, validInputs: currInputs });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _onChangeRepo = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs.repo = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.repo = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.repo = true;
+    const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      labelSuggestions: [],
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _validateAndFindRepoLabelsOnEnter = (
+    ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    if (ev.which !== ENTER_KEYCODE) return;
+    this._findRepoLabels();
+  };
+
+  private _validateRepoLabelsOnFocusOut = (value: string): undefined => {
+    this._findRepoLabels();
+    return undefined;
+  };
+
+  private _findRepoLabels = async (): Promise<void> => {
+    //Ensure a repo has been typed.
+    if (!this.state.selections.repo) return;
+    //Fetch new labels.
+    const result = await getRepoLabels(this.state.selections.repo);
+    if (!result.labels) return;
+    const updatedLabelSuggestions: ITag[] = result.labels.map(item => ({
+      key: item.name + "/#" + item.color,
+      name: item.name
+    }));
+    this.setState({
+      labelSuggestions: updatedLabelSuggestions
+    });
   };
 
   private _setTypeSelection = (
@@ -434,59 +555,91 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     });
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
-    chrome.storage.sync.set({ query: this.state.selections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _checkRepoSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid repo name.";
+  private _onChangeAuthor = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs.author = true;
+      this.setState({ validInputs: currInputs });
     }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { repo: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.author = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.author = true;
+    const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _checkAssigneeSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid assignee name.";
+  private _onChangeAssignee = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs.assignee = true;
+      this.setState({ validInputs: currInputs });
     }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { assignee: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.assignee = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.assignee = true;
+    const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _checkAuthorSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid author name.";
+  private _onChangeMentions = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs.mentions = true;
+      this.setState({ validInputs: currInputs });
     }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { author: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
-  };
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.mentions = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
 
-  private _checkMentionSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._nameRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid mention name.";
-    }
-    value = value.trim();
-    const updatedSelections = update(this.state.selections, { mentions: { $set: value } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.mentions = true;
+    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setReviewStatusSelection = (
@@ -501,8 +654,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     const updatedSelections = update(this.state.selections, {
       reviewStatus: { $set: newKey as IQuery["reviewStatus"] }
     });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    this.setState({ selections: updatedSelections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setLastUpdatedSelection = (input?: number | undefined): void => {
@@ -510,36 +663,28 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const updatedSelections = update(this.state.selections, { lastUpdated: { $set: input } });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    this.setState({ selections: updatedSelections });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _setLabelsSelection = (items: string[]): void => {
-    let emojified = [];
-    for (const label of items) {
-      emojified.push(emoji.emojify(label));
+  private _onChangeReasonableCountSelection = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._numberRegex.test(newValue)) {
+      currInputs.reasonableCount = false;
+    } else {
+      currInputs.reasonableCount = true;
     }
-    const updatedSelections = update(this.state.selections, {
-      labels: { $set: items },
-      labelsToRender: { $set: emojified }
-    });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
-  };
 
-  private _checkReasonableCountSelection = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
-    if (value && !this._numberRegex.test(value)) {
-      this.setState({ inputStatus: InputStatuses.invalidEdit });
-      return "Invalid number entered for reasonable task count.";
-    }
-    value = value.trim();
+    // Update value in state and add to local storage.
     const updatedSelections = update(this.state.selections, {
-      reasonableCount: { $set: value ? parseInt(value) : 0 }
+      reasonableCount: { $set: newValue ? parseInt(newValue.trim()) : 0 }
     });
-    this.setState({ selections: updatedSelections, inputStatus: InputStatuses.successfulEdit });
-    chrome.storage.sync.set({ query: this.state.selections });
+    this.setState({ selections: updatedSelections, validInputs: currInputs });
+    chrome.storage.local.set({ query: this.state.selections });
   };
 
   private _setCustomViews = (
@@ -563,6 +708,62 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       customViews: { $set: newSelections }
     });
     this.setState({ selections: updatedSelections });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  // Private helper functions for dealing with picker (for repo labels).
+  private _validateInput = (input: string) => {
+    if (!this._nameRegex.test(input)) return ValidationState.invalid;
+    return !this.state.selections.labels ||
+      this.state.selections.labels.map(label => label.name).indexOf(input) < 0
+      ? ValidationState.valid
+      : ValidationState.invalid;
+  };
+
+  private _genericItem(input: string, validationState: number) {
+    // Default to a gray tone/background for this label.
+    const newItem = { key: input + "/#A9A9A9", name: input };
+    return newItem;
+  }
+
+  private _onChangeSelectedLabels = (items?: ITag[]) => {
+    if (!items) return;
+    let newSelectedLabels = items.map(item => ({
+      name: item.name,
+      color: item.key.substring(item.key.lastIndexOf("#") + 1)
+    }));
+    const updatedSelections = update(this.state.selections, {
+      labels: { $set: newSelectedLabels }
+    });
+    this.setState({ selections: updatedSelections });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _getTextFromItem(item: ITag): string {
+    return item.name;
+  }
+
+  private _listContainsLabel(tag: ITag, tagList?: ITag[]) {
+    if (!tagList || !tagList.length || tagList.length === 0) {
+      return false;
+    }
+    return tagList.filter(compareTag => compareTag.key === tag.key).length > 0;
+  }
+
+  private _onItemSelected = (item?: ITag): ITag | null => {
+    if (!item) return null;
+    if (this._picker.current && this._listContainsLabel(item, this._picker.current.items)) {
+      return null;
+    }
+    return item;
+  };
+
+  private _typeInPicker = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
+    if (!filterText) return [];
+    return this.state.labelSuggestions
+      .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) // Find all tags that contain filterText.
+      .filter(tag => !this._listContainsLabel(tag, tagList))
+      .concat([this._genericItem(filterText, ValidationState.valid)]); // Find all tags that are not already selected.
   };
 }
 

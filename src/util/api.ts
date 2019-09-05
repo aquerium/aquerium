@@ -1,9 +1,26 @@
-import fetch from "isomorphic-fetch";
-import { IQuery, IUserInfo } from "../state";
+import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
+import Octokit from "@octokit/rest";
+import { GIST_NAME, GIST_DESCRIP, STATUS_CREATED, STATUS_OK } from "./constants";
+import fetch from "isomorphic-fetch";
 
-const GIST_NAME = "aquerium_helper.json";
-const GIST_DESCRIP = "helper gist for Aquerium";
+let octokitObj: { octokit: Octokit; token: string };
+
+/**
+ * Returns an Octokit instance (or if it doesn't exist, creates one).
+ * @param token User's GitHub personal access token.
+ */
+export function getOctokit(token: string): Octokit {
+  if (!octokitObj || octokitObj.token !== token) {
+    octokitObj = {
+      octokit: new Octokit({
+        auth: token
+      }),
+      token: token
+    };
+  }
+  return octokitObj.octokit;
+}
 
 /**
  * Creates a GitHub gist upon initial submission of the user's personal access token and returns the user's relevant information.
@@ -20,19 +37,16 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
         }
       }
     };
-    const response = await fetch("https://api.github.com/gists?access_token=" + token, {
-      method: "POST",
-      body: JSON.stringify(dataGist)
-    });
-    if (!response.ok) {
+    const octokit = getOctokit(token);
+    const response = await octokit.gists.create(dataGist);
+    if (response.status !== STATUS_CREATED) {
       return { errorCode: response.status };
     }
-    const responseJSON = await response.json();
     return {
       user: {
         token: token,
-        username: responseJSON.owner.login,
-        gistID: responseJSON.id,
+        username: response.data.owner.login,
+        gistID: response.data.id,
         invalidPAT: false
       }
     };
@@ -70,23 +84,17 @@ export async function updateGist(
   queryMap: { [key: string]: IQuery }
 ): Promise<{ errorCode?: number }> {
   try {
-    const dataGist: IGist = {
-      description: GIST_DESCRIP,
-      public: false,
+    const octokit = getOctokit(user.token);
+    const response = await octokit.gists.update({
+      gist_id: user.gistID,
       files: {
         [GIST_NAME]: {
+          filename: GIST_NAME,
           content: JSON.stringify(queryMap)
         }
       }
-    };
-    const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
-      {
-        method: "PATCH",
-        body: JSON.stringify(dataGist)
-      }
-    );
-    if (!response.ok) {
+    } as any); // The 'as any' is used here because Octokit does not support editing 'filename' and 'content' by key.
+    if (response.status !== STATUS_OK) {
       return { errorCode: response.status };
     }
     return {};
@@ -100,16 +108,21 @@ export async function updateGist(
  * Checks whether a helper gist has already been created for a given token.
  * @param token User's GitHub personal access token.
  */
-export async function checkForGist(token: string): Promise<{ gist?: IGist; errorCode?: number }> {
+export async function checkForGist(token: string): Promise<{ gistInfo?: any; errorCode?: number }> {
   try {
-    const response = await fetch("https://api.github.com/gists?access_token=" + token);
-    if (!response.ok) {
+    const octokit = getOctokit(token);
+    const response = await octokit.gists.list();
+    if (response.status !== STATUS_OK) {
       return { errorCode: response.status };
     }
-    const responseJSON: IGist[] = await response.json();
-    for (let gist of responseJSON) {
+    const responseJSON = response.data;
+    for (const gist of responseJSON) {
       if (gist.files.hasOwnProperty(GIST_NAME)) {
-        return { gist: gist };
+        const gistInfo = {
+          id: gist.id,
+          owner: gist.owner
+        };
+        return { gistInfo: gistInfo };
       }
     }
     return {};
@@ -119,22 +132,78 @@ export async function checkForGist(token: string): Promise<{ gist?: IGist; error
   }
 }
 
-// Reads from the user's gist and returns the gist contents.
-async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
+/**
+ * This function interacts with the GitHub API in order to
+ * fetch valid labels from a valid repo.
+ * @param repo The repo to attempt to fetch labels from.
+ */
+export async function getRepoLabels(
+  repo: string
+): Promise<{ labels?: ILabel[]; errorCode?: number }> {
   try {
-    const response = await fetch(
-      "https://api.github.com/gists/" + user.gistID + "?access_token=" + user.token,
-      {
-        headers: new Headers({
-          "If-None-Match": ""
-        })
-      }
-    );
+    let labels: ILabel[] = [];
+    // Fetch initial set of labels.
+    const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
+    const response = await fetch(labelsURL, {
+      headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+    });
     if (!response.ok) {
       return { errorCode: response.status };
     }
-    const responseJSON = await response.json();
-    return { gist: responseJSON };
+    // Save the initial set of labels.
+    const data = await response.json();
+    labels = labels.concat(
+      data.map((label: { name: string; color: string }) => ({
+        name: label.name,
+        color: label.color
+      }))
+    );
+
+    // Check if the response header indicates more than 1 page of labels.
+    const headerLinks = response.headers.get("Link");
+    if (headerLinks) {
+      //Filter the Link header and extract the second url, which has the amount of pages.
+      const lastLink = headerLinks.split(/<(.*?)>/g).filter(link => link.includes("https://"))[1];
+      let numPages = parseInt(lastLink.substring(lastLink.lastIndexOf("=") + 1));
+
+      // Fetch all pages of labels.
+      for (let i = 2; i <= numPages; i++) {
+        const response = await fetch(labelsURL + "?page=" + i, {
+          headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+        });
+        if (!response.ok) {
+          return { errorCode: response.status };
+        }
+        const data = await response.json();
+        labels = labels.concat(
+          data.map((label: { name: string; color: string }) => ({
+            name: label.name,
+            color: label.color
+          }))
+        );
+      }
+    }
+    return { labels: labels };
+  } catch (error) {
+    return { errorCode: 500 };
+  }
+}
+
+// Reads from the user's gist and returns the gist contents.
+async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?: number }> {
+  try {
+    const octokit = getOctokit(user.token);
+    // The 'octokit.request' is used here in order to declare the 'If-None-Match' header.
+    const response = await octokit.request("GET /gists/:gist_id", {
+      gist_id: user.gistID,
+      headers: {
+        "If-None-Match": ""
+      }
+    });
+    if (response.status !== STATUS_OK) {
+      return { errorCode: response.status };
+    }
+    return { gist: response.data };
   } catch (error) {
     console.error(error);
     return { errorCode: 500 };

@@ -8,11 +8,12 @@ import {
   separatorStyles,
   queryTileFrontStyles
 } from "../components/QueryTile.styles";
+import { gitLabelStyles } from "../components/GitLabel.styles";
+import emoji from "node-emoji";
 
 interface IQueryTileProps {
   /** A single IQuery to be rendered. */
   currQuery: IQuery;
-
 }
 
 interface IViewProps extends IQueryTileProps {
@@ -28,11 +29,18 @@ const mapStateToProps = (state: IState, ownProps: IQueryTileProps) => {
   const { currQuery } = ownProps;
   return {
     markedAsRead: state.queryList[currQuery.id].markedAsRead
-  }
+  };
 };
 
 function QueryTileView(props: IViewProps) {
   const query = props.currQuery;
+  const emojifiedAndColoredLabels = query.labels
+    ? query.labels.map(label => (
+        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+          {emoji.emojify(label.name)}
+        </span>
+      ))
+    : null;
   function onClickToQueryList() {
     props.toQueryList(query);
   }
@@ -44,19 +52,19 @@ function QueryTileView(props: IViewProps) {
     props.toggleFlag(query);
   };
 
-  const queryTileFrontStylesName = queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead).queryTile;
-
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div
         className={
-          queryTileFrontStylesName
+          queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
+            .queryTile
         }
       >
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text
             className={
-              queryTileFrontStylesName
+              queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
+                .queryName
             }
             nowrap
             block
@@ -65,17 +73,20 @@ function QueryTileView(props: IViewProps) {
           </Text>
           <Text
             className={
-              queryTileFrontStylesName
+              queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
+                .queryTaskCount
             }
           >
             {query.tasks.length.toString()}
           </Text>
         </Stack>
       </div>
-      <button className={QueryTileClassNames.queryBack} id="query">
+      <button id="QueryBack" className={QueryTileClassNames.queryBack} onClick={onClickToQueryList}>
         <Stack verticalAlign="space-around">
           <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
-          <Separator styles={separatorStyles}>{query.tasks.length.toString()} open {(query.tasks.length === 1) ? "task" : "tasks"}</Separator>
+          <Separator styles={separatorStyles}>
+            {query.tasks.length.toString()} open {query.tasks.length === 1 ? "task" : "tasks"}
+          </Separator>
           <Text className={QueryTileClassNames.basicInfo}>
             <b>Type: </b>
             {query.type
@@ -115,9 +126,9 @@ function QueryTileView(props: IViewProps) {
               <br />
             </Text>
           )}
-          {query.labelsToRender && query.labelsToRender.length > 0 && (
+          {query.labels && query.labels.length > 0 && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Labels:</b> {query.labelsToRender.join(", ")}
+              <b>Labels:</b> {emojifiedAndColoredLabels}
               <br />
             </Text>
           )}
@@ -129,15 +140,18 @@ function QueryTileView(props: IViewProps) {
           )}
           {query.reasonableCount && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Reasonable Count:</b> {query.reasonableCount} open {(query.reasonableCount === 1) ? "task" : "tasks"}
+              <b>Reasonable Count:</b> {query.reasonableCount} open{" "}
+              {query.reasonableCount === 1 ? "task" : "tasks"}
               <br />
             </Text>
           )}
           {query.reasonableCount > 0 && query.tasks.length > query.reasonableCount && (
             <CommandBarButton
+              id="Flag"
               iconProps={{ iconName: "Flag" }}
               text={props.markedAsRead ? "Flag" : "Unflag"}
               onClick={flagReasonableCount}
+              styles={{ root: { height: 25 } }}
             />
           )}
         </Stack>

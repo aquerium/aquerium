@@ -13,7 +13,13 @@ interface IQueryTile {
   listContainer: string;
   /** A single tile for a query. */
   queryTile: string;
-  /** The styles for the back of the query tile, where the info is populated. */
+  /** The styles for the text telling the user to add a query when there are currently none. */
+  addAQuery: string;
+  /** The styles for the button that the user selects to add a query when there are currently none. */
+  addButton: string;
+  /** The styles for the homeUI spinner. */
+  spinner: string;
+  /** The styles for the back of the query tile (i.e. query details). */
   queryBack: string;
   /** The font size for the query details. */
   basicInfo: string;
@@ -31,7 +37,7 @@ export const separatorStyles = {
 
 export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   root: {
-    height: "557px",
+    height: "550px",
     width: "100%",
     overflow: "hidden",
     selectors: {
@@ -42,15 +48,15 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gridAutoRows: "1fr",
-    gridGap: "19px",
-    gridAutoColumns: "19px",
+    gridGap: "20px",
+    gridAutoColumns: "20px",
     boxSizing: "border-box",
-    padding: "19px"
+    padding: "14px 22px 22px 22px"
   },
   queryTile: {
     position: "relative",
-    width: "250px",
-    height: "250px"
+    width: "247px",
+    height: "247px"
   },
   queryBack: [
     hoveringAndShading,
@@ -76,21 +82,38 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
         },
         "&:active": {
           transition: "0.1s",
-          border: "2px solid #005ba1"
+          border: "1px solid #005ba1"
         }
       },
       transition: "0.5s ease-in-out"
     }
   ],
+  spinner: {
+    textAlign: "center",
+    padding: "200px 0",
+    color: "#004d7c"
+  },
+  addButton: {
+    width: "60px",
+    height: "60px",
+    transform: "translate(230px, 230px)",
+    background: "transparent"
+  },
+  addAQuery: {
+    fontSize: 24,
+    transform: "translate(195px, 230px)",
+    color: "#605e5c"
+  },
   basicInfo: {
     fontSize: 16,
-    paddingBottom: 10
+    paddingBottom: 5,
+    display: "inline-block"
   },
   basicInfoQueryName: {
     textAlign: "center",
     bottom: 10,
     width: "100%",
-    maxWidth: 290,
+    display: "inline-block",
     fontSize: 24,
     textDecoration: "none",
     color: "#794500",
