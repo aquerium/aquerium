@@ -27,6 +27,7 @@ export const gitLabelStyles = (backgroundColor: string) => {
       borderRadius: "2px",
       boxShadow: "inset 0 -1px 0 rgba(27,31,35,.12)",
       fontSize: "12px",
+      display: "inline-block",
       fontWeight: 600,
       height: "20px",
       lineHeight: "15px",
