@@ -1,23 +1,9 @@
 const loginLoadingPhrases = [
-  "Hold on, we're logging you in...",
-  "Hold your horses, logging in shortly...",
-  "Extracting confidential data...",
-  "Hacking into the mainframe...",
-  "Checking for missed semicolons...",
-  "Verifying your ssn...",
-  "Making multiple calls to gets()..."
+  "Just keep swimming..."
 ];
 
 const homeLoadingPhrases = [
-  "Getting queries...",
-  "Purchasing Github. Please be patient...",
-  "Talking the talk, walking the walk...",
-  "Just a sec...",
-  "Obtaining this grain...",
-  "Querying Github (for a friend)...",
-  "Getting this bread...",
-  "Trying this rhye",
-  "Clicking refresh won't make me thunk any faster..."
+  "Just keep swimming..."
 ];
 
 /** Returns a random string from loginLoadingPhrases.  */

@@ -96,13 +96,15 @@ function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
         const user = createIUserInfo(PAT, response.gistInfo.owner.login, response.gistInfo.id);
         await loginExistingUser(dispatch, getState, user);
       } else {
+        console.log("bad PAT");
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
-        if (responseGist.user) {
-          loginQueryMapExists(responseGist.user, dispatch, getState, {});
-        } else {
+        if (responseGist.errorCode || !responseGist.user) {
           dispatch(goToLogout());
           dispatch(setIsInvalidPAT(true));
+        }
+        else {
+          loginQueryMapExists(responseGist.user, dispatch, getState, {});
         }
       }
     }

@@ -51,7 +51,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
     };
   } catch (error) {
     console.error(error);
-    return { errorCode: 500 };
+    return { errorCode: 401 };
   }
 }
 

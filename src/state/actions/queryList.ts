@@ -26,7 +26,7 @@ export const addOrEditQuery = (query: IQuery) => {
     // We have a valid task array, and need to store it in our new query.
     const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks },
-      url: { $set: getQueryURLHTML(user, query) }
+      url: { $set: getQueryURLHTML(user, query) }//update RC here
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
@@ -38,13 +38,17 @@ export const addOrEditQuery = (query: IQuery) => {
     } else {
       dispatch(setHomeLoadingFalse());
     }
-    chrome.browserAction.getBadgeText({}, function (res: string) {
-      const oldOverFlow = query.tasks.length - query.reasonableCount;
-      const overFlow = newQuery.tasks.length - newQuery.reasonableCount;
-      const newBadgeText = query.id === "" ? Number(res) + overFlow : Number(res) + (overFlow - oldOverFlow);
-      chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
-    });
-    dispatch(updateMap(newList));
+    if (query.id === "") {
+      chrome.browserAction.getBadgeText({}, function (res: string) {
+        const overFlow = Math.max(newQuery.tasks.length - newQuery.reasonableCount, 0);
+        const newBadgeText = (Number(res) + overFlow);
+        chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+      });
+      dispatch(updateMap(newList));
+    } else {
+      dispatch(updateMap(newList));
+      refreshMap()(dispatch, getState);
+    }
   };
 };
 
@@ -59,6 +63,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
   const newQuery = update(query, { id: { $set: newID } });
   return newQuery;
 }
+
 
 /**
  * Action creator to remove the specified query from queryList.
