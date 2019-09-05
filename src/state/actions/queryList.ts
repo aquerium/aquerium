@@ -17,7 +17,7 @@ export type toggleFlagAction = { type: string; query: IQuery };
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     const resp = await getQueryTasks(user, query);
@@ -41,11 +41,11 @@ export const addOrEditQuery = (query: IQuery) => {
     } else {
       dispatch(setHomeLoadingFalse());
     }
-    chrome.browserAction.getBadgeText({}, function(res: string) {
+    chrome.browserAction.getBadgeText({}, function (res: string) {
       const oldOverFlow = query.tasks.length - query.reasonableCount;
       const overFlow = newQuery.tasks.length - newQuery.reasonableCount;
-      const newBadgeText =
-        query.id === "" ? Number(res) + overFlow : Number(res) + (overFlow - oldOverFlow);
+      const newBadgeText = query.id === "" ? (Number(res) + overFlow) : (Number(res) + ((overFlow - oldOverFlow) < 0 ? 0 : (overFlow - oldOverFlow)));
+      console.log(newBadgeText);
       chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
     });
     dispatch(updateMap(newList));
@@ -68,7 +68,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
@@ -78,7 +78,7 @@ export const removeQuery = (queryID: string) => {
       toError(response.errorCode)(dispatch);
       return;
     }
-    chrome.browserAction.getBadgeText({}, function(res: string) {
+    chrome.browserAction.getBadgeText({}, function (res: string) {
       const query = queryList[queryID];
       const overFlow = query.tasks.length - query.reasonableCount;
       const newBadgeText = Number(res) - overFlow < 0 ? 0 : Number(res) - overFlow;
@@ -93,7 +93,7 @@ export const removeQuery = (queryID: string) => {
  * Action creator to reload all of the tasks from every query and re-render them in the home UI.
  */
 export const refreshMap = () => {
-  return async function(dispatch: Dispatch, getState: () => IState) {
+  return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
     let badge = 0;
@@ -105,8 +105,9 @@ export const refreshMap = () => {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
           // Add the number of "unreasonable" tasks to the badge count.
-          badge += responseItems.tasks.length - newMap[key].reasonableCount;
-        } else {
+          badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
+        }
+        else {
           dispatch(setHomeLoadingFalse());
           toError(responseItems.errorCode)(dispatch);
         }

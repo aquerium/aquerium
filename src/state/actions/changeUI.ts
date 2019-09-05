@@ -76,7 +76,7 @@ function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
         });
       } else {
         toError(response.errorCode)(dispatch);
-      };
+      }
     } else {
       dispatch(goToLogout());
     }
