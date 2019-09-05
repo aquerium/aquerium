@@ -41,14 +41,18 @@ export const addOrEditQuery = (query: IQuery) => {
     } else {
       dispatch(setHomeLoadingFalse());
     }
-    chrome.browserAction.getBadgeText({}, function (res: string) {
-      const oldOverFlow = query.tasks.length - query.reasonableCount;
-      const overFlow = newQuery.tasks.length - newQuery.reasonableCount;
-      const newBadgeText = query.id === "" ? (Number(res) + overFlow) : (Number(res) + ((overFlow - oldOverFlow) < 0 ? 0 : (overFlow - oldOverFlow)));
-      console.log(newBadgeText);
-      chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
-    });
-    dispatch(updateMap(newList));
+    if (query.id === "") {
+      // If we're adding a new query, we can just add overflow (which is more efficient). If it's not a new query we have to refresh count across the entire map.
+      chrome.browserAction.getBadgeText({}, function (res: string) {
+        const overFlow = Math.max(newQuery.tasks.length - newQuery.reasonableCount, 0);
+        const newBadgeText = (Number(res) + overFlow);
+        chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+      });
+      dispatch(updateMap(newList));
+    } else {
+      dispatch(updateMap(newList));
+      refreshMap()(dispatch, getState);
+    }
   };
 };
 
@@ -105,7 +109,7 @@ export const refreshMap = () => {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
           // Add the number of "unreasonable" tasks to the badge count.
-          badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
+          badge += Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
         }
         else {
           dispatch(setHomeLoadingFalse());
