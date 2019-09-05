@@ -8,7 +8,8 @@ chrome.runtime.onInstalled.addListener(() => {
     gistID: "",
     invalidPAT: false
   });
-  chrome.alarms.create("refresh", { periodInMinutes: 5 });
+  chrome.alarms.create("refresh", { periodInMinutes: 1 });
+  chrome.alarms.create("reasonable count", { periodInMinutes: 5 });
 });
 
 chrome.alarms.onAlarm.addListener(async alarm => {
@@ -23,6 +24,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       const response = await getQueryMapObj(user);
       const map = response.queryMap;
       let badge = 0;
+      let numQueriesOver = 0;
       if (map) {
         const newMap = JSON.parse(JSON.stringify(map));
         for (const key in map) {
@@ -31,7 +33,11 @@ chrome.alarms.onAlarm.addListener(async alarm => {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;
             // Add the number of "unreasonable" tasks to the badge count.
-            badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
+            const overflow = Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
+            if (overflow > 0) {
+              numQueriesOver++;
+            }
+            badge += overflow;
           }
         }
 
@@ -42,6 +48,14 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         if (JSON.stringify(map) !== JSON.stringify(newMap)) {
           await updateGist(user, newMap);
         }
+      }
+      if (alarm.name === "reasonable count" && numQueriesOver > 0) {
+        chrome.notifications.create({
+          type: "basic",
+          title: "Aquerium",
+          message: "You have " + ((numQueriesOver === 1) ? "1 query" : numQueriesOver + " queries") + " with tasks over reasonable count!",
+          iconUrl: "logo.png"
+        });
       }
     }
   });

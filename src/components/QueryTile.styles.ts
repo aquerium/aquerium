@@ -69,7 +69,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       height: "100%",
       outline: "none",
       float: "center",
-
       border: "none",
       background: "#f8f8f8",
       backfaceVisibility: "auto",
@@ -109,12 +108,11 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   basicInfo: {
     fontSize: 16,
-    paddingBottom: 5,
+    paddingBottom: 3,
     display: "inline-block"
   },
   basicInfoQueryName: {
     textAlign: "center",
-    bottom: 10,
     width: "100%",
     display: "inline-block",
     fontSize: 24,
@@ -140,7 +138,8 @@ export const queryTileFrontStyles = (
   numTasksOpen: number,
   markedAsRead: boolean
 ) => {
-  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
+  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen + 0.1, 0.8);
+  const redBackgroundNeeded = numTasksOpen > reasonableCount && !markedAsRead;
   return mergeStyleSets({
     queryTile: [
       hoveringAndShading,
@@ -148,10 +147,7 @@ export const queryTileFrontStyles = (
         position: "absolute",
         width: "100%",
         height: "100%",
-        background:
-          reasonableCount > 0 && numTasksOpen - reasonableCount > 0 && !markedAsRead
-            ? "rgba(255, 0, 0, " + alphaColor + ")"
-            : "#f8f8f8",
+        background: redBackgroundNeeded ? "rgba(255, 0, 0, " + alphaColor + ")" : "#f8f8f8",
         backfaceVisibility: "hidden",
         textAlign: "center",
         selectors: {
@@ -170,11 +166,11 @@ export const queryTileFrontStyles = (
       height: "100%",
       maxHeight: "100px",
       fontSize: 24,
-      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#794500"
+      color: redBackgroundNeeded ? "#ffffff" : "#794500"
     },
     queryTaskCount: {
       fontSize: 80,
-      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#004d7c"
+      color: redBackgroundNeeded ? "#ffffff" : "#004d7c"
     }
   });
 };

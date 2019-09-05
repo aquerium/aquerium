@@ -1,6 +1,6 @@
 /*global chrome*/
 import React from "react";
-import { IQuery, toQueryList, toggleFlag, IState } from "../state";
+import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
 import { Stack, Text, Separator, CommandBarButton } from "office-ui-fabric-react";
 import {
@@ -48,6 +48,8 @@ function QueryTileView(props: IQueryTileProps) {
     query.tasks.length,
     query.markedAsRead
   );
+
+  const reasonableCountDiff = Math.max(query.tasks.length - query.reasonableCount, 0);
 
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
@@ -112,18 +114,22 @@ function QueryTileView(props: IQueryTileProps) {
           )}
           {query.lastUpdated && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Last Updated:</b> {query.lastUpdated} days ago
+              <b>Last Updated:</b> {query.lastUpdated} {query.lastUpdated === 1 ? "day" : "days"} ago
               <br />
             </Text>
           )}
           {
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Reasonable Count:</b> {query.reasonableCount}{" "}
-              {query.reasonableCount === 1 ? "task" : "tasks"}
+              <b>Reasonable Count:</b>{" "}
+              {reasonableCountDiff > 0
+                ? "Exceeded by " +
+                reasonableCountDiff +
+                (reasonableCountDiff === 1 ? " task" : " tasks")
+                : "Not Exceeded"}
               <br />
             </Text>
           }
-          {query.reasonableCount > 0 && query.tasks.length > query.reasonableCount && (
+          {query.tasks.length > query.reasonableCount && (
             <CommandBarButton
               id="Flag"
               iconProps={flagIconProps}
