@@ -127,9 +127,20 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     padding: "140px 0",
     color: "#004d7c"
   },
+  addButton: {
+    width: "60px",
+    height: "60px",
+    transform: "translate(230px, 230px)",
+    background: "transparent"
+  },
+  addAQuery: {
+    fontSize: 24,
+    transform: "translate(195px, 230px)",
+    color: "#605e5c"
+  },
   basicInfo: {
     fontSize: 16,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   basicInfoQueryName: {
     textAlign: "center",
