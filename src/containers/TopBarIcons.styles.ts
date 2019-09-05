@@ -33,7 +33,7 @@ export const refreshIconStyles = {
 export const topBarItemGap = { childrenGap: 20 };
 
 export const TopBarIconsUIClassNames = mergeStyleSets({
-  topBar: { height: "43px", transform: "translateY(10%)" },
+  topBar: { height: "50px" },
   logo: {
     transform: "translateX(60%)",
     padding: 5
@@ -44,7 +44,6 @@ export const TopBarIconsUIClassNames = mergeStyleSets({
     color: "#1b3e74"
   },
   menu: {
-    right: 10,
     backgroundColor: "rgba(240, 240, 240, 0.7)",
     width: 40,
     height: 40

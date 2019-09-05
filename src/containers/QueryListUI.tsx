@@ -16,27 +16,36 @@ interface IQueryListUIProps {
 }
 
 function QueryListComponent(props: IQueryListUIProps) {
-
   function onClickToEditQuery() {
     props.toEditQuery();
-  };
+  }
 
   return (
     <div className={QueryTileClassNames.root}>
-      {!props.isHomeLoading ?
+      {!props.isHomeLoading ? (
         <div className={QueryTileClassNames.listContainer}>
-          {Object.keys(props.queryList).length > 0 ? Object.keys(props.queryList).map(key => (
-            <QueryTile currQuery={props.queryList[key]} key={key} />
-          )) : <Stack verticalAlign="center"><CommandBarButton iconProps={{ iconName: "Add" }} className={QueryTileClassNames.addButton} onClick={onClickToEditQuery} />
-              <Text className={QueryTileClassNames.addAQuery}>Add a query!</Text></Stack>}
+          {Object.keys(props.queryList).length > 0 ? (
+            Object.keys(props.queryList).map(key => (
+              <QueryTile currQuery={props.queryList[key]} key={key} />
+            ))
+          ) : (
+            <Stack verticalAlign="center">
+              <CommandBarButton
+                iconProps={{ iconName: "Add" }}
+                className={QueryTileClassNames.addButton}
+                onClick={onClickToEditQuery}
+              />
+              <Text className={QueryTileClassNames.addAQuery}>Add a query!</Text>
+            </Stack>
+          )}
         </div>
-        : (
-          <Spinner
-            label={getHomeLoadingPhrase()}
-            size={SpinnerSize.large}
-            className={QueryTileClassNames.spinner}
-          />
-        )}
+      ) : (
+        <Spinner
+          label={getHomeLoadingPhrase()}
+          size={SpinnerSize.large}
+          className={QueryTileClassNames.spinner}
+        />
+      )}
     </div>
   );
 }
@@ -48,6 +57,9 @@ const mapStateToProps = (state: IState) => ({
 
 const actions = {
   toEditQuery
-}
+};
 
-export const QueryListUI = connect(mapStateToProps, actions)(QueryListComponent);
+export const QueryListUI = connect(
+  mapStateToProps,
+  actions
+)(QueryListComponent);

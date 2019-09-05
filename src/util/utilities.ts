@@ -19,11 +19,10 @@ export async function getQueryTasks(
     const response = await octokit.paginate(options);
 
     const tasks: ITask[] = [];
-    response.forEach(function (item: IIssue | IPull) {
+    response.forEach(function(item: IIssue | IPull) {
       const task: ITask = {
         num: item.number,
         title: item.title,
-        body: item.body,
         type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
         createdAt: item.created_at.substring(0, 10),
         updatedAt: item.updated_at.substring(0, 10),
@@ -78,8 +77,8 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.mentions ? "+mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
-    query.labels.forEach(function (label) {
-      qualifiers += '+label:"' + label.replace(/"/g, '\\"') + '"';
+    query.labels.forEach(function(label) {
+      qualifiers += '+label:"' + label.name.replace(/"/g, '\\"') + '"';
     });
   }
   qualifiers += query.lastUpdated ? "+updated:<=" + getRefDate(query.lastUpdated) : "";
@@ -119,4 +118,22 @@ function getRefDate(daysRef: number): string {
   return dateRef.getFullYear() + "-" + mmStr + "-" + ddStr;
 }
 
-
+/**
+ * Takes in a url string and, if emojis/characters are present, ensures a valid URL
+ * with the correct URL encoding.
+ * @param queryUrl The URL to a given GitHub query.
+ */
+export const normalizedURL = (queryUrl: string): string => {
+  // Inspired by the solution on:
+  // https://meta.stackexchange.com/questions/285366/emoji-in-url-breaks-insert-hyperlink-tool-in-editor.
+  var m = /^\s*(.*?)(?:\s+"(.*)")?\s*$/.exec(queryUrl);
+  let normalized = "";
+  if (m) {
+    let url = m[1];
+    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function(match) {
+      if (match.length === 3 && match.charAt(0) === "%") return match;
+      else return encodeURI(match);
+    });
+  }
+  return normalized;
+};

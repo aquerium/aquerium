@@ -36,13 +36,13 @@ export const QueryTaskClassNames = mergeStyleSets({
     gridGap: "15px",
     textAlign: "center",
     boxSizing: "border-box",
-    padding: "12px 18px 18px 20px"
+    padding: "12px 19px 18px 19px"
   },
   taskTile: [
     hoveringAndShading,
     {
-      width: "507px",
-      height: "95px",
+      width: "510px",
+      height: "94px",
       textAlign: "left",
       outline: "none",
       border: "none",
@@ -64,7 +64,7 @@ export const QueryTaskClassNames = mergeStyleSets({
     display: "block",
     textDecorationLine: "none",
     selectors: {
-      "&:hover": { color: "#b64e00" },
+      "&:hover": { color: "#b64e00", textDecorationLine: "none" },
       "&:active": { color: "8a3c00", textDecorationLine: "none" }
     },
     width: "100%",

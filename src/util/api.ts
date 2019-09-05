@@ -1,7 +1,8 @@
-import { IQuery, IUserInfo } from "../state";
+import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
 import Octokit from "@octokit/rest";
 import { GIST_NAME, GIST_DESCRIP, STATUS_CREATED, STATUS_OK } from "./constants";
+import fetch from "isomorphic-fetch";
 
 let octokitObj: { octokit: Octokit; token: string };
 
@@ -127,6 +128,63 @@ export async function checkForGist(token: string): Promise<{ gistInfo?: any; err
     return {};
   } catch (error) {
     console.error(error);
+    return { errorCode: 500 };
+  }
+}
+
+/**
+ * This function interacts with the GitHub API in order to
+ * fetch valid labels from a valid repo.
+ * @param repo The repo to attempt to fetch labels from.
+ */
+export async function getRepoLabels(
+  repo: string
+): Promise<{ labels?: ILabel[]; errorCode?: number }> {
+  try {
+    let labels: ILabel[] = [];
+    // Fetch initial set of labels.
+    const labelsURL = "https://api.github.com/repos/" + repo + "/labels";
+    const response = await fetch(labelsURL, {
+      headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+    });
+    if (!response.ok) {
+      return { errorCode: response.status };
+    }
+    // Save the initial set of labels.
+    const data = await response.json();
+    labels = labels.concat(
+      data.map((label: { name: string; color: string }) => ({
+        name: label.name,
+        color: label.color
+      }))
+    );
+
+    // Check if the response header indicates more than 1 page of labels.
+    const headerLinks = response.headers.get("Link");
+    if (headerLinks) {
+      //Filter the Link header and extract the second url, which has the amount of pages.
+      const lastLink = headerLinks.split(/<(.*?)>/g).filter(link => link.includes("https://"))[1];
+      let numPages = parseInt(lastLink.substring(lastLink.lastIndexOf("=") + 1));
+
+      // Fetch all pages of labels.
+      for (let i = 2; i <= numPages; i++) {
+        const response = await fetch(labelsURL + "?page=" + i, {
+          headers: { Accept: "application/vnd.github.symmetra-preview+json" }
+        });
+        if (!response.ok) {
+          return { errorCode: response.status };
+        }
+        const data = await response.json();
+        labels = labels.concat(
+          data.map((label: { name: string; color: string }) => ({
+            name: label.name,
+            color: label.color
+          }))
+        );
+      }
+    }
+    return { labels: labels };
+  } catch (error) {
     return { errorCode: 500 };
   }
 }

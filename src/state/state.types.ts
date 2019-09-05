@@ -31,6 +31,17 @@ export interface ILabel {
 
 /**
  * @interface
+ * This interface represents a single label, withc its name and color.
+ */
+export interface ILabel {
+  /** The name of the label. */
+  name: string;
+  /** The color provided by GitHub and/or a repository. */
+  color: string;
+}
+
+/**
+ * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -40,8 +51,6 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
-  /** The body of the ITask, adding further information about the task. */
-  body: string;
   /** The assignees of the task. */
   assignees: string[];
   /** The repo the task is a member of. */
@@ -85,12 +94,10 @@ export interface IQuery {
   | "Reviewed by you"
   | "Awaiting review from you";
   /** OPTIONAL Array of labels further classifying the tasks in the query. */
-  labels?: string[];
-  /** The array of labels that are rendered across the app. */
-  labelsToRender: string[];
+  labels?: ILabel[];
   /** OPTIONAL The number of days since the last update on a task. */
   lastUpdated?: number;
-  /** The number of tasks in a query that if exceeded, would be considered unreasonable. */
+  /** The number of tasks in a query that, if exceeded, would be considered unreasonable. */
   reasonableCount: number;
   /** An array of tasks containing the results of the query. */
   tasks: ITask[];
@@ -98,6 +105,8 @@ export interface IQuery {
   url: string;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: string[];
+  /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
+  markedAsRead: boolean;
 }
 
 /**

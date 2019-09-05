@@ -9,6 +9,9 @@ import { toError } from "../actions";
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
+// This type defines an action that toggles the marked as read flag
+export type toggleFlagAction = { type: string; query: IQuery };
+
 /**
  * Action creator to add/edit a query to the queryList.
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
@@ -82,7 +85,7 @@ export const removeQuery = (queryID: string) => {
     chrome.browserAction.getBadgeText({}, function (res: string) {
       const query = queryList[queryID];
       const overFlow = query.tasks.length - query.reasonableCount;
-      const newBadgeText = (Number(res) - overFlow) < 0 ? 0 : (Number(res) - overFlow);
+      const newBadgeText = Number(res) - overFlow < 0 ? 0 : Number(res) - overFlow;
       chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
     });
     dispatch(setHomeLoadingFalse());
@@ -106,7 +109,7 @@ export const refreshMap = () => {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
           // Add the number of "unreasonable" tasks to the badge count.
-          badge += responseItems.tasks.length - newMap[key].reasonableCount;
+          badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
         }
         else {
           dispatch(setHomeLoadingFalse());
@@ -126,9 +129,8 @@ export const refreshMap = () => {
       dispatch(setHomeLoadingFalse());
       dispatch(updateMap(newMap));
     }
-  }
-}
-
+  };
+};
 
 /**
  * Action creator to replace the current queryList with the attatched queryList.
@@ -136,4 +138,12 @@ export const refreshMap = () => {
 export const updateMap = (updatedList: queryListType) => ({
   type: "UPDATE_LIST",
   updatedList
+});
+
+/**
+ * Action creator to toggle the markedAsRead flag (for reasonable count).
+ */
+export const toggleFlag = (query: IQuery) => ({
+  type: "TOGGLE_FLAG",
+  query
 });

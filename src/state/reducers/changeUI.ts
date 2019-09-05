@@ -1,6 +1,10 @@
-/*global chrome*/
 import update from "immutability-helper";
-import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction, changeUIEditQueryAction } from "../actions/changeUI";
+import {
+  changeUIAction,
+  changeUIErrorAction,
+  changeUIQueryTaskListAction,
+  changeUIEditQueryAction
+} from "../actions/changeUI";
 import { IState } from "../state.types";
 
 const DEFAULT_STATE: IState["changeUI"] = {

@@ -46,7 +46,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 35 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 32 }];
 
 const scopedSettings = {
   TextField: {
@@ -56,7 +56,7 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      root: [hoveringAndShading, { height: 35 }]
+      root: [hoveringAndShading, { height: 32 }]
     },
     target: "_blank"
   },
@@ -65,6 +65,20 @@ const scopedSettings = {
       title: [
         fieldGroupStyles,
         { paddingRight: "20px", whiteSpace: "nowrap", textOverflow: "ellipsis" }
+      ]
+    }
+  },
+  TagPicker: {
+    styles: {
+      text: [
+        hoveringAndShading,
+        {
+          width: "465px",
+          maxWidth: "465px",
+          maxHeight: "92px",
+          background: "white",
+          overflowY: "auto"
+        }
       ]
     }
   },
@@ -104,7 +118,6 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-
   public componentDidMount(): void {
     this.props.login();
   }
