@@ -106,15 +106,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-        id: "",
-        name: "",
-        lastUpdated: 0,
-        reasonableCount: 0,
-        tasks: [],
-        labels: [],
-        url: "",
-        customViews: ["author", "createdAt", "repo", "labels"]
-      },
+          id: "",
+          name: "",
+          lastUpdated: 0,
+          reasonableCount: 0,
+          tasks: [],
+          labels: [],
+          url: "",
+          customViews: ["author", "createdAt", "repo", "labels"],
+          markedAsRead: false
+        },
     validInputs: {
       name: true,
       repo: true,
@@ -145,13 +146,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-              <div className={EditQueryUIClassNames.commandBarContainer}>
-                <CommandBar
-                  styles={commandBarStyles}
-                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-                />
-              </div>
-            )}
+            <div className={EditQueryUIClassNames.commandBarContainer}>
+              <CommandBar
+                styles={commandBarStyles}
+                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+              />
+            </div>
+          )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -246,7 +247,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 errorMessage={!this.state.validInputs.reasonableCount ? "Invalid number input" : ""}
               />
               {description(
-                "The number of tasks in this query that if exceeded, would be considered unreasonable."
+                "The number of tasks in this query that, if exceeded, would be considered unreasonable. " +
+                  "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
               )()}
             </Stack>
             <Label>Labels</Label>
@@ -255,9 +257,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 selectedItems={
                   this.state.selections.labels
                     ? this.state.selections.labels.map(label => ({
-                      key: label.name + "/#" + label.color,
-                      name: label.name
-                    }))
+                        key: label.name + "/#" + label.color,
+                        name: label.name
+                      }))
                     : []
                 }
                 componentRef={this._picker}
@@ -360,6 +362,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
+    const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
+    this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };

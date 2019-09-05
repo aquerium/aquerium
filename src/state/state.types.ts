@@ -51,8 +51,6 @@ export interface ITask {
   title: string;
   /** Person who opened this task. */
   author: string;
-  /** The body of the ITask, adding further information about the task. */
-  body: string;
   /** The assignees of the task. */
   assignees: string[];
   /** The repo the task is a member of. */
@@ -107,6 +105,8 @@ export interface IQuery {
   url: string;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: string[];
+  /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
+  markedAsRead: boolean;
 }
 
 /**

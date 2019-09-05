@@ -19,11 +19,10 @@ export async function getQueryTasks(
     const response = await octokit.paginate(options);
 
     const tasks: ITask[] = [];
-    response.forEach(function (item: IIssue | IPull) {
+    response.forEach(function(item: IIssue | IPull) {
       const task: ITask = {
         num: item.number,
         title: item.title,
-        body: item.body,
         type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
         createdAt: item.created_at.substring(0, 10),
         updatedAt: item.updated_at.substring(0, 10),
@@ -78,7 +77,7 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.mentions ? "+mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
-    query.labels.forEach(function (label) {
+    query.labels.forEach(function(label) {
       qualifiers += '+label:"' + label.name.replace(/"/g, '\\"') + '"';
     });
   }
@@ -131,7 +130,7 @@ export const normalizedURL = (queryUrl: string): string => {
   let normalized = "";
   if (m) {
     let url = m[1];
-    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function (match) {
+    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function(match) {
       if (match.length === 3 && match.charAt(0) === "%") return match;
       else return encodeURI(match);
     });

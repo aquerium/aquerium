@@ -2,7 +2,6 @@ import React from "react";
 import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
-import { description } from "./InfoButton";
 import emoji from "node-emoji"; // Emoji object to help render emojis correctly throughout the app.
 import { gitLabelStyles } from "./GitLabel.styles";
 
@@ -64,7 +63,6 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             {task.title}
           </a>
         </TooltipHost>
-        <div className={QueryTaskClassNames.infoIcon}>{description(task.body)()}</div>
       </div>
       <Stack
         verticalAlign="space-around"
