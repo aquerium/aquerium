@@ -16,10 +16,6 @@ export const queryList = (
       const { updatedList } = action as updateQueryListAction;
       return update(state, { $set: updatedList });
     }
-    case "TOGGLE_FLAG": {
-      const { query } = action as toggleFlagAction;
-      return update(state, { [query.id]: { markedAsRead: { $set: !query.markedAsRead } } })
-    }
     default:
       return state;
   }
