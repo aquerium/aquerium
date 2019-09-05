@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
     invalidPAT: false
   });
   chrome.alarms.create("refresh", { periodInMinutes: 1 });
-  chrome.alarms.create("reasonable count", { periodInMinutes: 240 });
+  chrome.alarms.create("reasonable count", { periodInMinutes: 5 });
 });
 
 chrome.alarms.onAlarm.addListener(async alarm => {
