@@ -6,7 +6,9 @@ import {
   QueryTileClassNames,
   gridStackStyle,
   separatorStyles,
-  queryTileFrontStyles
+  queryTileFrontStyles,
+  flagIconStyles,
+  flagIconProps
 } from "../components/QueryTile.styles";
 import { gitLabelStyles } from "../components/GitLabel.styles";
 import emoji from "node-emoji";
@@ -148,10 +150,10 @@ function QueryTileView(props: IViewProps) {
           {query.reasonableCount > 0 && query.tasks.length > query.reasonableCount && (
             <CommandBarButton
               id="Flag"
-              iconProps={{ iconName: "Flag" }}
+              iconProps={flagIconProps}
               text={props.markedAsRead ? "Flag" : "Unflag"}
               onClick={flagReasonableCount}
-              styles={{ root: { height: 25 } }}
+              styles={flagIconStyles}
             />
           )}
         </Stack>

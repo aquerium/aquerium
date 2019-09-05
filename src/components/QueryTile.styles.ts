@@ -27,6 +27,9 @@ interface IQueryTile {
   basicInfoQueryName: string;
 }
 
+export const flagIconStyles = { root: { height: 25 } };
+export const flagIconProps = { iconName: "Flag" };
+
 export const gridStackStyle = {
   root: { maxWidth: "100%" }
 };
