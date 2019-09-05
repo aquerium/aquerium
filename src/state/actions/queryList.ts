@@ -42,6 +42,7 @@ export const addOrEditQuery = (query: IQuery) => {
       dispatch(setHomeLoadingFalse());
     }
     if (query.id === "") {
+      // If we're adding a new query, we can just add overflow (which is more efficient). If it's not a new query we have to refresh count across the entire map.
       chrome.browserAction.getBadgeText({}, function (res: string) {
         const overFlow = Math.max(newQuery.tasks.length - newQuery.reasonableCount, 0);
         const newBadgeText = (Number(res) + overFlow);
