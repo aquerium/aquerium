@@ -125,7 +125,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
+  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()"'[\]]+( *[a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
   private _numberRegex = /^[0-9]*$/i;
   private _picker = React.createRef<IBasePicker<ITag>>();
   private _customViewsOptions = [
@@ -765,7 +765,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (!filterText) return [];
     return this.state.labelSuggestions
       .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) // Find all tags that contain filterText.
-      .filter(tag => !this._listContainsLabel(tag, tagList)); // Find all tags that are not already selected.
+      .filter(tag => !this._listContainsLabel(tag, tagList))
+      .concat([this._genericItem(filterText, ValidationState.valid)]); // Find all tags that are not already selected.
   };
 }
 
