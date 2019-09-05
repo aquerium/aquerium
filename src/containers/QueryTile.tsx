@@ -1,4 +1,3 @@
-/*global chrome*/
 import React from "react";
 import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
