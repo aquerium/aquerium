@@ -1,5 +1,5 @@
 import React from "react";
-import { IQuery, toQueryList, toggleFlag, IState } from "../state";
+import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
 import { Stack, Text, Separator, CommandBarButton } from "office-ui-fabric-react";
 import {
