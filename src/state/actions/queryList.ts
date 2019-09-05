@@ -1,8 +1,8 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
-import { getQueryURLEndpoint, getQueryTasks, getQueryURLHTML, updateGist, createUid } from "../../util";
 import { toError } from "../actions";
+import { getQueryTasks, getQueryURLHTML, updateGist, createUid } from "../../util";
 
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
@@ -12,9 +12,9 @@ export type updateQueryListAction = { type: string; updatedList: queryListType }
  * This action creator gets the resulting tasks from the attached query and updates it before putting the query in the queryMap.
  */
 export const addOrEditQuery = (query: IQuery) => {
-  return async function (dispatch: Dispatch, getState: () => IState) {
+  return async function(dispatch: Dispatch, getState: () => IState) {
     const { user, queryList } = getState();
-    const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
+    const resp = await getQueryTasks(user, query);
     if (resp.errorCode || !resp.tasks) {
       toError(resp.errorCode, query)(dispatch);
       return;
@@ -51,7 +51,7 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
  * Action creator to remove the specified query from queryList.
  */
 export const removeQuery = (queryID: string) => {
-  return async function (dispatch: Dispatch, getState: () => IState) {
+  return async function(dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
     const newList = update(queryList, { $unset: [queryID] });
     const response = await updateGist(user, newList);

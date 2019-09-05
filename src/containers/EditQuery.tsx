@@ -239,17 +239,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Reasonable Task Count"
-                defaultValue={
-                  this.state.selections.reasonableCount
-                    ? this.state.selections.reasonableCount.toString()
-                    : "0"
-                }
-                errorMessage={
-                  !this.state.validInputs.reasonableCount
-                    ? "Invalid number entered for reasonable task count."
-                    : ""
-                }
-                onChange={this._checkReasonableCountSelection}
+                defaultValue={this.state.selections.reasonableCount.toString()}
+                validateOnFocusIn
+                validateOnFocusOut
+                onChange={this._onChangeReasonableCountSelection}
+                errorMessage={!this.state.validInputs.reasonableCount ? "Invalid number input" : ""}
               />
               {description(
                 "The number of tasks in this query that if exceeded, would be considered unreasonable."
@@ -346,7 +340,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _setMessageBarAddOrEdit = (): void => {
     let validEdits = true;
-    const fields = ["name", "repo", "author", "assignee", "mentions", "reasonableCount"];
     for (const field in this.state.validInputs) {
       if (!field) {
         validEdits = false;
@@ -670,7 +663,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     chrome.storage.local.set({ query: this.state.selections });
   };
 
-  private _checkReasonableCountSelection = (
+  private _onChangeReasonableCountSelection = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
