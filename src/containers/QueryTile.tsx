@@ -26,10 +26,10 @@ function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
   const emojifiedAndColoredLabels = query.labels
     ? query.labels.map(label => (
-        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
-          {emoji.emojify(label.name)}
-        </span>
-      ))
+      <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+        {emoji.emojify(label.name)}
+      </span>
+    ))
     : null;
   function onClickToQueryList() {
     props.toQueryList(query);
@@ -113,7 +113,7 @@ function QueryTileView(props: IQueryTileProps) {
           )}
           {query.lastUpdated && (
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Last Updated:</b> {query.lastUpdated} days ago
+              <b>Last Updated:</b> {query.lastUpdated} {query.lastUpdated === 1 ? "day" : "days"} ago
               <br />
             </Text>
           )}
@@ -122,8 +122,8 @@ function QueryTileView(props: IQueryTileProps) {
               <b>Reasonable Count:</b>{" "}
               {reasonableCountDiff > 0
                 ? "Exceeded by " +
-                  reasonableCountDiff +
-                  (reasonableCountDiff === 1 ? " task" : " tasks")
+                reasonableCountDiff +
+                (reasonableCountDiff === 1 ? " task" : " tasks")
                 : "Not Exceeded"}
               <br />
             </Text>
