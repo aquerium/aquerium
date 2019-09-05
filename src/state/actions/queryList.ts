@@ -147,11 +147,10 @@ export const toggleFlag = (query: IQuery) => {
   return async function (dispatch: Dispatch, getState: () => IState) {
     const { queryList, user } = getState();
     const newList = update(queryList, { [query.id]: { markedAsRead: { $set: !query.markedAsRead } } })
+    dispatch(updateMap(newList));
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       toError(response.errorCode)(dispatch);
-    } else {
-      dispatch(updateMap(newList));
     }
   }
 };
