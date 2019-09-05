@@ -23,8 +23,6 @@ interface IViewProps extends IQueryTileProps {
   toQueryList: (query: IQuery) => void;
   /** Action creator that toggles the marked as read flag. */
   toggleFlag: (query: IQuery) => void;
-  /** The flag determining whether the tile has been acknowledged. */
-  markedAsRead: boolean;
 }
 
 const mapStateToProps = (state: IState, ownProps: IQueryTileProps) => {
@@ -57,7 +55,7 @@ function QueryTileView(props: IViewProps) {
   const frontTileStyles = queryTileFrontStyles(
     query.reasonableCount,
     query.tasks.length,
-    props.markedAsRead
+    query.markedAsRead
   );
 
   return (
@@ -138,7 +136,7 @@ function QueryTileView(props: IViewProps) {
             <CommandBarButton
               id="Flag"
               iconProps={flagIconProps}
-              text={props.markedAsRead ? "Flag" : "Unflag"}
+              text={query.markedAsRead ? "Flag" : "Unflag"}
               onClick={flagReasonableCount}
               styles={flagIconStyles}
             />
