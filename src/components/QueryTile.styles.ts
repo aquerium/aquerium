@@ -138,7 +138,7 @@ export const queryTileFrontStyles = (
   numTasksOpen: number,
   markedAsRead: boolean
 ) => {
-  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
+  const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen + 0.1, 0.8);
   const redBackgroundNeeded = numTasksOpen > reasonableCount && !markedAsRead;
   return mergeStyleSets({
     queryTile: [

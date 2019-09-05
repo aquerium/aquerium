@@ -98,12 +98,11 @@ function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
       } else {
         // Then this is a new user! We need to see if their PAT is valid.
         const responseGist = await createGist(PAT);
-        if (responseGist.errorCode || !responseGist.user) {
+        if (responseGist.user) {
+          loginQueryMapExists(responseGist.user, dispatch, getState, {});
+        } else {
           dispatch(goToLogout());
           dispatch(setIsInvalidPAT(true));
-        }
-        else {
-          loginQueryMapExists(responseGist.user, dispatch, getState, {});
         }
       }
     }

@@ -52,7 +52,7 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
     };
   } catch (error) {
     console.error(error);
-    return { errorCode: 401 };
+    return { errorCode: 500 };
   }
 }
 
