@@ -1,3 +1,4 @@
+/*global chrome*/
 import React from "react";
 import { IQuery, toQueryList, toggleFlag, IState } from "../state";
 import { connect } from "react-redux";
@@ -26,10 +27,10 @@ function QueryTileView(props: IQueryTileProps) {
   const query = props.currQuery;
   const emojifiedAndColoredLabels = query.labels
     ? query.labels.map(label => (
-        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
-          {emoji.emojify(label.name)}
-        </span>
-      ))
+      <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+        {emoji.emojify(label.name)}
+      </span>
+    ))
     : null;
   function onClickToQueryList() {
     props.toQueryList(query);

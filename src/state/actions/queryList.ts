@@ -139,7 +139,15 @@ export const updateMap = (updatedList: queryListType) => ({
 /**
  * Action creator to toggle the markedAsRead flag (for reasonable count).
  */
-export const toggleFlag = (query: IQuery) => ({
-  type: "TOGGLE_FLAG",
-  query
-});
+export const toggleFlag = (query: IQuery) => {
+  return async function (dispatch: Dispatch, getState: () => IState) {
+    const { queryList, user } = getState();
+    const newList = update(queryList, { [query.id]: { markedAsRead: { $set: !query.markedAsRead } } })
+    const response = await updateGist(user, newList);
+    if (response.errorCode) {
+      toError(response.errorCode)(dispatch);
+    } else {
+      dispatch(updateMap(newList));
+    }
+  }
+};
