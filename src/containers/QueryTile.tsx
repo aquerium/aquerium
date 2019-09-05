@@ -8,7 +8,7 @@ import {
   separatorStyles
 } from "../components/QueryTile.styles";
 import { gitLabelStyles } from "../components/GitLabel.styles";
-import { emoji } from "../util";
+import emoji from "node-emoji";
 
 interface IQueryTileProps {
   /** A single IQuery to be rendered. */
