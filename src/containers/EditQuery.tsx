@@ -30,7 +30,7 @@ import {
   commandBarStyles
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
-import { emoji } from "../util";
+import emoji from "node-emoji";
 
 enum InputStatuses {
   /** Value indicating that the input has been validated. */
@@ -81,7 +81,6 @@ const mapStateToProps = (state: IState) => {
   };
 };
 
-
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
     inputStatus: InputStatuses.successfulEdit,
@@ -92,16 +91,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-        id: "",
-        name: "",
-        lastUpdated: 0,
-        reasonableCount: 0,
-        tasks: [],
-        labels: [],
-        labelsToRender: [],
-        url: "",
-        customViews: ["author", "createdAt", "repo", "labels"]
-      }
+          id: "",
+          name: "",
+          lastUpdated: 0,
+          reasonableCount: 0,
+          tasks: [],
+          labels: [],
+          labelsToRender: [],
+          url: "",
+          customViews: ["author", "createdAt", "repo", "labels"]
+        }
   };
 
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()[\]]+( *[a-z0-9-_.\\/+&#@:()[\]]+ *)*$/i;
@@ -118,7 +117,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _onClickToQueryList = (): void => {
     this.props.toQueryList(this.state.selections);
-  }
+  };
   public render = (): JSX.Element => {
     return (
       <>
@@ -126,13 +125,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-              <div className={EditQueryUIClassNames.commandBarContainer}>
-                <CommandBar
-                  styles={commandBarStyles}
-                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-                />
-              </div>
-            )}
+            <div className={EditQueryUIClassNames.commandBarContainer}>
+              <CommandBar
+                styles={commandBarStyles}
+                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+              />
+            </div>
+          )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -223,18 +222,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               {description("The GitHub labels assigned to particular tasks.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
-              <TextField
-                label="Reasonable Task Count"
-                defaultValue={this.state.selections.reasonableCount.toString()}
-                validateOnFocusIn
-                validateOnFocusOut
-                onGetErrorMessage={this._checkReasonableCountSelection}
-              />
-              {description(
-                "The number of tasks in this query that if exceeded, would be considered unreasonable."
-              )()}
-            </Stack>
-            <Stack horizontal horizontalAlign="center">
               <Slider
                 label="Last Updated"
                 onChange={this._setLastUpdatedSelection}
@@ -244,6 +231,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description(
                 "Track Issues and/or Pull Requests that have not been updated for more than a specific number of days."
+              )()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Reasonable Task Count"
+                defaultValue={this.state.selections.reasonableCount.toString()}
+                validateOnFocusIn
+                validateOnFocusOut
+                onGetErrorMessage={this._checkReasonableCountSelection}
+              />
+              {description(
+                "The number of tasks in this query that if exceeded, would be considered unreasonable."
               )()}
             </Stack>
             <Separator className={EditQueryUIClassNames.separator} styles={separatorContentStyles}>
