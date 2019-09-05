@@ -41,7 +41,8 @@ export const addOrEditQuery = (query: IQuery) => {
     chrome.browserAction.getBadgeText({}, function (res: string) {
       const oldOverFlow = query.tasks.length - query.reasonableCount;
       const overFlow = newQuery.tasks.length - newQuery.reasonableCount;
-      const newBadgeText = query.id === "" ? Number(res) + overFlow : Number(res) + (overFlow - oldOverFlow);
+      const newBadgeText = query.id === "" ? (Number(res) + overFlow) : (Number(res) + ((overFlow - oldOverFlow )< 0 ? 0 : (overFlow - oldOverFlow)));
+      console.log(newBadgeText);
       chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
     });
     dispatch(updateMap(newList));
@@ -101,7 +102,7 @@ export const refreshMap = () => {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
           // Add the number of "unreasonable" tasks to the badge count.
-          badge += responseItems.tasks.length - newMap[key].reasonableCount;
+          badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
         }
         else {
           dispatch(setHomeLoadingFalse());
