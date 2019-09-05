@@ -95,7 +95,7 @@ export class MultiSelect extends React.Component<IMultiSelectProps, IMultiSelect
     this.setState({ pendingItem: this.state.pendingItem.trim() });
     const { pendingItem } = this.state;
 
-    let labelRegex = /^[a-z0-9-_.\\/~+&#@:()[\]:]+( *[a-z0-9-_.\\/+&#@::()[\]]+ *)*$/i;
+    let labelRegex = /^[a-z0-9-_.\\/~+&#@:"'()[\]:]+( *[a-z0-9-_.\\/+&#@:"'()[\]]+ *)*$/i;
     if (items && items.includes(pendingItem)) {
       this.setState({ errorMessage: "Label already included." });
       return;

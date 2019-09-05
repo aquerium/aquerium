@@ -1,4 +1,4 @@
-import { getQueryMapObj, updateGist, getQueryTasks, getQueryURLEndpoint } from "../util";
+import { getQueryMapObj, updateGist, getQueryTasks } from "../util";
 import { IUserInfo } from "../state";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -26,7 +26,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       if (map) {
         const newMap = JSON.parse(JSON.stringify(map));
         for (const key in map) {
-          const responseItems = await getQueryTasks(getQueryURLEndpoint(user, map[key]));
+          const responseItems = await getQueryTasks(user, map[key]);
           if (responseItems.tasks) {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;

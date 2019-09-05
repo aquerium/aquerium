@@ -3,7 +3,7 @@ import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
 import { description } from "./InfoButton";
-import { emoji } from "../util";
+import emoji from "node-emoji"; // Emoji object to help render emojis correctly throughout the app.
 import { gitLabelStyles } from "./GitLabel.styles";
 
 interface IQueryTaskTile {

@@ -2,7 +2,7 @@
 import { IQuery, queryListType, IState } from "../state.types";
 import update from "immutability-helper";
 import { Dispatch } from "redux";
-import { createUid, getQueryURLEndpoint, getQueryTasks, getQueryURLHTML, updateGist } from "../../util";
+import { createUid, getQueryTasks, getQueryURLHTML, updateGist } from "../../util";
 import { setHomeLoadingTrue, setHomeLoadingFalse } from "./";
 import { toError } from "../actions";
 
@@ -17,7 +17,7 @@ export const addOrEditQuery = (query: IQuery) => {
   return async function (dispatch: Dispatch, getState: () => IState) {
     dispatch(setHomeLoadingTrue());
     const { user, queryList } = getState();
-    const resp = await getQueryTasks(getQueryURLEndpoint(user, query));
+    const resp = await getQueryTasks(user, query);
     if (resp.errorCode || !resp.tasks) {
       dispatch(setHomeLoadingFalse());
       toError(resp.errorCode, query)(dispatch);
@@ -96,7 +96,7 @@ export const refreshMap = () => {
     if (queryList) {
       const newMap = JSON.parse(JSON.stringify(queryList));
       for (const key in queryList) {
-        const responseItems = await getQueryTasks(getQueryURLEndpoint(user, queryList[key]));
+        const responseItems = await getQueryTasks(user, queryList[key]);
         if (responseItems.tasks) {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;

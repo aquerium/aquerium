@@ -18,7 +18,7 @@ export type changeUILoginAction = { type: string; user: IUserInfo };
 /**
  * The action type for changing to the error UI.
  */
-export type changeUIErrorAction = { type: string; errorCode?: number, query?: IQuery };
+export type changeUIErrorAction = { type: string; errorCode?: number; query?: IQuery };
 
 /**
  * The action type for changing to the QueryTaskList UI.
@@ -29,7 +29,6 @@ export type changeUIQueryTaskListAction = { type: string; query: IQuery };
  * The action type for changing to the EditQuery UI.
  */
 export type changeUIEditQueryAction = { type: string; query?: IQuery };
-
 
 /**
  * Action creator to send the user from login UI to Home UI.
@@ -70,7 +69,7 @@ function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
               toEditQuery(resultQuery.query)(dispatch);
             } else {
               toHome()(dispatch);
-            };
+            }
           } else {
             toHome()(dispatch);
           }
@@ -82,7 +81,7 @@ function loginOnApplicationMount(dispatch: Dispatch, getState: () => IState) {
       dispatch(goToLogout());
     }
   });
-};
+}
 
 // Helper function to attempt to log a user in via their PAT.
 function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
@@ -93,7 +92,7 @@ function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
     } else {
       const response = await checkForGist(PAT);
       // If there already is a gist for this account, then update local storage.
-      if (response.gist && response.gist.owner && response.gist.id) {
+      if (response.gist && responsegist.owner && responsegist.id) {
         const user = createIUserInfo(PAT, response.gist.owner.login, response.gist.id);
         await loginExistingUser(dispatch, getState, user);
       } else {
@@ -104,11 +103,11 @@ function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
         } else {
           dispatch(goToLogout());
           dispatch(setIsInvalidPAT(true));
-        };
-      };
-    };
+        }
+      }
+    }
   });
-};
+}
 
 // Helper function that creates an IUserInfo.
 function createIUserInfo(newPAT: string, newUsername: string, newGistID: string): IUserInfo {
@@ -118,7 +117,7 @@ function createIUserInfo(newPAT: string, newUsername: string, newGistID: string)
     gistID: newGistID,
     invalidPAT: false
   };
-};
+}
 
 // Helper function that logs in an existing user.
 async function loginExistingUser(dispatch: Dispatch, getState: () => IState, user: IUserInfo): Promise<void> {
@@ -128,8 +127,8 @@ async function loginExistingUser(dispatch: Dispatch, getState: () => IState, use
   } else {
     dispatch(goToLogout());
     dispatch(setIsInvalidPAT(true));
-  };
-};
+  }
+}
 
 // Helper function that stores a user's information and goes to the HomeUI.
 function loginQueryMapExists(user: IUserInfo, dispatch: Dispatch, getState: () => IState, map: queryListType) {
