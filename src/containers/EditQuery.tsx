@@ -37,8 +37,20 @@ import {
 import { connect } from "react-redux";
 import { getRepoLabels } from "../util/api";
 
-/** Value corresponding to enter key. */
+// Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
+
+/**
+ * Interface to track whether a user input is valid.
+ */
+interface IInputField {
+  name: boolean;
+  repo: boolean;
+  assignee: boolean;
+  mentions: boolean;
+  author: boolean;
+  reasonableCount: boolean;
+}
 
 interface IEditQueryUIState {
   /**
@@ -61,10 +73,8 @@ interface IEditQueryUIState {
    * a new query or edit an existing one.
    */
   selections: IQuery;
-  /** Dictionary denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
-  validInputs: {
-    [key: string]: boolean;
-  };
+  /** List denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
+  validInputs: IInputField;
 }
 
 interface IEditQueryUIProps {
@@ -108,9 +118,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     validInputs: {
       name: true,
       repo: true,
-      author: true,
       assignee: true,
       mentions: true,
+      author: true,
       reasonableCount: true
     }
   };
@@ -128,9 +138,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     { key: "createdAt", text: "Date Created" }
   ];
 
-  private _onClickToQueryList = (): void => {
-    this.props.toQueryList(this.state.selections);
-  };
   public render = (): JSX.Element => {
     return (
       <>
@@ -182,7 +189,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 validateOnFocusOut
                 onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
-                errorMessage={!this.state.validInputs.repo ? "Invalid repo name" : ""}
+                errorMessage={!this.state.validInputs ? "Invalid repo name" : ""}
               />
               {description("List a repository from which to track Issues and/or Pull Requests.")()}
             </Stack>
@@ -238,7 +245,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                     : "0"
                 }
                 errorMessage={
-                  !this.state.validInputs.reas
+                  !this.state.validInputs.reasonableCount
                     ? "Invalid number entered for reasonable task count."
                     : ""
                 }
@@ -314,6 +321,10 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     );
   };
 
+  private _onClickToQueryList = (): void => {
+    this.props.toQueryList(this.state.selections);
+  };
+
   private _renderMessageBar = (): JSX.Element => {
     return (
       <Stack
@@ -336,12 +347,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _setMessageBarAddOrEdit = (): void => {
     let validEdits = true;
     const fields = ["name", "repo", "author", "assignee", "mentions", "reasonableCount"];
-    for (const field of fields) {
-      if (!this.state.validInputs.field) {
+    for (const field in this.state.validInputs) {
+      if (!field) {
         validEdits = false;
         break;
       }
     }
+
     if (!validEdits || !this.state.selections.name) {
       this.setState({
         messageType: MessageBarType.severeWarning,
@@ -453,11 +465,16 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input.
     let currInputs = this.state.validInputs;
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs.name = false;
       this.setState({ validInputs: currInputs });
-    } else currInputs.name = true;
+    } else {
+      currInputs.name = true;
+    }
+
+    // Update value in state and add to local storage.
     newValue = newValue ? newValue.trim() : "";
     const updatedSelections = update(this.state.selections, { name: { $set: newValue } });
     this.setState({ selections: updatedSelections, validInputs: currInputs });
@@ -468,6 +485,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input. An empty input is valid.
     if (!newValue) {
       let currInputs = this.state.validInputs;
       currInputs.repo = true;
@@ -477,9 +495,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs.repo = false;
       this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
       return;
     }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
     currInputs.repo = true;
     const updatedSelections = update(this.state.selections, { repo: { $set: newValue } });
     this.setState({
@@ -497,14 +517,12 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this._findRepoLabels();
   };
 
-  private _validateRepoLabelsOnFocusOut = (
-    value: string
-  ): string | JSX.Element | PromiseLike<string | JSX.Element> | undefined => {
+  private _validateRepoLabelsOnFocusOut = (value: string): undefined => {
     this._findRepoLabels();
     return undefined;
   };
 
-  private _findRepoLabels = async () => {
+  private _findRepoLabels = async (): Promise<void> => {
     //Ensure a repo has been typed.
     if (!this.state.selections.repo) return;
     //Fetch new labels.
@@ -547,6 +565,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input. An empty input is valid.
     if (!newValue) {
       let currInputs = this.state.validInputs;
       currInputs.author = true;
@@ -556,9 +575,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs.author = false;
       this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
       return;
     }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
     currInputs.author = true;
     const updatedSelections = update(this.state.selections, { author: { $set: newValue } });
     this.setState({
@@ -572,6 +593,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input. An empty input is valid.
     if (!newValue) {
       let currInputs = this.state.validInputs;
       currInputs.assignee = true;
@@ -581,9 +603,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs.assignee = false;
       this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
       return;
     }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
     currInputs.assignee = true;
     const updatedSelections = update(this.state.selections, { assignee: { $set: newValue } });
     this.setState({
@@ -597,6 +621,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input. An empty input is valid.
     if (!newValue) {
       let currInputs = this.state.validInputs;
       currInputs.mentions = true;
@@ -606,9 +631,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     if (newValue && !this._nameRegex.test(newValue)) {
       currInputs.mentions = false;
       this.setState({ validInputs: currInputs });
-      newValue = newValue.trim();
       return;
     }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
     currInputs.mentions = true;
     const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
     this.setState({
@@ -647,12 +674,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
+    // Check to see if valid input. An empty input is valid.
     let currInputs = this.state.validInputs;
     if (newValue && !this._numberRegex.test(newValue)) {
       currInputs.reasonableCount = false;
     } else {
       currInputs.reasonableCount = true;
     }
+
+    // Update value in state and add to local storage.
     const updatedSelections = update(this.state.selections, {
       reasonableCount: { $set: newValue ? parseInt(newValue.trim()) : 0 }
     });
@@ -694,7 +724,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _genericItem(input: string, validationState: number) {
-    //Default to a gray tone/background for this label.
+    // Default to a gray tone/background for this label.
     const newItem = { key: input + "/#A9A9A9", name: input };
     return newItem;
   }
@@ -716,7 +746,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     return item.name;
   }
 
-  private _listContainsDocument(tag: ITag, tagList?: ITag[]) {
+  private _listContainsLabel(tag: ITag, tagList?: ITag[]) {
     if (!tagList || !tagList.length || tagList.length === 0) {
       return false;
     }
@@ -725,18 +755,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _onItemSelected = (item?: ITag): ITag | null => {
     if (!item) return null;
-    if (this._picker.current && this._listContainsDocument(item, this._picker.current.items)) {
+    if (this._picker.current && this._listContainsLabel(item, this._picker.current.items)) {
       return null;
     }
     return item;
   };
 
   private _typeInPicker = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
-    return filterText
-      ? this.state.labelSuggestions
-          .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) //Find all tags that contain filterText.
-          .filter(tag => !this._listContainsDocument(tag, tagList)) //Find all tags that are not already selected.
-      : [];
+    if (!filterText) return [];
+    return this.state.labelSuggestions
+      .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) // Find all tags that contain filterText.
+      .filter(tag => !this._listContainsLabel(tag, tagList)); // Find all tags that are not already selected.
   };
 }
 
