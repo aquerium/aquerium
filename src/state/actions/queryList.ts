@@ -29,7 +29,7 @@ export const addOrEditQuery = (query: IQuery) => {
     // We have a valid task array, and need to store it in our new query.
     const newQuery = update(query.id === "" ? getQueryNewID(queryList, query) : query, {
       tasks: { $set: resp.tasks },
-      url: { $set: getQueryURLHTML(user, query) }//update RC here
+      url: { $set: getQueryURLHTML(user, query) }
     });
     // Once we have our new query, we need to store it in the queryMap, save it to gist, and dispatch an action to update the state.
     const newList = update(queryList, { [newQuery.id]: { $set: newQuery } });
@@ -66,7 +66,6 @@ function getQueryNewID(queryList: queryListType, query: IQuery): IQuery {
   const newQuery = update(query, { id: { $set: newID } });
   return newQuery;
 }
-
 
 /**
  * Action creator to remove the specified query from queryList.
@@ -109,7 +108,7 @@ export const refreshMap = () => {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
           // Add the number of "unreasonable" tasks to the badge count.
-          badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
+          badge += Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
         }
         else {
           dispatch(setHomeLoadingFalse());
