@@ -48,6 +48,8 @@ function QueryTileView(props: IQueryTileProps) {
     query.markedAsRead
   );
 
+  const reasonableCountDiff = Math.max(query.tasks.length - query.reasonableCount, 0);
+
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
       <div className={frontTileStyles.queryTile}>
@@ -117,12 +119,16 @@ function QueryTileView(props: IQueryTileProps) {
           )}
           {
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Reasonable Count:</b> {query.reasonableCount}{" "}
-              {query.reasonableCount === 1 ? "task" : "tasks"}
+              <b>Reasonable Count:</b>{" "}
+              {reasonableCountDiff > 0
+                ? "Exceeded by " +
+                  reasonableCountDiff +
+                  (reasonableCountDiff === 1 ? " task" : " tasks")
+                : "Not Exceeded"}
               <br />
             </Text>
           }
-          {query.reasonableCount > 0 && query.tasks.length > query.reasonableCount && (
+          {query.tasks.length > query.reasonableCount && (
             <CommandBarButton
               id="Flag"
               iconProps={flagIconProps}

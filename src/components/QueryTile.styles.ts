@@ -69,7 +69,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
       height: "100%",
       outline: "none",
       float: "center",
-
       border: "none",
       background: "#f8f8f8",
       backfaceVisibility: "auto",
@@ -109,12 +108,12 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   basicInfo: {
     fontSize: 16,
-    paddingBottom: 5,
+    paddingBottom: 3,
     display: "inline-block"
   },
   basicInfoQueryName: {
     textAlign: "center",
-    bottom: 10,
+    // bottom: 7,
     width: "100%",
     display: "inline-block",
     fontSize: 24,
@@ -149,7 +148,7 @@ export const queryTileFrontStyles = (
         width: "100%",
         height: "100%",
         background:
-          reasonableCount > 0 && numTasksOpen - reasonableCount > 0 && !markedAsRead
+          numTasksOpen > reasonableCount && !markedAsRead
             ? "rgba(255, 0, 0, " + alphaColor + ")"
             : "#f8f8f8",
         backfaceVisibility: "hidden",
@@ -170,11 +169,11 @@ export const queryTileFrontStyles = (
       height: "100%",
       maxHeight: "100px",
       fontSize: 24,
-      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#794500"
+      color: numTasksOpen > reasonableCount && !markedAsRead ? "#ffffff" : "#794500"
     },
     queryTaskCount: {
       fontSize: 80,
-      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#004d7c"
+      color: numTasksOpen > reasonableCount && !markedAsRead ? "#ffffff" : "#004d7c"
     }
   });
 };
