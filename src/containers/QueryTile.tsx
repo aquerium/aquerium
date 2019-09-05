@@ -54,33 +54,20 @@ function QueryTileView(props: IViewProps) {
     props.toggleFlag(query);
   };
 
+  const frontTileStyles = queryTileFrontStyles(
+    query.reasonableCount,
+    query.tasks.length,
+    props.markedAsRead
+  );
+
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
-      <div
-        className={
-          queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
-            .queryTile
-        }
-      >
+      <div className={frontTileStyles.queryTile}>
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
-          <Text
-            className={
-              queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
-                .queryName
-            }
-            nowrap
-            block
-          >
+          <Text className={frontTileStyles.queryName} nowrap block>
             {query.name}
           </Text>
-          <Text
-            className={
-              queryTileFrontStyles(query.reasonableCount, query.tasks.length, props.markedAsRead)
-                .queryTaskCount
-            }
-          >
-            {query.tasks.length.toString()}
-          </Text>
+          <Text className={frontTileStyles.queryTaskCount}>{query.tasks.length.toString()}</Text>
         </Stack>
       </div>
       <button id="QueryBack" className={QueryTileClassNames.queryBack} onClick={onClickToQueryList}>
@@ -140,13 +127,13 @@ function QueryTileView(props: IViewProps) {
               <br />
             </Text>
           )}
-          {query.reasonableCount && (
+          {
             <Text className={QueryTileClassNames.basicInfo}>
-              <b>Reasonable Count:</b> {query.reasonableCount} open{" "}
+              <b>Reasonable Count:</b> {query.reasonableCount}{" "}
               {query.reasonableCount === 1 ? "task" : "tasks"}
               <br />
             </Text>
-          )}
+          }
           {query.reasonableCount > 0 && query.tasks.length > query.reasonableCount && (
             <CommandBarButton
               id="Flag"
