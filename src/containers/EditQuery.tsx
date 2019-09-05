@@ -99,7 +99,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           labels: [],
           labelsToRender: [],
           url: "",
-          customViews: ["author", "createdAt", "repo", "labels"]
+          customViews: ["author", "createdAt", "repo", "labels"],
+          markedAsRead: false
         }
   };
 

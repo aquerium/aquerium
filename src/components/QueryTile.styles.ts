@@ -1,6 +1,5 @@
-import { mergeStyleSets, mergeStyles } from "@uifabric/styling";
+import { mergeStyleSets } from "@uifabric/styling";
 import { hoveringAndShading } from "./HoveringAndShading.styles";
-import { textColorContrast } from "./GitLabel.styles";
 
 /**
  * Interface for grid styling.
@@ -110,7 +109,11 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
  * @param reasonableCount Reasonable count set for the query by the user.
  * @param numTasksOpen The amount of open tasks open in the query.
  */
-export const queryTileFrontStyles = (reasonableCount: number, numTasksOpen: number) => {
+export const queryTileFrontStyles = (
+  reasonableCount: number,
+  numTasksOpen: number,
+  markedAsRead: boolean
+) => {
   const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
   return mergeStyleSets({
     queryTile: [
@@ -120,7 +123,7 @@ export const queryTileFrontStyles = (reasonableCount: number, numTasksOpen: numb
         width: "100%",
         height: "100%",
         background:
-          reasonableCount > 0 && numTasksOpen - reasonableCount > 0
+          reasonableCount > 0 && numTasksOpen - reasonableCount > 0 && !markedAsRead
             ? "rgba(255, 0, 0, " + alphaColor + ")"
             : "#f8f8f8",
         backfaceVisibility: "hidden",
@@ -141,11 +144,11 @@ export const queryTileFrontStyles = (reasonableCount: number, numTasksOpen: numb
       height: "100%",
       maxHeight: "100px",
       fontSize: 24,
-      color: alphaColor > 0.5 ? "#ffffff" : "#794500"
+      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#794500"
     },
     queryTaskCount: {
       fontSize: 80,
-      color: alphaColor > 0.5 ? "#ffffff" : "#004d7c"
+      color: reasonableCount > 0 && alphaColor > 0.5 && !markedAsRead ? "#ffffff" : "#004d7c"
     }
   });
 };

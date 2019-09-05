@@ -1,7 +1,7 @@
 import React from "react";
-import { IQuery, toQueryList } from "../state";
+import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
-import { Stack, Text, Separator } from "office-ui-fabric-react";
+import { Stack, Text, Separator, CommandBarButton } from "office-ui-fabric-react";
 import {
   QueryTileClassNames,
   gridStackStyle,
@@ -14,6 +14,9 @@ interface IQueryTileProps {
   currQuery: IQuery;
   /** Action creator that sends user to queryListUI. */
   toQueryList: (query: IQuery) => void;
+  /** Action creator that toggles the marked as read flag. */
+  toggleFlag: (query: IQuery) => void;
+  /** The flag determining wh */
 }
 
 function QueryTileView(props: IQueryTileProps) {
@@ -21,12 +24,28 @@ function QueryTileView(props: IQueryTileProps) {
   function onClickToQueryList() {
     props.toQueryList(query);
   }
+  const flagReasonableCount = (
+    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement | HTMLDivElement>
+  ): void => {
+    event.stopPropagation();
+    console.log(query);
+    props.toggleFlag(query);
+  };
+
   return (
     <div className={QueryTileClassNames.queryTile} onClick={onClickToQueryList}>
-      <div className={queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryTile}>
+      <div
+        className={
+          queryTileFrontStyles(query.reasonableCount, query.tasks.length, query.markedAsRead)
+            .queryTile
+        }
+      >
         <Stack horizontalAlign="center" verticalAlign="space-evenly" styles={gridStackStyle}>
           <Text
-            className={queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryName}
+            className={
+              queryTileFrontStyles(query.reasonableCount, query.tasks.length, query.markedAsRead)
+                .queryName
+            }
             nowrap
             block
           >
@@ -34,14 +53,15 @@ function QueryTileView(props: IQueryTileProps) {
           </Text>
           <Text
             className={
-              queryTileFrontStyles(query.reasonableCount, query.tasks.length).queryTaskCount
+              queryTileFrontStyles(query.reasonableCount, query.tasks.length, query.markedAsRead)
+                .queryTaskCount
             }
           >
             {query.tasks.length.toString()}
           </Text>
         </Stack>
       </div>
-      <button className={QueryTileClassNames.queryBack}>
+      <button className={QueryTileClassNames.queryBack} id="query">
         <Stack verticalAlign="space-around">
           <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>{query.tasks.length.toString()} open tasks</Separator>
@@ -102,6 +122,14 @@ function QueryTileView(props: IQueryTileProps) {
               <br />
             </Text>
           )}
+          {query.tasks.length > query.reasonableCount && (
+            <CommandBarButton
+              id="This"
+              iconProps={{ iconName: "Flag" }}
+              text={query.markedAsRead ? "Flag" : "Unflag"}
+              onClick={flagReasonableCount}
+            />
+          )}
         </Stack>
       </button>
     </div>
@@ -109,7 +137,8 @@ function QueryTileView(props: IQueryTileProps) {
 }
 
 const action = {
-  toQueryList
+  toQueryList,
+  toggleFlag
 };
 
 export const QueryTile = connect(

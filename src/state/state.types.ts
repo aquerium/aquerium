@@ -94,6 +94,8 @@ export interface IQuery {
   url: string;
   /** An array that keeps track of the fields a user wishes to view on the task list tile. */
   customViews: string[];
+  /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
+  markedAsRead: boolean;
 }
 
 /**
