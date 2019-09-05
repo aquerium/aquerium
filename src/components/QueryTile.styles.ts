@@ -17,6 +17,10 @@ interface IQueryTile {
   queryName: string;
   /** The styles for the number of tasks assigned to this query. */
   queryTaskCount: string;
+  /** The styles for the text telling the user to add a query when there are currently none. */
+  addAQuery: string;
+  /** The styles for the button that the user selects to add a query when there are currently none. */
+  addButton: string;
   /** The styles for the homeUI spinner. */
   spinner: string;
   /** The styles for the front of the query tile. */

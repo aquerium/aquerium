@@ -92,8 +92,8 @@ function loginViaPAT(dispatch: Dispatch, getState: () => IState, PAT: string) {
     } else {
       const response = await checkForGist(PAT);
       // If there already is a gist for this account, then update local storage.
-      if (response.gist && responsegist.owner && responsegist.id) {
-        const user = createIUserInfo(PAT, response.gist.owner.login, response.gist.id);
+      if (response.gistInfo && response.gistInfo.owner && response.gistInfo.id) {
+        const user = createIUserInfo(PAT, response.gistInfo.owner.login, response.gistInfo.id);
         await loginExistingUser(dispatch, getState, user);
       } else {
         // Then this is a new user! We need to see if their PAT is valid.
