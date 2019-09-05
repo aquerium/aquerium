@@ -113,7 +113,6 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
   },
   basicInfoQueryName: {
     textAlign: "center",
-    // bottom: 7,
     width: "100%",
     display: "inline-block",
     fontSize: 24,
@@ -140,6 +139,7 @@ export const queryTileFrontStyles = (
   markedAsRead: boolean
 ) => {
   const alphaColor: number = Math.min((numTasksOpen - reasonableCount) / numTasksOpen, 0.7);
+  const redBackgroundNeeded = numTasksOpen > reasonableCount && !markedAsRead;
   return mergeStyleSets({
     queryTile: [
       hoveringAndShading,
@@ -147,10 +147,7 @@ export const queryTileFrontStyles = (
         position: "absolute",
         width: "100%",
         height: "100%",
-        background:
-          numTasksOpen > reasonableCount && !markedAsRead
-            ? "rgba(255, 0, 0, " + alphaColor + ")"
-            : "#f8f8f8",
+        background: redBackgroundNeeded ? "rgba(255, 0, 0, " + alphaColor + ")" : "#f8f8f8",
         backfaceVisibility: "hidden",
         textAlign: "center",
         selectors: {
@@ -169,11 +166,11 @@ export const queryTileFrontStyles = (
       height: "100%",
       maxHeight: "100px",
       fontSize: 24,
-      color: numTasksOpen > reasonableCount && !markedAsRead ? "#ffffff" : "#794500"
+      color: redBackgroundNeeded ? "#ffffff" : "#794500"
     },
     queryTaskCount: {
       fontSize: 80,
-      color: numTasksOpen > reasonableCount && !markedAsRead ? "#ffffff" : "#004d7c"
+      color: redBackgroundNeeded ? "#ffffff" : "#004d7c"
     }
   });
 };
