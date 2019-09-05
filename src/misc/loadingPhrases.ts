@@ -1,9 +1,9 @@
 const loginLoadingPhrases = [
-  "Logging you in..."
+  "Just keep swimming..."
 ];
 
 const homeLoadingPhrases = [
-  "Just keep swimming!"
+  "Just keep swimming..."
 ];
 
 /** Returns a random string from loginLoadingPhrases.  */
