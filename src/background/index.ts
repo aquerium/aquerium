@@ -31,7 +31,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;
             // Add the number of "unreasonable" tasks to the badge count.
-            badge +=  (responseItems.tasks.length - newMap[key].reasonableCount) < 0? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
+            badge += (responseItems.tasks.length - newMap[key].reasonableCount) < 0 ? 0 : (responseItems.tasks.length - newMap[key].reasonableCount);
           }
         }
 
