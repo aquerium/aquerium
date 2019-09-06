@@ -10,10 +10,8 @@ import {
   MessageBarButton,
   Dropdown,
   IDropdownOption,
-  TagPicker,
   ITag,
   IBasePicker,
-  ValidationState,
   Label,
   Separator,
   Icon,
@@ -21,7 +19,7 @@ import {
   CommandBar
 } from "office-ui-fabric-react";
 import { description } from "../components/InfoButton";
-import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList } from "../state";
+import { IQuery, toHome, removeQuery, IState, addOrEditQuery, toQueryList, ILabel } from "../state";
 import {
   EditQueryUIClassNames,
   rootTokenGap,
@@ -36,6 +34,7 @@ import {
 } from "./EditQuery.styles";
 import { connect } from "react-redux";
 import { getRepoLabels } from "../util/api";
+import { LabelPicker } from "../components/LabelPicker";
 
 // Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
@@ -89,12 +88,6 @@ interface IEditQueryUIProps {
   /** Action that tells redux and the Gist to remove the current query. */
   removeQuery: (id: string) => void;
 }
-
-const mapStateToProps = (state: IState) => {
-  return {
-    currQuery: state.changeUI.currQuery
-  };
-};
 
 class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> {
   public state: IEditQueryUIState = {
@@ -253,32 +246,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Stack>
             <Label>Labels</Label>
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
-              <TagPicker
-                selectedItems={
-                  this.state.selections.labels
-                    ? this.state.selections.labels.map(label => ({
-                        key: label.name + "/#" + label.color,
-                        name: label.name
-                      }))
-                    : []
-                }
-                componentRef={this._picker}
-                onValidateInput={this._validateInput}
-                createGenericItem={this._genericItem}
-                onResolveSuggestions={this._typeInPicker}
-                onItemSelected={this._onItemSelected}
-                onChange={this._onChangeSelectedLabels}
-                getTextFromItem={this._getTextFromItem}
-                pickerSuggestionsProps={{
-                  suggestionsHeaderText:
-                    this.state.labelSuggestions.length > 0
-                      ? "Suggested labels from " + this.state.selections.repo
-                      : "No suggestions available",
-                  noResultsFoundText:
-                    this.state.labelSuggestions.length > 0
-                      ? "Type to find suggestions"
-                      : "Add custom labels"
-                }}
+              <LabelPicker
+                selectedLabels={this.state.selections.labels}
+                suggestedLabels={this.state.labelSuggestions}
+                onChange={this._onChangeLabels}
+                repo={this.state.selections.repo}
               />
               {description("The GitHub labels assigned to particular tasks.", true)()}
             </Stack>
@@ -687,6 +659,14 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     chrome.storage.local.set({ query: this.state.selections });
   };
 
+  private _onChangeLabels = (items: ILabel[]) => {
+    const updatedSelections = update(this.state.selections, {
+      labels: { $set: items }
+    });
+    this.setState({ selections: updatedSelections });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
   private _setCustomViews = (
     event: React.FormEvent<HTMLDivElement>,
     item?: IDropdownOption,
@@ -710,62 +690,11 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections });
     chrome.storage.local.set({ query: this.state.selections });
   };
-
-  // Private helper functions for dealing with picker (for repo labels).
-  private _validateInput = (input: string) => {
-    if (!this._nameRegex.test(input)) return ValidationState.invalid;
-    return !this.state.selections.labels ||
-      this.state.selections.labels.map(label => label.name).indexOf(input) < 0
-      ? ValidationState.valid
-      : ValidationState.invalid;
-  };
-
-  private _genericItem(input: string, validationState: number) {
-    // Default to a gray tone/background for this label.
-    const newItem = { key: input + "/#A9A9A9", name: input };
-    return newItem;
-  }
-
-  private _onChangeSelectedLabels = (items?: ITag[]) => {
-    if (!items) return;
-    let newSelectedLabels = items.map(item => ({
-      name: item.name,
-      color: item.key.substring(item.key.lastIndexOf("#") + 1)
-    }));
-    const updatedSelections = update(this.state.selections, {
-      labels: { $set: newSelectedLabels }
-    });
-    this.setState({ selections: updatedSelections });
-    chrome.storage.local.set({ query: this.state.selections });
-  };
-
-  private _getTextFromItem(item: ITag): string {
-    return item.name;
-  }
-
-  private _listContainsLabel(tag: ITag, tagList?: ITag[]) {
-    if (!tagList || !tagList.length || tagList.length === 0) {
-      return false;
-    }
-    return tagList.filter(compareTag => compareTag.key === tag.key).length > 0;
-  }
-
-  private _onItemSelected = (item?: ITag): ITag | null => {
-    if (!item) return null;
-    if (this._picker.current && this._listContainsLabel(item, this._picker.current.items)) {
-      return null;
-    }
-    return item;
-  };
-
-  private _typeInPicker = (filterText: string, tagList: ITag[] | undefined): ITag[] => {
-    if (!filterText) return [];
-    return this.state.labelSuggestions
-      .filter(tag => tag.name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) // Find all tags that contain filterText.
-      .filter(tag => !this._listContainsLabel(tag, tagList))
-      .concat([this._genericItem(filterText, ValidationState.valid)]); // Find all tags that are not already selected.
-  };
 }
+
+const mapStateToProps = (state: IState) => ({
+  currQuery: state.changeUI.currQuery
+});
 
 const action = {
   toHome,
