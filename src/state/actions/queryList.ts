@@ -9,7 +9,7 @@ import { toError } from "../actions";
 // This type defines an action that updates the queryList with updatedList.
 export type updateQueryListAction = { type: string; updatedList: queryListType };
 
-// This type defines an action that toggles the marked as read flag
+// This type defines an action that toggles the marked as read flag.
 export type toggleFlagAction = { type: string; query: IQuery };
 
 /**
