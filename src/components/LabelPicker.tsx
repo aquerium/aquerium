@@ -21,7 +21,9 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
     };
   }
 
-  // Ensures a valid repo is typed.
+  /**
+   * Ensures a valid repo is typed.
+   */
   private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()"'[\]]+( *[a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
 
   private _picker = React.createRef<IBasePicker<ITag>>();
@@ -58,7 +60,9 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
     );
   }
 
-  // Private helper functions for dealing with picker (for repo labels).
+  /**
+   * Validates the input label given a regex and if it has been selected.
+   */
   private _validateInput = (input: string) => {
     if (!this._nameRegex.test(input)) return ValidationState.invalid;
     const { selectedLabels } = this.props;
@@ -67,12 +71,18 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
       : ValidationState.invalid;
   };
 
+  /**
+   * Makes a generic item if not in the suggestions.
+   */
   private _genericItem(input: string, validationState: number) {
     // Default to a gray tone/background for this label.
     const newItem = { key: input + "/#A9A9A9", name: input };
     return newItem;
   }
 
+  /**
+   * Updates the selected labels after removal and addition.
+   */
   private _onChangeSelectedLabels = (items?: ITag[]) => {
     if (!items) return;
     let newSelectedLabels = items.map(item => ({
@@ -96,6 +106,9 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
     return tagList.filter(compareTag => compareTag.key === tag.key).length > 0;
   }
 
+  /**
+   * Returns an item (if avaialable, is valid and is not already picked) after being selected.
+   */
   private _onItemSelected = (item?: ITag): ITag | null => {
     if (!item) return null;
     if (this._picker.current && this._listContainsLabel(item, this._picker.current.items)) {
