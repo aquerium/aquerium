@@ -4,7 +4,7 @@ import { QueryTileClassNames } from "../components/QueryTile.styles";
 import { connect } from "react-redux";
 import { IState, queryListType, toEditQuery, IQuery } from "../state";
 import { Spinner, SpinnerSize, CommandBarButton, Text, Stack } from "office-ui-fabric-react";
-import { getHomeLoadingPhrase } from "../misc/loadingPhrases";
+import { LOADING_PHRASE } from "../util/constants";
 
 interface IQueryListUIProps {
   /** The queryList map that is passed in, element at a time, to be rendered by QueryTile. */
@@ -29,23 +29,23 @@ function QueryListComponent(props: IQueryListUIProps) {
               <QueryTile currQuery={props.queryList[key]} key={key} />
             ))
           ) : (
-            <Stack verticalAlign="center">
-              <CommandBarButton
-                iconProps={{ iconName: "Add" }}
-                className={QueryTileClassNames.addButton}
-                onClick={onClickToEditQuery}
-              />
-              <Text className={QueryTileClassNames.addAQuery}>Add a query!</Text>
-            </Stack>
-          )}
+              <Stack verticalAlign="center">
+                <CommandBarButton
+                  iconProps={{ iconName: "Add" }}
+                  className={QueryTileClassNames.addButton}
+                  onClick={onClickToEditQuery}
+                />
+                <Text className={QueryTileClassNames.addAQuery}>Add a query!</Text>
+              </Stack>
+            )}
         </div>
       ) : (
-        <Spinner
-          label={getHomeLoadingPhrase()}
-          size={SpinnerSize.large}
-          className={QueryTileClassNames.spinner}
-        />
-      )}
+          <Spinner
+            label={LOADING_PHRASE}
+            size={SpinnerSize.large}
+            className={QueryTileClassNames.spinner}
+          />
+        )}
     </div>
   );
 }

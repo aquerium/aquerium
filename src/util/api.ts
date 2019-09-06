@@ -51,7 +51,6 @@ export async function createGist(token: string): Promise<{ user?: IUserInfo; err
       }
     };
   } catch (error) {
-    console.error(error);
     return { errorCode: 500 };
   }
 }
@@ -99,7 +98,6 @@ export async function updateGist(
     }
     return {};
   } catch (error) {
-    console.error(error);
     return { errorCode: 500 };
   }
 }
@@ -127,7 +125,6 @@ export async function checkForGist(token: string): Promise<{ gistInfo?: any; err
     }
     return {};
   } catch (error) {
-    console.error(error);
     return { errorCode: 500 };
   }
 }
@@ -205,7 +202,6 @@ async function loadFromGist(user: IUserInfo): Promise<{ gist?: IGist; errorCode?
     }
     return { gist: response.data };
   } catch (error) {
-    console.error(error);
     return { errorCode: 500 };
   }
 }
