@@ -1,7 +1,7 @@
 import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import { getOctokit } from "./api";
-import { QUERY_LIMIT } from "./constants"
+import { QUERY_TASK_LIMIT } from "./constants"
 
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
@@ -18,7 +18,7 @@ export async function getQueryTasks(
       q: getQualifiersStr(user, query)
     });
     const response = await octokit.paginate(options);
-    if (response.length > QUERY_LIMIT) {
+    if (response.length > QUERY_TASK_LIMIT) {
       return { errorCode: -1 };
     }
     const tasks: ITask[] = [];
