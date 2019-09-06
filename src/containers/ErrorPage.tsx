@@ -18,6 +18,9 @@ const GENERIC_ERROR_MESSAGE = "Sorry, we've encountered an unexpected error. Ple
 const BAD_QUERY_MESSAGE =
   "Whoops, it looks like some of the fields of the query you entered were invalid. Perhaps try double-checking what you entered?";
 
+// This error message renders if a user makes a query with over 100 tasks in it.
+const TOO_MANY_TASKS_MESSAGE = "Uh oh, it looks like this query is returning a lot of tasks. For the sake of performance, would you mind narrowing your search?"
+
 // Error codes handling failed authorization.
 const FAILED_CREDENTIALS = [404, 401, 403];
 
@@ -26,6 +29,9 @@ const API_ERROR = [500, 503];
 
 // Error code handling a malformed query.
 const BAD_QUERY = 422;
+
+// Custom Error Code handling a query with too many tasks entered.
+const TOO_MANY_TASKS = -1;
 
 interface IErrorPageProps {
   /** The error code potentially stored in state. If there is no code stored, a generic error message will render. */
@@ -74,7 +80,7 @@ function ErrorPageView(props: IErrorPageProps) {
         ? API_ERROR_MESSAGE
         : (props.errorCode === BAD_QUERY)
           ? BAD_QUERY_MESSAGE
-          : GENERIC_ERROR_MESSAGE;
+          : (props.errorCode === TOO_MANY_TASKS) ? TOO_MANY_TASKS_MESSAGE : GENERIC_ERROR_MESSAGE;
 
   return (
     <Stack horizontalAlign="center" verticalAlign="center" styles={stackStyles}>
@@ -82,10 +88,10 @@ function ErrorPageView(props: IErrorPageProps) {
       <Text styles={oopsStyles}>Oops!</Text>
       <Text styles={errorStyles}>{errorMessage}</Text>
       <ActionButton
-        iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : errorMessage === BAD_QUERY_MESSAGE ? iconEditProps : iconLogoutProps}
-        text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : errorMessage === BAD_QUERY_MESSAGE ? "Return to your Query" : "Return to Login"}
+        iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? iconEditProps : iconLogoutProps}
+        text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? "Return to your Query" : "Return to Login"}
         styles={returnIconStyles}
-        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : errorMessage === BAD_QUERY_MESSAGE ? onClickToEditQuery : props.clearTokenLogout}
+        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? onClickToEditQuery : props.clearTokenLogout}
       />
     </Stack>
   );
