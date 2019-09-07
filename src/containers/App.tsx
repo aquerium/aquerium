@@ -11,7 +11,7 @@ import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
 import { LoadingPage } from "../components/LoadingPage";
 import { ErrorPage } from "../containers/ErrorPage";
-import { getLoginLoadingPhrase } from "../misc/loadingPhrases"
+import { LOADING_PHRASE } from "../util/constants"
 
 initializeIcons();
 
@@ -144,7 +144,7 @@ class AppView extends React.Component<IAppViewProps> {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
       }
       case "Loading": {
-        return <LoadingPage loadingMessage={getLoginLoadingPhrase()} />;
+        return <LoadingPage loadingMessage={LOADING_PHRASE} />;
       }
       default: {
         return <LoginUI />;

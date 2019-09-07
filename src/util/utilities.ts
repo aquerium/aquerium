@@ -1,6 +1,7 @@
 import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import { getOctokit } from "./api";
+import { QUERY_TASK_LIMIT } from "./constants"
 
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
@@ -17,9 +18,11 @@ export async function getQueryTasks(
       q: getQualifiersStr(user, query)
     });
     const response = await octokit.paginate(options);
-
+    if (response.length > QUERY_TASK_LIMIT) {
+      return { errorCode: -1 };
+    }
     const tasks: ITask[] = [];
-    response.forEach(function(item: IIssue | IPull) {
+    response.forEach(function (item: IIssue | IPull) {
       const task: ITask = {
         num: item.number,
         title: item.title,
@@ -77,7 +80,7 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.mentions ? "+mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
-    query.labels.forEach(function(label) {
+    query.labels.forEach(function (label) {
       qualifiers += '+label:"' + label.name.replace(/"/g, '\\"') + '"';
     });
   }
@@ -130,7 +133,7 @@ export const normalizedURL = (queryUrl: string): string => {
   let normalized = "";
   if (m) {
     let url = m[1];
-    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function(match) {
+    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function (match) {
       if (match.length === 3 && match.charAt(0) === "%") return match;
       else return encodeURI(match);
     });
