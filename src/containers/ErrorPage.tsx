@@ -66,9 +66,42 @@ const returnIconStyles = {
 };
 
 function ErrorPageView(props: IErrorPageProps) {
+
+  // Brings the user to the editQuery UI.
   function onClickToEditQuery() {
     props.toEditQuery(props.currQuery);
   }
+
+  // Returns the correct error icon, action, and action text based on error code.
+  function returnErrorButton(errorCode?: number) {
+    if (errorCode === BAD_QUERY || errorCode === TOO_MANY_TASKS) {
+      return (
+        <ActionButton
+          iconProps={iconEditProps}
+          text={"Return to your Query"}
+          styles={returnIconStyles}
+          onClick={onClickToEditQuery} />
+      );
+    } else if (API_ERROR.includes(errorCode!!)) {
+      return (
+        <ActionButton
+          iconProps={iconHomeProps}
+          text={"Return to Home"}
+          styles={returnIconStyles}
+          onClick={props.toHome} />
+      );
+    } else {
+      return (
+        <ActionButton
+          iconProps={iconLogoutProps}
+          text={"Return to Login"}
+          styles={returnIconStyles}
+          onClick={props.clearTokenLogout} />
+      );
+    }
+  }
+
+
   // Uses ternary logic to determine what the error message should be.
   // If error code is undefined or does not exist in the error code arrays, the generic message is returned.
   // Else, either of the other error messages is selected.
@@ -81,18 +114,12 @@ function ErrorPageView(props: IErrorPageProps) {
         : (props.errorCode === BAD_QUERY)
           ? BAD_QUERY_MESSAGE
           : (props.errorCode === TOO_MANY_TASKS) ? TOO_MANY_TASKS_MESSAGE : GENERIC_ERROR_MESSAGE;
-
   return (
     <Stack horizontalAlign="center" verticalAlign="center" styles={stackStyles}>
       <Icon iconName="Error" styles={errorIconStyles.styles} />
       <Text styles={oopsStyles}>Oops!</Text>
       <Text styles={errorStyles}>{errorMessage}</Text>
-      <ActionButton
-        iconProps={errorMessage === API_ERROR_MESSAGE ? iconHomeProps : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? iconEditProps : iconLogoutProps}
-        text={errorMessage === API_ERROR_MESSAGE ? "Return to Home" : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? "Return to your Query" : "Return to Login"}
-        styles={returnIconStyles}
-        onClick={errorMessage === API_ERROR_MESSAGE ? props.toHome : (errorMessage === BAD_QUERY_MESSAGE || errorMessage === TOO_MANY_TASKS_MESSAGE) ? onClickToEditQuery : props.clearTokenLogout}
-      />
+      {returnErrorButton(props.errorCode)}
     </Stack>
   );
 }
