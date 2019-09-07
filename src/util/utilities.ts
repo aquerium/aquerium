@@ -1,6 +1,7 @@
 import { IQuery, ITask, IUserInfo } from "../state";
 import { IIssue, IPull } from "./github";
 import { getOctokit } from "./api";
+import { QUERY_TASK_LIMIT } from "./constants"
 
 /**
  * Converts and returns the list of tasks representing the result of a specific query.
@@ -17,13 +18,14 @@ export async function getQueryTasks(
       q: getQualifiersStr(user, query)
     });
     const response = await octokit.paginate(options);
-
+    if (response.length > QUERY_TASK_LIMIT) {
+      return { errorCode: -1 };
+    }
     const tasks: ITask[] = [];
-    response.forEach(function(item: IIssue | IPull) {
+    response.forEach(function (item: IIssue | IPull) {
       const task: ITask = {
         num: item.number,
         title: item.title,
-        body: item.body,
         type: item.hasOwnProperty("pull_request") ? "pr" : "issue",
         createdAt: item.created_at.substring(0, 10),
         updatedAt: item.updated_at.substring(0, 10),
@@ -60,6 +62,15 @@ export function getQueryURLHTML(user: IUserInfo, query: IQuery): string {
   );
 }
 
+/**
+ * Generate a unque id for the query.
+ */
+export const createUid = (): string => {
+  return Math.random()
+    .toString(36)
+    .substring(2, 15);
+};
+
 function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   let qualifiers = "is:open";
   qualifiers += query.type ? "+is:" + query.type : "";
@@ -69,8 +80,8 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.mentions ? "+mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
   if (query.labels) {
-    query.labels.forEach(function(label) {
-      qualifiers += '+label:"' + label.replace(/"/g, '\\"') + '"';
+    query.labels.forEach(function (label) {
+      qualifiers += '+label:"' + label.name.replace(/"/g, '\\"') + '"';
     });
   }
   qualifiers += query.lastUpdated ? "+updated:<=" + getRefDate(query.lastUpdated) : "";
@@ -109,3 +120,23 @@ function getRefDate(daysRef: number): string {
 
   return dateRef.getFullYear() + "-" + mmStr + "-" + ddStr;
 }
+
+/**
+ * Takes in a url string and, if emojis/characters are present, ensures a valid URL
+ * with the correct URL encoding.
+ * @param queryUrl The URL to a given GitHub query.
+ */
+export const normalizedURL = (queryUrl: string): string => {
+  // Inspired by the solution on:
+  // https://meta.stackexchange.com/questions/285366/emoji-in-url-breaks-insert-hyperlink-tool-in-editor.
+  var m = /^\s*(.*?)(?:\s+"(.*)")?\s*$/.exec(queryUrl);
+  let normalized = "";
+  if (m) {
+    let url = m[1];
+    normalized = url.replace(/%(?:[\da-fA-F]{2})|[^\w\d\-./[\]%?+]+/g, function (match) {
+      if (match.length === 3 && match.charAt(0) === "%") return match;
+      else return encodeURI(match);
+    });
+  }
+  return normalized;
+};

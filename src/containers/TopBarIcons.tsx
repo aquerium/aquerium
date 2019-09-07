@@ -1,5 +1,5 @@
 import * as React from "react";
-import { clearTokenLogout, toEditQuery, IQuery } from "../state";
+import { clearTokenLogout, toEditQuery, IQuery, refreshMap } from "../state";
 import { Image, Stack, CommandBarButton, Text } from "office-ui-fabric-react";
 import { connect } from "react-redux";
 import {
@@ -17,6 +17,8 @@ interface ITopBarIconsProps {
   clearTokenLogout: () => void;
   /** A function linked with the action creator to send the user to the EditQueryUI. */
   toEditQuery: (query?: IQuery) => void;
+  /** A function linked with the action creator to update the queryMap with the latest information from github. */
+  refreshMap: () => void;
 }
 
 function TopBarIconsView(props: ITopBarIconsProps) {
@@ -54,7 +56,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       tokens={topBarItemGap}
       className={TopBarIconsUIClassNames.topBar}
     >
-      <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} />
+      <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} onClick={props.refreshMap} />
       <Image className={TopBarIconsUIClassNames.logo} {...(imageProps as any)} title="Aquerium" />
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
@@ -65,13 +67,14 @@ function TopBarIconsView(props: ITopBarIconsProps) {
         persistMenu={false}
         menuProps={menuProps}
       />
-    </Stack>
+    </Stack >
   );
 }
 
 const action = {
   clearTokenLogout,
-  toEditQuery
+  toEditQuery,
+  refreshMap
 };
 
 export const TopBarIcons = connect(

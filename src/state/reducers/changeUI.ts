@@ -1,9 +1,17 @@
-/*global chrome*/
 import update from "immutability-helper";
-import { changeUIAction, changeUIErrorAction, changeUIQueryTaskListAction, changeUIEditQueryAction } from "../actions/changeUI";
+import {
+  changeUIAction,
+  changeUIErrorAction,
+  changeUIQueryTaskListAction,
+  changeUIEditQueryAction
+} from "../actions/changeUI";
 import { IState } from "../state.types";
 
-const DEFAULT_STATE: IState["changeUI"] = { currUI: "Login" };
+const DEFAULT_STATE: IState["changeUI"] = {
+  currUI: "Login",
+  currQuery: undefined,
+  isHomeLoading: false
+};
 
 /**
  * This reducer deals with changing the UI. When receiving an action, currUI is updated to reflect the UI that
@@ -26,10 +34,18 @@ export const changeUI = (
     }
     case "QUERY": {
       const { query } = action as changeUIQueryTaskListAction;
-      return update(state, { currUI: { $set: "QueryList" }, currQuery: { $set: query } });
+      return update(state, {
+        currUI: { $set: "QueryList" }, currQuery: { $set: query }, isHomeLoading: { $set: false }
+      });
     }
     case "HOME": {
       return update(state, { currUI: { $set: "Home" }, currQuery: { $set: undefined } });
+    }
+    case "HOME_LOADING_TRUE": {
+      return update(state, { isHomeLoading: { $set: true } });
+    }
+    case "HOME_LOADING_FALSE": {
+      return update(state, { isHomeLoading: { $set: false } });
     }
     case "ERROR": {
       const { errorCode, query } = action as changeUIErrorAction;
@@ -38,6 +54,9 @@ export const changeUI = (
         errorCode: { $set: errorCode },
         currQuery: { $set: query }
       });
+    }
+    case "LOADING": {
+      return update(state, { currUI: { $set: "Loading" } });
     }
     default:
       return state;

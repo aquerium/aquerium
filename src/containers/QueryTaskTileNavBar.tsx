@@ -4,6 +4,7 @@ import { Stack, TooltipHost, Link, CommandBarButton } from "office-ui-fabric-rea
 import { QueryTaskClassNames } from "../components/QueryTaskList.styles";
 import { IQuery, toEditQuery, toHome } from "../state";
 import { connect } from "react-redux";
+import { normalizedURL } from "../util";
 
 interface IQueryTaskListNavBarProps {
   /** A single IQuery to be rendered. */
@@ -28,21 +29,23 @@ function QueryTaskListNavBarView(props: IQueryTaskListNavBarProps) {
     root: { width: "40px", height: "40px", background: "transparent" }
   };
 
-  const topBarStyles = { root: { transform: "translateY(10%)" } };
+  const topBarStyles = { root: { transform: "translateY(5%)", paddingBottom: 3 } };
 
   const tooltipId = getId("text-tooltip");
   const calloutGapSpace = { gapSpace: 0 };
+
   return (
     <Stack horizontal horizontalAlign="space-around" verticalAlign="center" styles={topBarStyles}>
       <CommandBarButton iconProps={iconProps.back} styles={iconSize} onClick={props.toHome} />
       <TooltipHost calloutProps={calloutGapSpace} content={query.name} id={tooltipId}>
         <Link
-          href={query.url}
+          href={normalizedURL(query.url)}
           target="_blank"
+          rel="noopener noreferrer"
           className={QueryTaskClassNames.queryTitle}
+          aria-labelledby={tooltipId}
           nowrap
           block
-          aria-labelledby={tooltipId}
         >
           {query.name}
         </Link>

@@ -9,7 +9,9 @@ import { hoveringAndShading } from "../components/HoveringAndShading.styles";
 import { Customizer } from "@uifabric/utilities";
 import { loadTheme } from "@uifabric/styling";
 import { EditQuery } from "../containers/EditQuery";
+import { LoadingPage } from "../components/LoadingPage";
 import { ErrorPage } from "../containers/ErrorPage";
+import { LOADING_PHRASE } from "../util/constants"
 
 initializeIcons();
 
@@ -44,7 +46,7 @@ loadTheme({
   }
 });
 
-const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 35 }];
+const fieldGroupStyles = [hoveringAndShading, { width: 465, height: 32 }];
 
 const scopedSettings = {
   TextField: {
@@ -54,7 +56,7 @@ const scopedSettings = {
   },
   DefaultButton: {
     styles: {
-      root: [hoveringAndShading, { height: 35 }]
+      root: [hoveringAndShading, { height: 32 }]
     },
     target: "_blank"
   },
@@ -63,6 +65,20 @@ const scopedSettings = {
       title: [
         fieldGroupStyles,
         { paddingRight: "20px", whiteSpace: "nowrap", textOverflow: "ellipsis" }
+      ]
+    }
+  },
+  TagPicker: {
+    styles: {
+      text: [
+        hoveringAndShading,
+        {
+          width: "465px",
+          maxWidth: "465px",
+          maxHeight: "92px",
+          background: "white",
+          overflowY: "auto"
+        }
       ]
     }
   },
@@ -102,7 +118,6 @@ const mapStateToProps = (state: IState) => {
 };
 
 class AppView extends React.Component<IAppViewProps> {
-
   public componentDidMount(): void {
     this.props.login();
   }
@@ -127,6 +142,9 @@ class AppView extends React.Component<IAppViewProps> {
       }
       case "QueryList": {
         return <QueryTaskListUI currQuery={this.props.currQuery!!} />;
+      }
+      case "Loading": {
+        return <LoadingPage loadingMessage={LOADING_PHRASE} />;
       }
       default: {
         return <LoginUI />;
