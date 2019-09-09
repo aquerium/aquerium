@@ -25,10 +25,10 @@ const TOO_MANY_TASKS_MESSAGE = "Uh oh, it looks like this query is returning a l
 const FAILED_CREDENTIALS = [404, 401, 403];
 
 // Error codes handling API failure.
-const API_ERROR = [500, 503];
+const API_ERROR = 503;
 
 // Error code handling a malformed query.
-const BAD_QUERY = 422;
+const BAD_QUERY = [422, 500];
 
 // Custom Error Code handling a query with too many tasks entered.
 const TOO_MANY_TASKS = -1;
@@ -71,10 +71,11 @@ function ErrorPageView(props: IErrorPageProps) {
   function onClickToEditQuery() {
     props.toEditQuery(props.currQuery);
   }
+  console.log(props.errorCode);
 
   // Returns the correct error icon, action, and action text based on error code.
   function returnErrorButton(errorCode?: number) {
-    if (errorCode === BAD_QUERY || errorCode === TOO_MANY_TASKS) {
+    if (BAD_QUERY.includes(errorCode!!) || errorCode === TOO_MANY_TASKS) {
       return (
         <ActionButton
           iconProps={iconEditProps}
@@ -82,7 +83,7 @@ function ErrorPageView(props: IErrorPageProps) {
           styles={returnIconStyles}
           onClick={onClickToEditQuery} />
       );
-    } else if (API_ERROR.includes(errorCode!!)) {
+    } else if (errorCode === API_ERROR) {
       return (
         <ActionButton
           iconProps={iconHomeProps}
@@ -109,9 +110,9 @@ function ErrorPageView(props: IErrorPageProps) {
     ? GENERIC_ERROR_MESSAGE
     : FAILED_CREDENTIALS.includes(props.errorCode)
       ? FAILED_CREDENTIALS_ERROR
-      : API_ERROR.includes(props.errorCode)
+      : (props.errorCode === API_ERROR)
         ? API_ERROR_MESSAGE
-        : (props.errorCode === BAD_QUERY)
+        : (BAD_QUERY.includes(props.errorCode))
           ? BAD_QUERY_MESSAGE
           : (props.errorCode === TOO_MANY_TASKS) ? TOO_MANY_TASKS_MESSAGE : GENERIC_ERROR_MESSAGE;
   return (
