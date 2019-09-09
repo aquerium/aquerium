@@ -27,17 +27,19 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       let numQueriesOver = 0;
       if (map) {
         const newMap = JSON.parse(JSON.stringify(map));
-        for (const key in map) {
+        for (const key in newMap) {
           const responseItems = await getQueryTasks(user, map[key]);
           if (responseItems.tasks) {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;
             // Add the number of "unreasonable" tasks to the badge count.
-            const overflow = Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
-            if (overflow > 0) {
-              numQueriesOver++;
+            if (!newMap[key].markedAsRead) {
+              const overflow = Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
+              if (overflow > 0) {
+                numQueriesOver++;
+              }
+              badge += overflow;
             }
-            badge += overflow;
           }
         }
 
