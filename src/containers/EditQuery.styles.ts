@@ -68,9 +68,9 @@ export const typeOptions = [
 ];
 
 export const sortingOptions = [
-  { key: "default", text: "Best Match" },
-  { key: "updated-recent", text: "Recently-Updated First" },
-  { key: "updated-not-recent", text: "Least-Recently-Updated First" }
+  { key: "default", text: "Most Relevant" },
+  { key: "updated-recent", text: "Recently Updated First" },
+  { key: "updated-not-recent", text: "Least Recently Updated First" }
 ]
 
 export const reviewStatusOptions = [
