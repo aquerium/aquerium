@@ -16,6 +16,7 @@ import { LOADING_PHRASE } from "../util/constants"
 initializeIcons();
 
 loadTheme({
+  defaultFontStyle: { fontFamily: "Segoe UI" },
   palette: {
     themePrimary: "#b65b00",
     themeLighterAlt: "#fcf7f2",
