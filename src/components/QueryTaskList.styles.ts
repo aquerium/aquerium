@@ -97,6 +97,7 @@ export const QueryTaskClassNames = mergeStyleSets({
   },
   basicInfo: {
     paddingLeft: 7,
+    paddingBottom: 3,
     overflow: "hidden",
     float: "left",
     textOverflow: "ellipsis",
