@@ -28,7 +28,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
       if (map) {
         const newMap = JSON.parse(JSON.stringify(map));
         for (const key in newMap) {
-          const responseItems = await getQueryTasks(user, map[key]);
+          const responseItems = await getQueryTasks(user, newMap[key]);
           if (responseItems.tasks) {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;

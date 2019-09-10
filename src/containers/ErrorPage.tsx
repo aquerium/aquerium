@@ -24,10 +24,10 @@ const TOO_MANY_TASKS_MESSAGE = "Uh oh, it looks like this query is returning a l
 // Error codes handling failed authorization.
 const FAILED_CREDENTIALS = [404, 401, 403];
 
-// Error codes handling API failure.
+// Error code handling API failure.
 const API_ERROR = 503;
 
-// Error code handling a malformed query.
+// Error codes handling a malformed query.
 const BAD_QUERY = [422, 500];
 
 // Custom Error Code handling a query with too many tasks entered.
