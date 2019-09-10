@@ -71,7 +71,6 @@ function ErrorPageView(props: IErrorPageProps) {
   function onClickToEditQuery() {
     props.toEditQuery(props.currQuery);
   }
-  console.log(props.errorCode);
 
   // Returns the correct error icon, action, and action text based on error code.
   function returnErrorButton(errorCode?: number) {
