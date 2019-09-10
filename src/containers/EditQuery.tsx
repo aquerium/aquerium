@@ -266,7 +266,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 options={sortingOptions}
               />
               {description(
-                "Choose how you want to view your results. You can sort by Most Relevant (default), Recently Updated First, or Least Recently Updated First."
+                "Choose the order of your results."
               )()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
