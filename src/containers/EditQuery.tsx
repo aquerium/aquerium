@@ -99,16 +99,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-          id: "",
-          name: "",
-          lastUpdated: 0,
-          reasonableCount: 0,
-          tasks: [],
-          labels: [],
-          url: "",
-          customViews: ["author", "createdAt", "repo", "labels"],
-          markedAsRead: false
-        },
+        id: "",
+        name: "",
+        lastUpdated: 0,
+        reasonableCount: 0,
+        tasks: [],
+        labels: [],
+        url: "",
+        customViews: ["author", "createdAt", "repo", "labels"],
+        markedAsRead: false,
+        sorting: "default"
+      },
     validInputs: {
       name: true,
       repo: true,
@@ -139,13 +140,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-            <div className={EditQueryUIClassNames.commandBarContainer}>
-              <CommandBar
-                styles={commandBarStyles}
-                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-              />
-            </div>
-          )}
+              <div className={EditQueryUIClassNames.commandBarContainer}>
+                <CommandBar
+                  styles={commandBarStyles}
+                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+                />
+              </div>
+            )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -241,7 +242,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description(
                 "The number of tasks in this query that, if exceeded, would be considered unreasonable. " +
-                  "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
+                "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
               )()}
             </Stack>
             <Label>Labels</Label>

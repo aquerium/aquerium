@@ -17,6 +17,10 @@ interface QueryTaskClassNames {
   basicInfo: string;
   /** The info icon with extra information. */
   infoIcon: string;
+  /** The styling for the text for labels. */
+  labels: string;
+  /** Styling for the message that tells the user a query returned empty. */
+  noQueries: string;
 }
 
 export const QueryTaskClassNames = mergeStyleSets({
@@ -114,5 +118,10 @@ export const QueryTaskClassNames = mergeStyleSets({
     width: "100%",
     maxWidth: "490px",
     fontSize: 14
+  },
+  noQueries: {
+    textAlign: "center",
+    fontSize: 24,
+    transform: "translateY(500%)"
   }
 });
