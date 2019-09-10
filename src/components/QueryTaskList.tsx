@@ -4,7 +4,6 @@ import { QueryTaskTile } from "./QueryTaskTile";
 import { IQuery } from "../state";
 import { Text } from "office-ui-fabric-react";
 
-
 interface IQueryTaskListProps {
   /** The query whose tasks will be rendered. */
   query: IQuery;
