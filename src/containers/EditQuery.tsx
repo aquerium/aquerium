@@ -221,7 +221,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 label="Custom Query"
                 onChange={this._onChangeMentions}
                 defaultValue={this.state.selections.customField}
-                errorMessage={!this.state.validInputs.mentions ? "Invalid filters" : ""}
+                errorMessage={!this.state.validInputs.customField ? "Invalid filters" : ""}
               />
               {description("Feeling like a pro? Enter custom filters just like you would on GitHub!")()}
             </Stack>
