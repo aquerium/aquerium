@@ -24,6 +24,7 @@ import {
   EditQueryUIClassNames,
   rootTokenGap,
   typeOptions,
+  sortingOptions,
   reviewStatusOptions,
   bridgeLabelGap,
   commandBarStyles,
@@ -106,7 +107,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
         tasks: [],
         labels: [],
         url: "",
-        customViews: ["author", "createdAt", "repo", "labels"],
+        customViews: ["author", "lastUpdated", "repo", "labels"],
         markedAsRead: false,
         sorting: "default"
       },
@@ -254,6 +255,19 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 repo={this.state.selections.repo}
               />
               {description("The GitHub labels assigned to particular tasks.", true)()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
+              <Dropdown
+                styles={typeDropdown}
+                responsiveMode={ResponsiveMode.large}
+                onChange={this._setSortingSelection}
+                label="Sort By"
+                selectedKey={this.state.selections.sorting}
+                options={sortingOptions}
+              />
+              {description(
+                "Choose how you want to view your results. You can sort by Best Match (default), Recently-Updated First, or Least-Recently-Updated First."
+              )()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <Slider
@@ -528,6 +542,24 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       }
     });
     this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _setSortingSelection = (
+    event: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+    index?: number
+  ): void => {
+    if (!item) {
+      return;
+    }
+    const newKey = item.key;
+    const updatedSelections = update(this.state.selections, {
+      sorting: {
+        $set: newKey as IQuery["sorting"]
+      }
+    });
+    this.setState({ selections: updatedSelections });
     chrome.storage.local.set({ query: this.state.selections });
   };
 

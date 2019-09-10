@@ -67,6 +67,12 @@ export const typeOptions = [
   { key: "issues and pr", text: "Issues and Pull Requests" }
 ];
 
+export const sortingOptions = [
+  { key: "default", text: "Best Match" },
+  { key: "updated-recent", text: "Recently-Updated First" },
+  { key: "updated-not-recent", text: "Leat-Recently-Updated First" }
+]
+
 export const reviewStatusOptions = [
   { key: "No reviews", text: "No reviews" },
   { key: "Review required", text: "Review required" },
