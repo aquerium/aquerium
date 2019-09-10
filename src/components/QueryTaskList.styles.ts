@@ -21,6 +21,10 @@ interface QueryTaskClassNames {
   labels: string;
   /** Styling for the message that tells the user a query returned empty. */
   noQueries: string;
+  /** The styling for the div that holds the query name and GitHub icon. */
+  queryNameContainer: string;
+  /** The styling for the div that holds the GitHub Icon. */
+  githubImage: string;
 }
 
 export const QueryTaskClassNames = mergeStyleSets({
@@ -72,7 +76,7 @@ export const QueryTaskClassNames = mergeStyleSets({
       "&:active": { color: "8a3c00", textDecorationLine: "none" }
     },
     width: "100%",
-    maxWidth: 420,
+    maxWidth: 380,
     height: "100%"
   },
   titleAndInfoIcon: {
@@ -124,5 +128,16 @@ export const QueryTaskClassNames = mergeStyleSets({
     textAlign: "center",
     fontSize: 24,
     transform: "translateY(500%)"
+  },
+  queryNameContainer: {
+    width: 400,
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
+    flexDirection: "row"
+  },
+  githubImage: {
+    padding: 5,
+    transform: "translateY(-20%)"
   }
 });

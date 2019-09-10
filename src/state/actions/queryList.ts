@@ -85,7 +85,7 @@ export const removeQuery = (queryID: string) => {
     chrome.browserAction.getBadgeText({}, function (res: string) {
       const query = queryList[queryID];
       const overFlow = query.tasks.length - query.reasonableCount;
-      const newBadgeText = Number(res) - overFlow < 0 ? 0 : Number(res) - overFlow;
+      const newBadgeText = Math.max(Number(res) - overFlow, 0);
       chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
     });
     dispatch(setHomeLoadingFalse());
@@ -108,8 +108,10 @@ export const refreshMap = () => {
         if (responseItems.tasks) {
           // Set the contents with the most updated query result.
           newMap[key].tasks = responseItems.tasks;
-          // Add the number of "unreasonable" tasks to the badge count.
-          badge += Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
+          if (!newMap[key].markedAsRead) {
+            // Add the number of "unreasonable" tasks to the badge count.
+            badge += Math.max(responseItems.tasks.length - newMap[key].reasonableCount, 0);
+          }
         }
         else {
           dispatch(setHomeLoadingFalse());
@@ -148,6 +150,21 @@ export const toggleFlag = (query: IQuery) => {
     const { queryList, user } = getState();
     const newList = update(queryList, { [query.id]: { markedAsRead: { $set: !query.markedAsRead } } })
     dispatch(updateMap(newList));
+    // Here, we update the badge accordingly.
+    const overFlow = query.tasks.length - query.reasonableCount;
+    if (query.markedAsRead) {
+      // NOTE: We've just toggled this, so this assumption is that we're flagging this (we need to re-add to badge count).
+      chrome.browserAction.getBadgeText({}, function (res: string) {
+        const newBadgeText = Number(res) + overFlow;
+        chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+      });
+    } else {
+      // We're marking the query as 'unflagged,' so we can cut this count from reasonable count. 
+      chrome.browserAction.getBadgeText({}, function (res: string) {
+        const newBadgeText = Math.max(Number(res) - overFlow, 0);
+        chrome.browserAction.setBadgeText({ text: newBadgeText.toString() });
+      });
+    }
     const response = await updateGist(user, newList);
     if (response.errorCode) {
       toError(response.errorCode)(dispatch);
