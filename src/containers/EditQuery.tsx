@@ -47,6 +47,7 @@ interface IInputField {
   repo: boolean;
   assignee: boolean;
   mentions: boolean;
+  customField: boolean;
   author: boolean;
   reasonableCount: boolean;
 }
@@ -99,21 +100,22 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     selections: this.props.currQuery
       ? this.props.currQuery
       : {
-          id: "",
-          name: "",
-          lastUpdated: 0,
-          reasonableCount: 0,
-          tasks: [],
-          labels: [],
-          url: "",
-          customViews: ["author", "createdAt", "repo", "labels"],
-          markedAsRead: false
-        },
+        id: "",
+        name: "",
+        lastUpdated: 0,
+        reasonableCount: 0,
+        tasks: [],
+        labels: [],
+        url: "",
+        customViews: ["author", "createdAt", "repo", "labels"],
+        markedAsRead: false
+      },
     validInputs: {
       name: true,
       repo: true,
       assignee: true,
       mentions: true,
+      customField: true,
       author: true,
       reasonableCount: true
     }
@@ -139,13 +141,13 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
           {this.state.renderMessageBar ? (
             this._renderMessageBar()
           ) : (
-            <div className={EditQueryUIClassNames.commandBarContainer}>
-              <CommandBar
-                styles={commandBarStyles}
-                items={this.state.selections.id === "" ? this._addItems : this._updateItems}
-              />
-            </div>
-          )}
+              <div className={EditQueryUIClassNames.commandBarContainer}>
+                <CommandBar
+                  styles={commandBarStyles}
+                  items={this.state.selections.id === "" ? this._addItems : this._updateItems}
+                />
+              </div>
+            )}
           <Stack
             horizontalAlign="start"
             className={EditQueryUIClassNames.fieldsRoot}
@@ -215,6 +217,15 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Custom Query"
+                onChange={this._onChangeMentions}
+                defaultValue={this.state.selections.customField}
+                errorMessage={!this.state.validInputs.mentions ? "Invalid filters" : ""}
+              />
+              {description("Feeling like a pro? Enter custom filters just like you would on GitHub!")()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
               <Dropdown
                 styles={reviewStatusDropdown}
                 responsiveMode={ResponsiveMode.large}
@@ -241,7 +252,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               />
               {description(
                 "The number of tasks in this query that, if exceeded, would be considered unreasonable. " +
-                  "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
+                "As tasks accumulate above reasonable count, the background of the query tile will turn more red as a warning."
               )()}
             </Stack>
             <Label>Labels</Label>
