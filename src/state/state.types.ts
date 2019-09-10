@@ -107,6 +107,8 @@ export interface IQuery {
   customViews: string[];
   /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
   markedAsRead: boolean;
+  /** A custom filter field for users who wish to fully customize a query.  */
+  customField?: string;
 }
 
 /**
