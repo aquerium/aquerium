@@ -219,7 +219,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <TextField
                 label="Custom Query"
-                onChange={this._onChangeMentions}
+                onChange={this._onChangeCustomField}
                 defaultValue={this.state.selections.customField}
                 errorMessage={!this.state.validInputs.customField ? "Invalid filters" : ""}
               />
@@ -598,6 +598,34 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _onChangeMentions = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. An empty input is valid.
+    if (!newValue) {
+      let currInputs = this.state.validInputs;
+      currInputs.mentions = true;
+      this.setState({ validInputs: currInputs });
+    }
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._nameRegex.test(newValue)) {
+      currInputs.mentions = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+
+    // Update value in state and add to local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.mentions = true;
+    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _onChangeCustomField = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
