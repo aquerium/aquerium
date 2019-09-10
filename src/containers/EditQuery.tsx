@@ -40,6 +40,19 @@ import { LabelPicker } from "../components/LabelPicker";
 // Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
+// Type for queryFieldsEnabled, defining which fields for EditQuery are enabled.
+type queryFieldsEnabledType = {
+  enableTaskType: boolean;
+  enableRepo: boolean;
+  enableReviewStatusField: boolean;
+  enableAssignee: boolean;
+  enableAuthor: boolean;
+  enableMention: boolean;
+  enableLabels: boolean;
+  enableSortBy: boolean;
+  enableLastUpdated: boolean;
+};
+
 /**
  * Interface to track whether a user input is valid.
  */
@@ -66,23 +79,10 @@ interface IEditQueryUIState {
   /** Whether or not a message bar should be rendered, given the action the user wants to take. */
   renderMessageBar: boolean;
   /** Stores the enabled/disabled feature for all fields except for title. When the Custom Query field is being used, all other options are deactivated. */
-  queryFieldsEnabled: {
-    enableTaskType: boolean;
-    enableRepo: boolean;
-    enableReviewStatusField: boolean;
-    enableAssignee: boolean;
-    enableAuthor: boolean;
-    enableMention: boolean;
-    enableLabels: boolean;
-    enableSortBy: boolean;
-    enableLastUpdated: boolean;
-  };
+  queryFieldsEnabled: queryFieldsEnabledType;
   /** A list of the suggested labels, given a valid repo has been typed. */
   labelSuggestions: ITag[];
-  /**
-   * The current selections the user is making to a query, which will be used to either construct
-   * a new query or edit an existing one.
-   */
+  /** The current selections the user is making to a query, which will be used to either construct a new query or edit an existing one. */
   selections: IQuery;
   /** List denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
   validInputs: IInputField;
@@ -245,7 +245,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             </Stack>
             <Stack horizontal horizontalAlign="center">
               <TextField
-                label="Custom Query"
+                label="Custom Query (Deactivates Other Fields!)"
                 onChange={this._onChangeCustomField}
                 defaultValue={this.state.selections.customField}
                 errorMessage={!this.state.validInputs.customField ? "Invalid filters" : ""}
@@ -569,7 +569,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const newKey = item.key === "issues and pr" ? undefined : item.key;
-    const enableReviewField = newKey === "issues";
+    const enableReviewField = (newKey === "issue");
     const queryFieldsEnabledCopy = update(this.state.queryFieldsEnabled, {
       enableReviewStatusField: { $set: enableReviewField }
     });
@@ -689,26 +689,31 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     chrome.storage.local.set({ query: this.state.selections });
   };
 
+  // Returns a copy of queryFieldsEnabled with every field set to 'state.'
+  // EDGE CASE: If 'type' is set to 'Issues,' we shouldn't re-enable reviewStatusField.
+  private _getQueryFieldCopy(state: boolean, type?: string): queryFieldsEnabledType {
+    return update(this.state.queryFieldsEnabled, {
+      enableAssignee: { $set: state },
+      enableAuthor: { $set: state },
+      enableLabels: { $set: state },
+      enableLastUpdated: { $set: state },
+      enableMention: { $set: state },
+      enableRepo: { $set: state },
+      enableReviewStatusField: { $set: (type === "issue") ? true : false },
+      enableSortBy: { $set: state },
+      enableTaskType: { $set: state }
+    });
+  };
+
   private _onChangeCustomField = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     newValue?: string
   ) => {
     // Check to see if valid input. If this box is typed in, all other fields are deactivated.
-    if (!newValue) {
-      return;
+    if (!newValue || newValue === "") {
+      this.setState({ queryFieldsEnabled: this._getQueryFieldCopy(false, this.state.selections.type) });
     } else {
-      const newQueryFieldsEnabled = update(this.state.queryFieldsEnabled, {
-        enableAssignee: { $set: true },
-        enableAuthor: { $set: true },
-        enableLabels: { $set: true },
-        enableLastUpdated: { $set: true },
-        enableMention: { $set: true },
-        enableRepo: { $set: true },
-        enableReviewStatusField: { $set: true },
-        enableSortBy: { $set: true },
-        enableTaskType: { $set: true }
-      })
-      this.setState({ queryFieldsEnabled: newQueryFieldsEnabled });
+      this.setState({ queryFieldsEnabled: this._getQueryFieldCopy(true, "issue") });
     }
     // If our input is valid, but it fails the regex.
     let currInputs = this.state.validInputs;
