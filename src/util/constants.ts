@@ -3,4 +3,4 @@ export const GIST_DESCRIP = "helper gist for Aquerium";
 export const STATUS_CREATED = 201;
 export const STATUS_OK = 200;
 export const LOADING_PHRASE = "Just keep swimming...";
-export const QUERY_TASK_LIMIT = 100;
+export const QUERY_TASK_LIMIT = 500;
