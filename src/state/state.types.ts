@@ -107,6 +107,8 @@ export interface IQuery {
   customViews: string[];
   /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
   markedAsRead: boolean;
+  /** Determines the sorting type of the query. */
+  sorting: "default" | "updated-recent" | "updated-not-recent";
 }
 
 /**

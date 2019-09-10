@@ -17,6 +17,10 @@ interface QueryTaskClassNames {
   basicInfo: string;
   /** The info icon with extra information. */
   infoIcon: string;
+  /** The styling for the text for labels. */
+  labels: string;
+  /** Styling for the message that tells the user a query returned empty. */
+  noQueries: string;
   /** The styling for the div that holds the query name and GitHub icon. */
   queryNameContainer: string;
   /** The styling for the div that holds the GitHub Icon. */
@@ -119,6 +123,11 @@ export const QueryTaskClassNames = mergeStyleSets({
     width: "100%",
     maxWidth: "490px",
     fontSize: 14
+  },
+  noQueries: {
+    textAlign: "center",
+    fontSize: 24,
+    transform: "translateY(500%)"
   },
   queryNameContainer: {
     width: 400,
