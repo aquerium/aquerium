@@ -2,6 +2,7 @@ import React from "react";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
 import { QueryTaskTile } from "./QueryTaskTile";
 import { IQuery } from "../state";
+import { Text } from "office-ui-fabric-react";
 
 interface IQueryTaskListProps {
   /** The query whose tasks will be rendered. */
@@ -13,7 +14,7 @@ export const QueryTaskList = (props: IQueryTaskListProps): JSX.Element => {
   return (
     <div className={QueryTaskClassNames.root}>
       <div className={QueryTaskClassNames.listContainer}>
-        {tasks.map(task => (
+        {tasks.length === 0 ? <Text className={QueryTaskClassNames.noQueries}> Nothing to be reported :o </Text> : tasks.map(task => (
           <QueryTaskTile task={task} key={task.repo + task.num} customViews={customViews} />
         ))}
       </div>

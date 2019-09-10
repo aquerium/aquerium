@@ -79,6 +79,7 @@ function getQualifiersStr(user: IUserInfo, query: IQuery): string {
   qualifiers += query.author ? "+author:" + query.author : "";
   qualifiers += query.mentions ? "+mentions:" + query.mentions : "";
   qualifiers += query.reviewStatus ? getReviewString(query.reviewStatus, user.username) : "";
+  qualifiers += (query.sorting !== "default") ? ("+sort:updated" + ((query.sorting === "updated-recent") ? "-desc" : "-asc")) : "";
   if (query.labels) {
     query.labels.forEach(function (label) {
       qualifiers += '+label:"' + label.name.replace(/"/g, '\\"') + '"';
