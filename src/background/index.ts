@@ -22,6 +22,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         invalidPAT: false
       };
       const response = await getQueryMapObj(user);
+      console.log(response.queryMap);
       const map = response.queryMap;
       let badge = 0;
       let numQueriesOver = 0;
@@ -29,6 +30,7 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         const newMap = JSON.parse(JSON.stringify(map));
         for (const key in newMap) {
           const responseItems = await getQueryTasks(user, newMap[key]);
+          if (responseItems.errorCode || !responseItems) return;
           if (responseItems.tasks) {
             // Set the contents with the most updated query result.
             newMap[key].tasks = responseItems.tasks;

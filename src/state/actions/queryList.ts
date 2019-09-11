@@ -115,7 +115,7 @@ export const refreshMap = () => {
         }
         else {
           dispatch(setHomeLoadingFalse());
-          toError(responseItems.errorCode)(dispatch);
+          toError(responseItems.errorCode, newMap[key])(dispatch);
         }
       }
       const badgeText = badge < 0 ? "0" : badge.toString(); // Prevents displaying negative badges.
@@ -171,3 +171,4 @@ export const toggleFlag = (query: IQuery) => {
     }
   }
 };
+

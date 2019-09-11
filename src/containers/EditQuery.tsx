@@ -106,17 +106,27 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
-    queryFieldsEnabled: {
-      enableTaskType: false,
-      enableRepo: false,
-      enableReviewStatusField: false,
-      enableAssignee: false,
-      enableAuthor: false,
-      enableMention: false,
-      enableLabels: false,
-      enableSortBy: false,
-      enableLastUpdated: false,
-    },
+    queryFieldsEnabled: (this.props.currQuery && this.props.currQuery.customField !== "") ? {
+      enableTaskType: true,
+      enableRepo: true,
+      enableReviewStatusField: true,
+      enableAssignee: true,
+      enableAuthor: true,
+      enableMention: true,
+      enableLabels: true,
+      enableSortBy: true,
+      enableLastUpdated: true
+    } : {
+        enableTaskType: false,
+        enableRepo: false,
+        enableReviewStatusField: false,
+        enableAssignee: false,
+        enableAuthor: false,
+        enableMention: false,
+        enableLabels: false,
+        enableSortBy: false,
+        enableLastUpdated: false,
+      },
     labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
@@ -143,7 +153,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()"'[\]]+( *[a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  private _nameRegex = /^[ !a-z0-9-_.\\/~+&#@:()'[\]]+( *[ !a-z0-9-_.\\/+&#@:()'[\]]+ *)*$/i;
+  private _customQueryRegex = /^[ !a-z0-9-_.\\/~+&#@:()"'[\]]+( *[ !a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  //make separate regex
   private _numberRegex = /^[0-9]*$/i;
   private _picker = React.createRef<IBasePicker<ITag>>();
   private _customViewsOptions = [
@@ -717,16 +729,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     }
     // If our input is valid, but it fails the regex.
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._customQueryRegex.test(newValue)) {
       currInputs.customField = false;
       this.setState({ validInputs: currInputs });
       return;
     }
 
-    // Update value in state and add to local storage.
+    // Parse the matching fields in the custom query, apply them to state, and store in local storage.
     newValue = newValue ? newValue.trim() : "";
-    currInputs.mentions = true;
-    const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    currInputs.customField = true;
+
+    const updatedSelections = this._updateSelections(newValue);
     this.setState({
       selections: updatedSelections,
       validInputs: currInputs
@@ -810,6 +823,79 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections });
     chrome.storage.local.set({ query: this.state.selections });
   };
+
+
+  // Helper function that interprets a custom query and returns an IQuery with the correctly filled-in fields.
+  private _updateSelections = (field: string): IQuery => {
+    const labelArr = field.match(/label:\"((([^"])*)?)\"/g);
+    if (!labelArr) {
+      return this.state.selections;
+    }
+    var remainder = field;
+    labelArr.forEach(function (elem) {
+      remainder = remainder.replace(elem, "");
+      remainder = remainder.replace(/  +/g, " ");
+    });
+    const newArr = labelArr.concat(remainder.trim().split(" "));
+    return this._updateSelectionsHelper(newArr, field);
+  }
+
+  // Helper to the helper function that returns a modified copy of this.state.selections. 
+  private _updateSelectionsHelper = (optionsArr: string[], oldField: string): IQuery => {
+    const repo = optionsArr.find(function (elem) {
+      if (elem.includes("repo:")) {
+        return elem.split("repo:")[1];
+      }
+    });
+    const assignee = optionsArr.find(function (elem) {
+      if (elem.includes("assignee:")) {
+        return elem.split("assignee")[1];
+      }
+    });
+    const author = optionsArr.find(function (elem) {
+      if (elem.includes("author:")) {
+        return elem.split("author")[1];
+      }
+    });
+    const mentions = optionsArr.find(function (elem) {
+      if (elem.includes("mentions:")) {
+        return elem.split("mentions")[1];
+      }
+    });
+    /*const reviews = optionsArr.find(function (elem) {
+      if (elem.includes("review:") && elem as IQuery["reviewStatus"] ){
+        return elem;
+      }
+    });*/
+
+    return update(this.state.selections, {
+      type: { $set: (optionsArr.includes("is:issue") ? "issue" : (optionsArr.includes("is:pr") ? "pr" : undefined)) },
+      repo: { $set: repo },
+      assignee: { $set: assignee },
+      author: { $set: author },
+      customField: { $set: oldField },
+      mentions: { $set: mentions }
+    })
+  }
+
+  // Helper function that returns a well-formatted query if the user entered a custom query.
+  private _getQueryFormatted(field: string): string {
+    const labelArr = field.match(/label:\"((([^"])*)?)\"/g);
+    if (!labelArr) return field;
+    var remainder = field;
+    // Loop through the string and cut out every label.
+    labelArr.forEach(function (elem) {
+      remainder = remainder.replace(elem, "");
+      // Ensure that we have no spacing errors.
+      remainder = remainder.replace(/  +/g, " ");
+    });
+    // Remove white space and add '+' signs in lieu of every space.
+    var newStr = remainder.trim().replace(/ /g, "+");
+    labelArr.forEach(function (elem) {
+      newStr = newStr.concat('+', elem);
+    });
+    return newStr;
+  }
 }
 
 const mapStateToProps = (state: IState) => ({

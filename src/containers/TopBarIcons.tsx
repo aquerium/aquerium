@@ -57,7 +57,7 @@ function TopBarIconsView(props: ITopBarIconsProps) {
       className={TopBarIconsUIClassNames.topBar}
     >
       <CommandBarButton iconProps={refreshIcon} styles={refreshIconStyles} onClick={props.refreshMap} />
-      <Image className={TopBarIconsUIClassNames.logo} {...(imageProps as any)} title="Aquerium" />
+      <Image className={TopBarIconsUIClassNames.logo} {...imageProps} title="Aquerium" />
       <Text className={TopBarIconsUIClassNames.aquerium}>Aquerium</Text>
       <CommandBarButton
         menuIconProps={getMenuIconProps}

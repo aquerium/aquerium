@@ -31,17 +31,6 @@ export interface ILabel {
 
 /**
  * @interface
- * This interface represents a single label, withc its name and color.
- */
-export interface ILabel {
-  /** The name of the label. */
-  name: string;
-  /** The color provided by GitHub and/or a repository. */
-  color: string;
-}
-
-/**
- * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
