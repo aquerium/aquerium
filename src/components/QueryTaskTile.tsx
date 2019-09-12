@@ -1,7 +1,7 @@
 import React from "react";
 import { ITask } from "../state/state.types";
 import { QueryTaskClassNames } from "./QueryTaskList.styles";
-import { Stack, Text, TooltipHost, getId } from "office-ui-fabric-react";
+import { Stack, Text, TooltipHost, getId, Link } from "office-ui-fabric-react";
 import emoji from "node-emoji"; // Emoji object to help render emojis correctly throughout the app.
 import { gitLabelStyles } from "./GitLabel.styles";
 
@@ -16,10 +16,10 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
   const { task, customViews } = props;
   const emojifiedLabels = task.labels
     ? task.labels.map(label => (
-        <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
-          {emoji.emojify(label.name)}
-        </span>
-      ))
+      <span className={gitLabelStyles(label.color).label} key={label.name + label.color}>
+        {emoji.emojify(label.name)}
+      </span>
+    ))
     : null;
   const hostId = getId("titleTooltipHost");
   const calloutGapSpace = { gapSpace: 0, fontSize: 16 };
@@ -40,7 +40,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
         {beforeText}
         <b>
           {(prop === "labels" || prop === "assignees" || prop === "lastUpdated") &&
-          (!info || info.length === 0)
+            (!info || info.length === 0)
             ? "None yet"
             : info}
         </b>
@@ -53,7 +53,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
     <Stack verticalAlign="space-between" className={QueryTaskClassNames.taskTile}>
       <div className={QueryTaskClassNames.titleAndInfoIcon}>
         <TooltipHost content={task.title} id={hostId} calloutProps={calloutGapSpace}>
-          <a
+          <Link
             href={task.url}
             target="_blank"
             rel="noopener noreferrer"
@@ -61,7 +61,7 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
             aria-labelledby={hostId}
           >
             {task.title}
-          </a>
+          </Link>
         </TooltipHost>
       </div>
       <Stack
@@ -72,12 +72,12 @@ export const QueryTaskTile = (props: IQueryTaskTile): JSX.Element => {
         {(optionIndices.get("type") > -1 ||
           optionIndices.get("author") > -1 ||
           optionIndices.get("repo") > -1) && (
-          <Text className={QueryTaskClassNames.basicInfo} nowrap block>
-            #{task.num} {renderInfoElement("type", task.type, " (", ") ")}
-            {renderInfoElement("author", task.author, "by ", " ")}
-            {renderInfoElement("repo", task.repo, "in ", " ")}
-          </Text>
-        )}
+            <Text className={QueryTaskClassNames.basicInfo} nowrap block>
+              #{task.num} {renderInfoElement("type", task.type, " (", ") ")}
+              {renderInfoElement("author", task.author, "by ", " ")}
+              {renderInfoElement("repo", task.repo, "in ", " ")}
+            </Text>
+          )}
         {(optionIndices.get("createdAt") > -1 || optionIndices.get("lastUpdated") > -1) && (
           <Text className={QueryTaskClassNames.basicInfo} nowrap block>
             {renderInfoElement("createdAt", task.createdAt, "Opened: ", " ")}
