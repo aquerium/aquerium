@@ -392,8 +392,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
-    //const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
-    //this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };

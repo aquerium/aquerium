@@ -35,7 +35,7 @@ export const flagIconStyles = { root: { height: 25, transform: "translateX(-10px
 export const flagIconProps = { iconName: "Flag" };
 
 export const copyIconStyles = { root: { height: 25, transform: "translateX(-10px)", maxWidth: "260px" } };
-export const copyIconProps = { iconName: "Copy" }
+export const copyIconProps = { iconName: "Copy" };
 
 export const gridStackStyle = {
   root: { maxWidth: "100%" }
