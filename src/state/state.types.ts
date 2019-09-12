@@ -98,6 +98,8 @@ export interface IQuery {
   markedAsRead: boolean;
   /** A custom filter field for users who wish to fully customize a query.  */
   customField?: string;
+  /** The field stored in the query that the API uses to query GitHub. */
+  rawQueryField?: string;
   /** Determines the sorting type of the query. */
   sorting: "default" | "updated-recent" | "updated-not-recent";
 }

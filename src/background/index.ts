@@ -22,7 +22,6 @@ chrome.alarms.onAlarm.addListener(async alarm => {
         invalidPAT: false
       };
       const response = await getQueryMapObj(user);
-      console.log(response.queryMap);
       const map = response.queryMap;
       let badge = 0;
       let numQueriesOver = 0;

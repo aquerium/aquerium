@@ -15,10 +15,10 @@ export async function getQueryTasks(
   try {
     const octokit = getOctokit(user.token);
     var fullQuery = "";
-    if (!query.customField || query.customField === "") {
+    if (!query.rawQueryField || query.rawQueryField === "") {
       fullQuery = getQualifiersStr(user, query);
     } else {
-      fullQuery = query.customField;
+      fullQuery = query.rawQueryField;
     }
     const options = octokit.search.issuesAndPullRequests.endpoint.merge({
       q: fullQuery

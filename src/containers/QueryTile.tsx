@@ -1,7 +1,7 @@
 import React from "react";
 import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
-import { Stack, Text, Separator, CommandBarButton, IconButton } from "office-ui-fabric-react";
+import { Stack, Text, Separator, CommandBarButton } from "office-ui-fabric-react";
 import {
   QueryTileClassNames,
   gridStackStyle,
@@ -38,12 +38,12 @@ function QueryTileView(props: IQueryTileProps) {
     props.toQueryList(query);
   }
 
+  // Lifted from MDN docs.
   async function updateClipboard() {
     navigator.clipboard.writeText((query.customField && query.customField !== "") ? query.customField : "Invalid Query").then(function () {
-      /* clipboard successfully set */
-      console.log('succc');
+      // Copy successful.
     }, function () {
-      console.log("need permz :(");
+      // Copy unsuccessful, do nothing.
     });
   }
 

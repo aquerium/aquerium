@@ -57,13 +57,7 @@ type queryFieldsEnabledType = {
  * Interface to track whether a user input is valid.
  */
 interface IInputField {
-  name: boolean;
-  repo: boolean;
-  assignee: boolean;
-  mentions: boolean;
-  customField: boolean;
-  author: boolean;
-  reasonableCount: boolean;
+  [index: string]: boolean
 }
 
 interface IEditQueryUIState {
@@ -78,13 +72,13 @@ interface IEditQueryUIState {
   actions?: JSX.Element;
   /** Whether or not a message bar should be rendered, given the action the user wants to take. */
   renderMessageBar: boolean;
-  /** Stores the enabled/disabled feature for all fields except for title. When the Custom Query field is being used, all other options are deactivated. */
+  /** Stores the enabled/disabled feature for all query-able fields. When the Custom Query field is being used, all other options are deactivated. */
   queryFieldsEnabled: queryFieldsEnabledType;
   /** A list of the suggested labels, given a valid repo has been typed. */
   labelSuggestions: ITag[];
   /** The current selections the user is making to a query, which will be used to either construct a new query or edit an existing one. */
   selections: IQuery;
-  /** List denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
+  /** List denoting valid inputs for query-able fields. */
   validInputs: IInputField;
 }
 
@@ -106,7 +100,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
-    queryFieldsEnabled: (this.props.currQuery && this.props.currQuery.customField !== "") ? {
+    queryFieldsEnabled: (this.props.currQuery && this.props.currQuery && this.props.currQuery.customField !== "") ? {
       enableTaskType: true,
       enableRepo: true,
       enableReviewStatusField: true,
@@ -381,11 +375,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _setMessageBarAddOrEdit = (): void => {
     let validEdits = true;
-    for (const field in this.state.validInputs) {
-      if (!field) {
-        validEdits = false;
-        break;
-      }
+    if (Object.keys(this.state.validInputs).some(k => !this.state.validInputs[k])) {
+      validEdits = false;
     }
 
     if (!validEdits || !this.state.selections.name) {
@@ -401,8 +392,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
-    const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
-    this.setState({ selections: updatedSelections });
+    //const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
+    //this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };
@@ -739,7 +730,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     // Parse the matching fields in the custom query, apply them to state, and store in local storage.
     newValue = newValue ? newValue.trim() : "";
     currInputs.customField = true;
-
     const updatedSelections = this._updateSelections(newValue);
     this.setState({
       selections: updatedSelections,
@@ -828,9 +818,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   // Helper function that interprets a custom query and returns an IQuery with the correctly filled-in fields.
   private _updateSelections = (field: string): IQuery => {
-    const labelArr = field.match(/label:\"((([^"])*)?)\"/g);
+    const labelArr = field.match(/label:"((([^"])*)?)"/g);
     if (!labelArr) {
-      return this.state.selections;
+      return this._updateSelectionsHelper(field.trim().split(" "), field);
     }
     var remainder = field;
     labelArr.forEach(function (elem) {
@@ -838,50 +828,52 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       remainder = remainder.replace(/  +/g, " ");
     });
     const newArr = labelArr.concat(remainder.trim().split(" "));
-    return this._updateSelectionsHelper(newArr, field);
-  }
+    const newQuery = this._updateSelectionsHelper(newArr, field);
+    return newQuery;
+  };
 
   // Helper to the helper function that returns a modified copy of this.state.selections. 
   private _updateSelectionsHelper = (optionsArr: string[], oldField: string): IQuery => {
+    const type = (optionsArr.includes("is:issue") ? "issue" : (optionsArr.includes("is:pr") ? "pr" : undefined));
     const repo = optionsArr.find(function (elem) {
       if (elem.includes("repo:")) {
         return elem.split("repo:")[1];
       }
+      return "";
     });
     const assignee = optionsArr.find(function (elem) {
       if (elem.includes("assignee:")) {
         return elem.split("assignee")[1];
       }
+      return "";
     });
     const author = optionsArr.find(function (elem) {
       if (elem.includes("author:")) {
         return elem.split("author")[1];
       }
+      return "";
     });
     const mentions = optionsArr.find(function (elem) {
       if (elem.includes("mentions:")) {
         return elem.split("mentions")[1];
       }
+      return "";
     });
-    /*const reviews = optionsArr.find(function (elem) {
-      if (elem.includes("review:") && elem as IQuery["reviewStatus"] ){
-        return elem;
-      }
-    });*/
-
-    return update(this.state.selections, {
-      type: { $set: (optionsArr.includes("is:issue") ? "issue" : (optionsArr.includes("is:pr") ? "pr" : undefined)) },
+    const newQuery: IQuery = update(this.state.selections, {
+      type: { $set: type },
       repo: { $set: repo },
       assignee: { $set: assignee },
       author: { $set: author },
       customField: { $set: oldField },
-      mentions: { $set: mentions }
-    })
-  }
+      mentions: { $set: mentions },
+      rawQueryField: { $set: this._getQueryFormatted(oldField) }
+    });
+    return (newQuery);
+  };
 
   // Helper function that returns a well-formatted query if the user entered a custom query.
   private _getQueryFormatted(field: string): string {
-    const labelArr = field.match(/label:\"((([^"])*)?)\"/g);
+    const labelArr = field.match(/label:"((([^"])*)?)"/g);
     if (!labelArr) return field;
     var remainder = field;
     // Loop through the string and cut out every label.
@@ -896,7 +888,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       newStr = newStr.concat('+', elem);
     });
     return newStr;
-  }
+  };
+
 }
 
 const mapStateToProps = (state: IState) => ({
