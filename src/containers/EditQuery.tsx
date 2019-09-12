@@ -154,7 +154,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _nameRegex = /^[ !a-z0-9-_.\\/~+&#@:()'[\]]+( *[ !a-z0-9-_.\\/+&#@:()'[\]]+ *)*$/i;
-  private _customQueryRegex = /^[ !a-z0-9-_.\\/~+&#@:()"'[\]]+( *[ !a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  private _customQueryRegex = /^[ <>=!a-z0-9-_.\\/~+&#@:()"'[\]]+( *[ <>=!a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  private _otherFieldRegex = /^[!a-z0-9-_.\\/~+&#@()'[\]]+( *[!a-z0-9-_.\\/+&#@()'[\]]+ *)*$/i;
   //make separate regex
   private _numberRegex = /^[0-9]*$/i;
   private _picker = React.createRef<IBasePicker<ITag>>();
@@ -527,7 +528,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.repo = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -628,7 +629,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.author = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -656,7 +657,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.assignee = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -684,7 +685,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.mentions = false;
       this.setState({ validInputs: currInputs });
       return;
