@@ -40,19 +40,6 @@ import { LabelPicker } from "../components/LabelPicker";
 // Value corresponding to enter key.
 const ENTER_KEYCODE = 13;
 
-// Type for queryFieldsEnabled, defining which fields for EditQuery are enabled.
-type queryFieldsEnabledType = {
-  enableTaskType: boolean;
-  enableRepo: boolean;
-  enableReviewStatusField: boolean;
-  enableAssignee: boolean;
-  enableAuthor: boolean;
-  enableMention: boolean;
-  enableLabels: boolean;
-  enableSortBy: boolean;
-  enableLastUpdated: boolean;
-};
-
 /**
  * Interface to track whether a user input is valid.
  */
@@ -72,8 +59,8 @@ interface IEditQueryUIState {
   actions?: JSX.Element;
   /** Whether or not a message bar should be rendered, given the action the user wants to take. */
   renderMessageBar: boolean;
-  /** Stores the enabled/disabled feature for all query-able fields. When the Custom Query field is being used, all other options are deactivated. */
-  queryFieldsEnabled: queryFieldsEnabledType;
+  /** Stores the enabled/disabled feature for all query-able fields. When the Custom Query field is being used, this is set to true. */
+  queryFieldsEnabled: boolean;
   /** A list of the suggested labels, given a valid repo has been typed. */
   labelSuggestions: ITag[];
   /** The current selections the user is making to a query, which will be used to either construct a new query or edit an existing one. */
@@ -100,27 +87,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
-    queryFieldsEnabled: (this.props.currQuery && this.props.currQuery && this.props.currQuery.customField !== "") ? {
-      enableTaskType: true,
-      enableRepo: true,
-      enableReviewStatusField: true,
-      enableAssignee: true,
-      enableAuthor: true,
-      enableMention: true,
-      enableLabels: true,
-      enableSortBy: true,
-      enableLastUpdated: true
-    } : {
-        enableTaskType: false,
-        enableRepo: false,
-        enableReviewStatusField: false,
-        enableAssignee: false,
-        enableAuthor: false,
-        enableMention: false,
-        enableLabels: false,
-        enableSortBy: false,
-        enableLastUpdated: false,
-      },
+    queryFieldsEnabled: (this.props.currQuery && this.props.currQuery && this.props.currQuery.customField !== "") ? true : false,
     labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
@@ -150,8 +117,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   private _nameRegex = /^[ !a-z0-9-_.\\/~+&#@:()'[\]]+( *[ !a-z0-9-_.\\/+&#@:()'[\]]+ *)*$/i;
   private _customQueryRegex = /^[ <>=!a-z0-9-_.\\/~+&#@:()"'[\]]+( *[ <>=!a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
   private _otherFieldRegex = /^[!a-z0-9-_.\\/~+&#@()'[\]]+( *[!a-z0-9-_.\\/+&#@()'[\]]+ *)*$/i;
-  //make separate regex
   private _numberRegex = /^[0-9]*$/i;
+
   private _picker = React.createRef<IBasePicker<ITag>>();
   private _customViewsOptions = [
     { key: "type", text: "Type of tasks" },
@@ -194,7 +161,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <Dropdown
                 styles={typeDropdown}
                 responsiveMode={ResponsiveMode.large}
-                disabled={this.state.queryFieldsEnabled.enableTaskType}
+                disabled={this.state.queryFieldsEnabled}
                 required
                 onChange={this._setTypeSelection}
                 label="Type of tasks"
@@ -212,7 +179,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 }
                 onChange={this._onChangeRepo}
                 onKeyDown={this._validateAndFindRepoLabelsOnEnter}
-                disabled={this.state.queryFieldsEnabled.enableRepo}
+                disabled={this.state.queryFieldsEnabled}
                 validateOnFocusOut
                 onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
@@ -224,7 +191,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Assignee"
                 onChange={this._onChangeAssignee}
-                disabled={this.state.queryFieldsEnabled.enableAssignee}
+                disabled={this.state.queryFieldsEnabled}
                 defaultValue={this.state.selections.assignee}
                 errorMessage={!this.state.validInputs.assignee ? "Invalid assignee name" : ""}
               />
@@ -234,7 +201,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Author"
                 onChange={this._onChangeAuthor}
-                disabled={this.state.queryFieldsEnabled.enableAuthor}
+                disabled={this.state.queryFieldsEnabled}
                 defaultValue={this.state.selections.author}
                 errorMessage={!this.state.validInputs.author ? "Invalid author name" : ""}
               />
@@ -244,7 +211,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Mention"
                 onChange={this._onChangeMentions}
-                disabled={this.state.queryFieldsEnabled.enableMention}
+                disabled={this.state.queryFieldsEnabled}
                 defaultValue={this.state.selections.mentions}
                 errorMessage={!this.state.validInputs.mentions ? "Invalid name" : ""}
               />
@@ -293,7 +260,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
               <LabelPicker
                 selectedLabels={this.state.selections.labels}
-                disabled={this.state.queryFieldsEnabled.enableLabels}
+                disabled={this.state.queryFieldsEnabled}
                 suggestedLabels={this.state.labelSuggestions}
                 onChange={this._onChangeLabels}
                 repo={this.state.selections.repo}
@@ -304,7 +271,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <Dropdown
                 styles={typeDropdown}
                 responsiveMode={ResponsiveMode.large}
-                disabled={this.state.queryFieldsEnabled.enableSortBy}
+                disabled={this.state.queryFieldsEnabled}
                 onChange={this._setSortingSelection}
                 label="Sort By"
                 selectedKey={this.state.selections.sorting}
@@ -317,7 +284,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <Slider
                 label="Last Updated"
-                disabled={this.state.queryFieldsEnabled.enableLastUpdated}
+                disabled={this.state.queryFieldsEnabled}
                 onChange={this._setLastUpdatedSelection}
                 min={0}
                 defaultValue={this.state.selections.lastUpdated}
@@ -691,21 +658,21 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     chrome.storage.local.set({ query: this.state.selections });
   };
 
-  // Returns a copy of queryFieldsEnabled with every field set to 'state.'
-  // EDGE CASE: If 'type' is set to 'Issues,' we shouldn't re-enable reviewStatusField.
-  private _getQueryFieldCopy(state: boolean, type?: string): queryFieldsEnabledType {
-    return update(this.state.queryFieldsEnabled, {
-      enableAssignee: { $set: state },
-      enableAuthor: { $set: state },
-      enableLabels: { $set: state },
-      enableLastUpdated: { $set: state },
-      enableMention: { $set: state },
-      enableRepo: { $set: state },
-      enableReviewStatusField: { $set: (type === "issue") ? true : false },
-      enableSortBy: { $set: state },
-      enableTaskType: { $set: state }
-    });
-  };
+  // // Returns a copy of queryFieldsEnabled with every field set to 'state.'
+  // // EDGE CASE: If 'type' is set to 'Issues,' we shouldn't re-enable reviewStatusField.
+  // private _getQueryFieldCopy(state: boolean, type?: string): queryFieldsEnabledType {
+  //   return update(this.state.queryFieldsEnabled, {
+  //     enableAssignee: { $set: state },
+  //     enableAuthor: { $set: state },
+  //     enableLabels: { $set: state },
+  //     enableLastUpdated: { $set: state },
+  //     enableMention: { $set: state },
+  //     enableRepo: { $set: state },
+  //     enableReviewStatusField: { $set: (type === "issue") ? true : false },
+  //     enableSortBy: { $set: state },
+  //     enableTaskType: { $set: state }
+  //   });
+  // };
 
   private _onChangeCustomField = (
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -713,9 +680,9 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   ) => {
     // Check to see if valid input. If this box is typed in, all other fields are deactivated.
     if (!newValue || newValue === "") {
-      this.setState({ queryFieldsEnabled: this._getQueryFieldCopy(false, this.state.selections.type) });
+      this.setState({ queryFieldsEnabled: false });
     } else {
-      this.setState({ queryFieldsEnabled: this._getQueryFieldCopy(true, "issue") });
+      this.setState({ queryFieldsEnabled: true });
     }
     // If our input is valid, but it fails the regex.
     let currInputs = this.state.validInputs;
