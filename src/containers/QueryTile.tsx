@@ -1,14 +1,16 @@
 import React from "react";
 import { IQuery, toQueryList, toggleFlag } from "../state";
 import { connect } from "react-redux";
-import { Stack, Text, Separator, CommandBarButton } from "office-ui-fabric-react";
+import { Stack, Text, Separator, CommandBarButton, IconButton } from "office-ui-fabric-react";
 import {
   QueryTileClassNames,
   gridStackStyle,
   separatorStyles,
   queryTileFrontStyles,
   flagIconStyles,
-  flagIconProps
+  flagIconProps,
+  copyIconStyles,
+  copyIconProps
 } from "../components/QueryTile.styles";
 import { gitLabelStyles } from "../components/GitLabel.styles";
 import emoji from "node-emoji";
@@ -31,8 +33,18 @@ function QueryTileView(props: IQueryTileProps) {
       </span>
     ))
     : null;
+
   function onClickToQueryList() {
     props.toQueryList(query);
+  }
+
+  async function updateClipboard() {
+    navigator.clipboard.writeText((query.customField && query.customField !== "") ? query.customField : "Invalid Query").then(function () {
+      /* clipboard successfully set */
+      console.log('succc');
+    }, function () {
+      console.log("need permz :(");
+    });
   }
 
   const flagReasonableCount = (
@@ -40,6 +52,13 @@ function QueryTileView(props: IQueryTileProps) {
   ): void => {
     event.stopPropagation();
     props.toggleFlag(query);
+  };
+
+  const copyQuery = (
+    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement | HTMLDivElement>
+  ): void => {
+    event.stopPropagation();
+    updateClipboard();
   };
 
   const frontTileStyles = queryTileFrontStyles(
@@ -62,6 +81,13 @@ function QueryTileView(props: IQueryTileProps) {
       </div>
       <button id="QueryBack" className={QueryTileClassNames.queryBack} onClick={onClickToQueryList}>
         <Stack verticalAlign="space-around">
+          {(query.customField && query.customField !== "") && <CommandBarButton
+            id="Copy"
+            iconProps={copyIconProps}
+            text={"Copy Query"}
+            onClick={copyQuery}
+            styles={copyIconStyles}
+          />}
           <Text className={QueryTileClassNames.basicInfoQueryName}>{query.name}</Text>
           <Separator styles={separatorStyles}>
             {query.tasks.length.toString()} open {query.tasks.length === 1 ? "task" : "tasks"}
