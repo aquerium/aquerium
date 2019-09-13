@@ -11,6 +11,8 @@ interface ILabelPickerProps {
   suggestedLabels: ITag[];
   /** The function to be called after adding/removing labels. */
   onChange: (items: ILabel[]) => void;
+  /** Controls whether the picker is disabled or not. */
+  disabled: boolean;
 }
 
 export class LabelPicker extends React.Component<ILabelPickerProps> {
@@ -36,11 +38,12 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
         selectedItems={
           selectedLabels
             ? selectedLabels.map(label => ({
-                key: label.name + "/#" + label.color,
-                name: label.name
-              }))
+              key: label.name + "/#" + label.color,
+              name: label.name
+            }))
             : []
         }
+        disabled={this.props.disabled}
         componentRef={this._picker}
         onValidateInput={this._validateInput}
         createGenericItem={this._genericItem}

@@ -44,12 +44,7 @@ const ENTER_KEYCODE = 13;
  * Interface to track whether a user input is valid.
  */
 interface IInputField {
-  name: boolean;
-  repo: boolean;
-  assignee: boolean;
-  mentions: boolean;
-  author: boolean;
-  reasonableCount: boolean;
+  [index: string]: boolean
 }
 
 interface IEditQueryUIState {
@@ -64,16 +59,13 @@ interface IEditQueryUIState {
   actions?: JSX.Element;
   /** Whether or not a message bar should be rendered, given the action the user wants to take. */
   renderMessageBar: boolean;
-  /** Whether the review status field is enabled or not, depending on if PR's are in the query. */
-  enableReviewStatusField: boolean;
+  /** Stores the enabled/disabled feature for all query-able fields. When the Custom Query field is being used, this is set to true. */
+  queryFieldsDisabled: boolean;
   /** A list of the suggested labels, given a valid repo has been typed. */
   labelSuggestions: ITag[];
-  /**
-   * The current selections the user is making to a query, which will be used to either construct
-   * a new query or edit an existing one.
-   */
+  /** The current selections the user is making to a query, which will be used to either construct a new query or edit an existing one. */
   selections: IQuery;
-  /** List denoting valid inputs for a given input field.title, repo, author, assignee, mentions and reasonable count. */
+  /** List denoting valid inputs for query-able fields. */
   validInputs: IInputField;
 }
 
@@ -95,7 +87,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
-    enableReviewStatusField: true,
+    queryFieldsDisabled: (this.props.currQuery && this.props.currQuery && this.props.currQuery.customField !== "") ? true : false,
     labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
@@ -116,13 +108,17 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       repo: true,
       assignee: true,
       mentions: true,
+      customField: true,
       author: true,
       reasonableCount: true
     }
   };
 
-  private _nameRegex = /^[a-z0-9-_.\\/~+&#@:()"'[\]]+( *[a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  private _nameRegex = /^[ !a-z0-9-_.\\/~+&#@:()'[\]]+( *[ !a-z0-9-_.\\/+&#@:()'[\]]+ *)*$/i;
+  private _customQueryRegex = /^[ <>=!a-z0-9-_.\\/~+&#@:()"'[\]]+( *[ <>=!a-z0-9-_.\\/+&#@:()"'[\]]+ *)*$/i;
+  private _otherFieldRegex = /^[!a-z0-9-_.\\/~+&#@()'[\]]+( *[!a-z0-9-_.\\/+&#@()'[\]]+ *)*$/i;
   private _numberRegex = /^[0-9]*$/i;
+
   private _picker = React.createRef<IBasePicker<ITag>>();
   private _customViewsOptions = [
     { key: "type", text: "Type of tasks" },
@@ -165,6 +161,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <Dropdown
                 styles={typeDropdown}
                 responsiveMode={ResponsiveMode.large}
+                disabled={this.state.queryFieldsDisabled}
                 required
                 onChange={this._setTypeSelection}
                 label="Type of tasks"
@@ -182,6 +179,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
                 }
                 onChange={this._onChangeRepo}
                 onKeyDown={this._validateAndFindRepoLabelsOnEnter}
+                disabled={this.state.queryFieldsDisabled}
                 validateOnFocusOut
                 onGetErrorMessage={this._validateRepoLabelsOnFocusOut}
                 defaultValue={this.state.selections.repo}
@@ -193,6 +191,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Assignee"
                 onChange={this._onChangeAssignee}
+                disabled={this.state.queryFieldsDisabled}
                 defaultValue={this.state.selections.assignee}
                 errorMessage={!this.state.validInputs.assignee ? "Invalid assignee name" : ""}
               />
@@ -202,6 +201,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Author"
                 onChange={this._onChangeAuthor}
+                disabled={this.state.queryFieldsDisabled}
                 defaultValue={this.state.selections.author}
                 errorMessage={!this.state.validInputs.author ? "Invalid author name" : ""}
               />
@@ -211,20 +211,30 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <TextField
                 label="Mention"
                 onChange={this._onChangeMentions}
+                disabled={this.state.queryFieldsDisabled}
                 defaultValue={this.state.selections.mentions}
                 errorMessage={!this.state.validInputs.mentions ? "Invalid name" : ""}
               />
               {description("Track Issues and/or Pull Requests that mention a specific user.")()}
             </Stack>
             <Stack horizontal horizontalAlign="center">
+              <TextField
+                label="Custom Query (Deactivates Other Fields!)"
+                onChange={this._onChangeCustomField}
+                defaultValue={this.state.selections.customField}
+                errorMessage={!this.state.validInputs.customField ? "Invalid filters" : ""}
+              />
+              {description("Feeling like a pro? Enter custom filters just like you would on GitHub!")()}
+            </Stack>
+            <Stack horizontal horizontalAlign="center">
               <Dropdown
                 styles={reviewStatusDropdown}
                 responsiveMode={ResponsiveMode.large}
-                disabled={!this.state.enableReviewStatusField}
+                disabled={this.state.queryFieldsDisabled || (this.state.selections.type && this.state.selections.type === "issue")}
                 onChange={this._setReviewStatusSelection}
                 label="Review Status"
                 selectedKey={
-                  this.state.selections.reviewStatus && this.state.enableReviewStatusField
+                  this.state.selections.reviewStatus && !this.state.queryFieldsDisabled
                     ? this.state.selections.reviewStatus
                     : ""
                 }
@@ -250,6 +260,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center" styles={bridgeLabelGap}>
               <LabelPicker
                 selectedLabels={this.state.selections.labels}
+                disabled={this.state.queryFieldsDisabled}
                 suggestedLabels={this.state.labelSuggestions}
                 onChange={this._onChangeLabels}
                 repo={this.state.selections.repo}
@@ -260,6 +271,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
               <Dropdown
                 styles={typeDropdown}
                 responsiveMode={ResponsiveMode.large}
+                disabled={this.state.queryFieldsDisabled}
                 onChange={this._setSortingSelection}
                 label="Sort By"
                 selectedKey={this.state.selections.sorting}
@@ -272,6 +284,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
             <Stack horizontal horizontalAlign="center">
               <Slider
                 label="Last Updated"
+                disabled={this.state.queryFieldsDisabled}
                 onChange={this._setLastUpdatedSelection}
                 min={0}
                 defaultValue={this.state.selections.lastUpdated}
@@ -329,11 +342,8 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
 
   private _setMessageBarAddOrEdit = (): void => {
     let validEdits = true;
-    for (const field in this.state.validInputs) {
-      if (!field) {
-        validEdits = false;
-        break;
-      }
+    if (Object.keys(this.state.validInputs).some(k => !this.state.validInputs[k])) {
+      validEdits = false;
     }
 
     if (!validEdits || !this.state.selections.name) {
@@ -349,8 +359,6 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
   };
 
   private _addOrEditQuery = (): void => {
-    const updatedSelections = update(this.state.selections, { markedAsRead: { $set: false } });
-    this.setState({ selections: updatedSelections });
     this.props.addOrEditQuery(this.state.selections);
     this.props.toHome();
   };
@@ -476,7 +484,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.repo = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -530,18 +538,18 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       return;
     }
     const newKey = item.key === "issues and pr" ? undefined : item.key;
-    const enableReviewField = newKey !== "issues";
+    const disableReviewField = (newKey === "issue");
     const updatedSelections = update(this.state.selections, {
       type: {
         $set: newKey as IQuery["type"]
       },
       reviewStatus: {
-        $set: enableReviewField
+        $set: disableReviewField
           ? this.state.selections.reviewStatus
           : (undefined as IQuery["reviewStatus"])
       }
     });
-    this.setState({ selections: updatedSelections, enableReviewStatusField: enableReviewField });
+    this.setState({ selections: updatedSelections });
     chrome.storage.local.set({ query: this.state.selections });
   };
 
@@ -574,7 +582,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.author = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -602,7 +610,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.assignee = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -630,7 +638,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
       this.setState({ validInputs: currInputs });
     }
     let currInputs = this.state.validInputs;
-    if (newValue && !this._nameRegex.test(newValue)) {
+    if (newValue && !this._otherFieldRegex.test(newValue)) {
       currInputs.mentions = false;
       this.setState({ validInputs: currInputs });
       return;
@@ -640,6 +648,35 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     newValue = newValue ? newValue.trim() : "";
     currInputs.mentions = true;
     const updatedSelections = update(this.state.selections, { mentions: { $set: newValue } });
+    this.setState({
+      selections: updatedSelections,
+      validInputs: currInputs
+    });
+    chrome.storage.local.set({ query: this.state.selections });
+  };
+
+  private _onChangeCustomField = (
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newValue?: string
+  ) => {
+    // Check to see if valid input. If this box is typed in, all other fields are deactivated.
+    if (!newValue || newValue === "") {
+      this.setState({ queryFieldsDisabled: false });
+    } else {
+      this.setState({ queryFieldsDisabled: true });
+    }
+    // If our input is valid, but it fails the regex.
+    let currInputs = this.state.validInputs;
+    if (newValue && !this._customQueryRegex.test(newValue)) {
+      currInputs.customField = false;
+      this.setState({ validInputs: currInputs });
+      return;
+    }
+
+    // Parse the matching fields in the custom query, apply them to state, and store in local storage.
+    newValue = newValue ? newValue.trim() : "";
+    currInputs.customField = true;
+    const updatedSelections = this._updateSelections(newValue);
     this.setState({
       selections: updatedSelections,
       validInputs: currInputs
@@ -723,6 +760,70 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     this.setState({ selections: updatedSelections });
     chrome.storage.local.set({ query: this.state.selections });
   };
+
+
+  // Helper function that interprets a custom query and returns an IQuery with the correctly filled-in fields.
+  private _updateSelections = (field: string): IQuery => {
+    const labelArr = field.match(/label:"((([^"])*)?)"/g);
+    if (!labelArr) {
+      return this._updateSelectionsHelper(field.trim().split(" "), field);
+    }
+    var remainder = field;
+    labelArr.forEach(function (elem) {
+      remainder = remainder.replace(elem, "");
+      remainder = remainder.replace(/  +/g, " ");
+    });
+    const newArr = labelArr.concat(remainder.trim().split(" "));
+    const newQuery = this._updateSelectionsHelper(newArr, field);
+    return newQuery;
+  };
+
+  // Helper to the helper function that returns a modified copy of this.state.selections. 
+  private _updateSelectionsHelper = (optionsArr: string[], oldField: string): IQuery => {
+    const type = (optionsArr.includes("is:issue") ? "issue" : (optionsArr.includes("is:pr") ? "pr" : undefined));
+    const repo: string = optionsArr.find(function (elem) {
+      return elem.includes("repo:");
+    }) || "";
+    const assignee: string = optionsArr.find(function (elem) {
+      return elem.includes("assignee:");
+    }) || "";
+    const author: string = optionsArr.find(function (elem) {
+      return elem.includes("author:");
+    }) || "";
+    const mentions: string = optionsArr.find(function (elem) {
+      return elem.includes("mentions:");
+    }) || "";
+    const newQuery: IQuery = update(this.state.selections, {
+      type: { $set: type },
+      repo: { $set: repo.split("repo:")[1] },
+      assignee: { $set: assignee.split("assignee:")[1] },
+      author: { $set: author.split("author:")[1] },
+      customField: { $set: oldField },
+      mentions: { $set: mentions.split("mentions:")[1] },
+      rawQueryField: { $set: this._getQueryFormatted(oldField) }
+    });
+    return (newQuery);
+  };
+
+  // Helper function that returns a well-formatted query if the user entered a custom query.
+  private _getQueryFormatted(field: string): string {
+    const labelArr = field.match(/label:"((([^"])*)?)"/g);
+    if (!labelArr) return field;
+    var remainder = field;
+    // Loop through the string and cut out every label.
+    labelArr.forEach(function (elem) {
+      remainder = remainder.replace(elem, "");
+      // Ensure that we have no spacing errors.
+      remainder = remainder.replace(/  +/g, " ");
+    });
+    // Remove white space and add '+' signs in lieu of every space.
+    var newStr = remainder.trim().replace(/ /g, "+");
+    labelArr.forEach(function (elem) {
+      newStr = newStr.concat('+', elem);
+    });
+    return newStr;
+  };
+
 }
 
 const mapStateToProps = (state: IState) => ({

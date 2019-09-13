@@ -31,17 +31,6 @@ export interface ILabel {
 
 /**
  * @interface
- * This interface represents a single label, withc its name and color.
- */
-export interface ILabel {
-  /** The name of the label. */
-  name: string;
-  /** The color provided by GitHub and/or a repository. */
-  color: string;
-}
-
-/**
- * @interface
  * This interface represents a single task, whether it's an issue or a PR.
  */
 export interface ITask {
@@ -107,6 +96,10 @@ export interface IQuery {
   customViews: string[];
   /** Decides whether the background of the tile should be red if the reasonable count is exceeded. */
   markedAsRead: boolean;
+  /** A custom filter field for users who wish to fully customize a query.  */
+  customField?: string;
+  /** The field stored in the query that the API uses to query GitHub. */
+  rawQueryField?: string;
   /** Determines the sorting type of the query. */
   sorting: "default" | "updated-recent" | "updated-not-recent";
 }

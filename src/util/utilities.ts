@@ -14,8 +14,9 @@ export async function getQueryTasks(
 ): Promise<{ tasks?: ITask[]; errorCode?: number }> {
   try {
     const octokit = getOctokit(user.token);
+    const fullQuery = query.rawQueryField || getQualifiersStr(user, query);
     const options = octokit.search.issuesAndPullRequests.endpoint.merge({
-      q: getQualifiersStr(user, query)
+      q: fullQuery
     });
     const response = await octokit.paginate(options);
     if (response.length > QUERY_TASK_LIMIT) {
@@ -40,7 +41,6 @@ export async function getQueryTasks(
       };
       tasks.push(task);
     });
-
     return { tasks: tasks };
   } catch (error) {
     console.error(error);
@@ -141,3 +141,4 @@ export const normalizedURL = (queryUrl: string): string => {
   }
   return normalized;
 };
+

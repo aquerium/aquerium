@@ -25,10 +25,17 @@ interface IQueryTile {
   basicInfo: string;
   /** The styles for the query name on the back of the query tile. */
   basicInfoQueryName: string;
+  /** The styles for the container for the copy icon on the back of the card. */
+  copyIconContainer: string;
+  /** The styles for the text for the copy icon. */
+  copyIconText: string;
 }
 
-export const flagIconStyles = { root: { height: 25 } };
+export const flagIconStyles = { root: { height: 25, transform: "translateX(-10px)", maxWidth: "260px" } };
 export const flagIconProps = { iconName: "Flag" };
+
+export const copyIconStyles = { root: { height: 25, transform: "translateX(-10px)", maxWidth: "260px" } };
+export const copyIconProps = { iconName: "Copy" };
 
 export const gridStackStyle = {
   root: { maxWidth: "100%" }
@@ -121,6 +128,14 @@ export const QueryTileClassNames: IQueryTile = mergeStyleSets({
     selectors: {
       "&:hover": { textDecorationLine: "none" }
     }
+  },
+  copyIconContainer: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  copyIconText: {
+    fontSize: 16,
+    paddingTop: "3px"
   }
 });
 
