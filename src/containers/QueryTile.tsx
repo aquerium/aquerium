@@ -81,7 +81,7 @@ function QueryTileView(props: IQueryTileProps) {
       </div>
       <button id="QueryBack" className={QueryTileClassNames.queryBack} onClick={onClickToQueryList}>
         <Stack verticalAlign="space-around">
-          {(query.customField && query.customField !== "") && <CommandBarButton
+          {query.customField && <CommandBarButton
             id="Copy"
             iconProps={copyIconProps}
             text={"Copy Query"}

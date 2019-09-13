@@ -14,12 +14,7 @@ export async function getQueryTasks(
 ): Promise<{ tasks?: ITask[]; errorCode?: number }> {
   try {
     const octokit = getOctokit(user.token);
-    var fullQuery = "";
-    if (!query.rawQueryField || query.rawQueryField === "") {
-      fullQuery = getQualifiersStr(user, query);
-    } else {
-      fullQuery = query.rawQueryField;
-    }
+    const fullQuery = query.rawQueryField || getQualifiersStr(user, query);
     const options = octokit.search.issuesAndPullRequests.endpoint.merge({
       q: fullQuery
     });
