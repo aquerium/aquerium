@@ -87,7 +87,7 @@ class EditQueryUI extends React.Component<IEditQueryUIProps, IEditQueryUIState> 
     messageType: MessageBarType.success,
     message: "",
     renderMessageBar: false,
-    queryFieldsDisabled: (this.props.currQuery && this.props.currQuery && this.props.currQuery.customField !== "") ? true : false,
+    queryFieldsDisabled: (this.props.currQuery && this.props.currQuery.customField && this.props.currQuery.customField !== "") ? true : false,
     labelSuggestions: [],
     selections: this.props.currQuery
       ? this.props.currQuery
