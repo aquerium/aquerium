@@ -1,6 +1,6 @@
 import { IQuery, IUserInfo, ILabel } from "../state";
 import { IGist } from "./github";
-import Octokit from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { GIST_NAME, GIST_DESCRIP, STATUS_CREATED, STATUS_OK } from "./constants";
 import fetch from "isomorphic-fetch";
 

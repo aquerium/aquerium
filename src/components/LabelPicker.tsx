@@ -90,7 +90,8 @@ export class LabelPicker extends React.Component<ILabelPickerProps> {
     if (!items) return;
     let newSelectedLabels = items.map(item => ({
       name: item.name,
-      color: item.key.substring(item.key.lastIndexOf("#") + 1)
+      // In this case we know we're dealing with strings.
+      color: (item.key as string).substring((item.key as string).lastIndexOf("#") + 1)
     }));
     this.props.onChange(newSelectedLabels);
   };

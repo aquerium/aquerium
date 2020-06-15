@@ -16,7 +16,7 @@ interface IInfoButtonProps extends ITextFieldProps {
   /** String with text to be displayed. */
   calloutText: string;
   /** Whether the info button must be translated up a number of pixels. */
-  translate?: boolean;
+  move?: boolean;
 }
 
 const InfoButtonStyles = mergeStyleSets({
@@ -65,7 +65,7 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
         <IconButton
           id={this._iconButtonId}
           iconProps={infoIcon}
-          styles={this.props.translate ? { root: { transform: "translateY(-28px)" } } : {}}
+          styles={this.props.move ? { root: { transform: "translateY(-28px)" } } : {}}
           ariaLabel="Info"
           onClick={this._onIconClick}
           className={InfoButtonStyles.icon}
@@ -90,8 +90,8 @@ class InfoButton extends React.Component<IInfoButtonProps, IInfoButtonState> {
   }
 }
 
-export const description = (description: string, translate?: boolean) => {
+export const description = (description: string, move?: boolean) => {
   return (props?: ITextFieldProps): JSX.Element => {
-    return <InfoButton {...props} calloutText={description} translate={translate || false} />;
+    return <InfoButton {...props} calloutText={description} move={move || false} />;
   };
 };
